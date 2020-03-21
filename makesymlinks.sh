@@ -35,8 +35,9 @@ install_zsh () {
 if [ -f /bin/zsh -o -f /usr/bin/zsh ]; then
     # Clone my oh-my-zsh repository from GitHub only if it isn't already present
     if [[ ! -d $dir/oh-my-zsh/ ]]; then
-        sudo chmod +x oh_my_zsh_install.sh
-        sh oh_my_zsh_install.sh
+        # sudo chmod +x oh_my_zsh_install.sh
+        # sh oh_my_zsh_install.sh
+        git clone https://github.com/robbyrussell/oh-my-zsh.git
     fi
     # Clone powerlevel10k if not already present
     if [[ ! -d $dir/oh-my-zsh/themes/powerlevel10k ]]; then
