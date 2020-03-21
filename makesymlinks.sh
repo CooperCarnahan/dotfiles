@@ -35,7 +35,7 @@ install_zsh () {
 if [ -f /bin/zsh -o -f /usr/bin/zsh ]; then
     # Clone my oh-my-zsh repository from GitHub only if it isn't already present
     if [[ ! -d $HOME/.oh-my-zsh/ ]]; then
-        sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+#        sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
     fi
     # Clone powerlevel10k if not already present
     if [[ ! -d $HOME/.oh-my-zsh/themes/powerlevel10k ]]; then
