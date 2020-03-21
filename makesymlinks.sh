@@ -34,24 +34,33 @@ install_zsh () {
 # Test to see if zshell is installed.  If it is:
 if [ -f /bin/zsh -o -f /usr/bin/zsh ]; then
     # Clone my oh-my-zsh repository from GitHub only if it isn't already present
-    if [[ ! -d $HOME/.oh-my-zsh/ ]]; then
-#        sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+    if [[ ! -d $dir/oh-my-zsh/ ]]; then
+        sudo chmod +x oh_my_zsh_install.sh
+        sh oh_my_zsh_install.sh
     fi
     # Clone powerlevel10k if not already present
-    if [[ ! -d $HOME/.oh-my-zsh/themes/powerlevel10k ]]; then
+    if [[ ! -d $dir/oh-my-zsh/themes/powerlevel10k ]]; then
+        echo "Cloning powerlevel10k"
         git clone --depth=1 https://github.com/romkatv/powerlevel10k.git $ZSH_CUSTOM/themes/powerlevel10k
+        echo "Done"
     fi
     # Clone syntax highlighting if not already present
-    if [[ ! -d $HOME/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting ]]; then
-       git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+    if [[ ! -d $dir/oh-my-zsh/custom/plugins/zsh-syntax-highlighting ]]; then
+        echo "Cloning zsh-syntax-highlighting"
+        git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+        echo "Done"
     fi
     # Clone autosuggestions if not already present
-    if [[ ! -d $HOME/.oh-my-zsh/custom/plugins/zsh-autosuggestions ]]; then
-       git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+    if [[ ! -d $dir/oh-my-zsh/custom/plugins/zsh-autosuggestions ]]; then
+        echo "Cloning zsh-autosuggestions"
+        git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+        echo "Done"
     fi
     # Set the default shell to zsh if it isn't currently set to zsh
     if [[ ! $(echo $SHELL) == $(which zsh) ]]; then
+        echo "Changing default shell from $SHELL to zsh"
         chsh -s $(which zsh)
+        echo "Done"
     fi
 else
     # If zsh isn't installed, get the platform of the current machine
@@ -75,3 +84,6 @@ fi
 }
 
 install_zsh
+
+echo "Source your ~/.zhrc file to see the changes!"
+
