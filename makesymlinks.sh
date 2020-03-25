@@ -40,7 +40,7 @@ if [ -f /bin/zsh -o -f /usr/bin/zsh ]; then
         git clone https://github.com/robbyrussell/oh-my-zsh.git
     fi
     # Clone powerlevel10k if not already present
-    if [[ ! -d $dir/oh-my-zsh/themes/powerlevel10k ]]; then
+    if [[ ! -d $dir/oh-my-zsh/themes/powerlevel10k ]] && [[ ! -d $/dir/oh-my-zsh/custom/themes/powerlevel10k ]]; then
         echo "Cloning powerlevel10k"
         git clone --depth=1 https://github.com/romkatv/powerlevel10k.git $ZSH_CUSTOM/themes/powerlevel10k
         echo "Done"
@@ -84,7 +84,21 @@ else
 fi
 }
 
-install_zsh
+link_scripts () {
+echo "Linking Scripts to /usr/bin"
+for script in ~/dotfiles/scripts/*; do
+	name="$(basename -- $script)"
+	if [[ ! -f /usr/bin/"$name" ]]; then
+		echo "$name" is not in /usr/bin. Creating symlink...
+		sudo chmod +x "$script"
+		sudo ln -s "$script" /usr/bin/"$name"
 
+	fi
+	echo "$script"
+done
+}
+
+install_zsh
+link_scripts
 echo "Source your ~/.zhrc file to see the changes!"
 

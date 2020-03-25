@@ -1,0 +1,10 @@
+#!/bin/bash
+rm "tmpfile"
+tmpfile=$(mktemp)
+echo "ExitOnError 1" >>$tmpfile
+echo "r" >>$tmpfile
+echo "h" >>$tmpfile
+echo "exec EnableEraseAllFlashBanks" >>$tmpfile
+/usr/bin/JLinkExe -device MIMXRT106FDVL6A -if SWD -speed 15000 -AutoConnect 1 -CommanderScript $tmpfile
+rm "$tmpfile"
+

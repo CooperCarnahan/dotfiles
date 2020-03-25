@@ -48,7 +48,7 @@ ZSH_THEME="powerlevel10k/powerlevel10k"
 # DISABLE_AUTO_TITLE="true"
 
 # Uncomment the following line to enable command auto-correction.
-# ENABLE_CORRECTION="true"
+ ENABLE_CORRECTION="true"
 
 # Uncomment the following line to display red dots whilst waiting for completion.
 # COMPLETION_WAITING_DOTS="true"
@@ -116,13 +116,10 @@ source $ZSH/oh-my-zsh.sh
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
 export EDITOR='/usr/bin/nano'
-alias lc='colorls'
-alias email='chromium-browser https://outlook.office365.com/mail/inbox'
-alias sp='chromium-browser https://nxp1.sharepoint.com/teams/25_33/Shared%20Documents/Forms/AllItems.aspx?viewid=d0a8f7a4%2D6fc5%2D42ce%2Daec0%2Dd433203d8d8f&id=%2Fteams%2F25%5F33%2FShared%20Documents%2FProjects%2FRT%20Vision'
-alias sdk='cd /media/cooper/KINGSTON/sln-vizn-iot-sdk'
 
 #export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
 #[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"
 source /usr/share/rvm/scripts/rvm
-
+source ~/dotfiles/alias
+source /etc/zsh_command_not_found
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
