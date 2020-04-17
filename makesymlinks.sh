@@ -40,7 +40,7 @@ if [ -f /bin/zsh -o -f /usr/bin/zsh ]; then
         git clone https://github.com/robbyrussell/oh-my-zsh.git
     fi
     # Clone powerlevel10k if not already present
-    if [[ ! -d $dir/oh-my-zsh/themes/powerlevel10k ]] && [[ ! -d $/dir/oh-my-zsh/custom/themes/powerlevel10k ]]; then
+    if [[ ! -d $dir/oh-my-zsh/themes/powerlevel10k ]] && [[ ! -d $dir/oh-my-zsh/custom/themes/powerlevel10k ]]; then
         echo "Cloning powerlevel10k"
         git clone --depth=1 https://github.com/romkatv/powerlevel10k.git $ZSH_CUSTOM/themes/powerlevel10k
         echo "Done"
