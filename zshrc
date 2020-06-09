@@ -125,3 +125,4 @@ source /etc/zsh_command_not_found
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 eval "$(fasd --init auto)"
 
+LS_COLORS='ow=01;36;40'
