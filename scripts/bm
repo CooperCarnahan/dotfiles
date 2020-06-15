@@ -1,0 +1,5 @@
+#!/bin/sh
+
+rvm use ruby-2.4.3
+cd /media/cooper/KINGSTON/sln-vizn-iot-sdk/bin/generator/batch_v1 
+ruby all_sln_vizn_iot.rb -c manifest $1 $2
