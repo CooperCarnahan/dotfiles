@@ -3,6 +3,7 @@
 alias lc='colorls'
 alias email='chromium-browser https://outlook.office365.com/mail/inbox'
 alias sp='chromium-browser https://nxp1.sharepoint.com/teams/25_33/Shared%20Documents/Forms/AllItems.aspx?viewid=d0a8f7a4%2D6fc5%2D42ce%2Daec0%2Dd433203d8d8f&id=%2Fteams%2F25%5F33%2FShared%20$'
+alias chrome='chromium-browser'
 alias sdk='cd ~/Desktop/vizn/sdk/vizn-sdk'
 #alias jlink='/usr/bin/JLinkExe'
 alias src='source ~/.zshrc'
@@ -12,3 +13,9 @@ alias c='f -ie code'
 alias cmd='"/mnt/c/WINDOWS/System32/cmd.exe"'
 alias mcux='cd /mnt/f/Users/CooperHDD/Documents/Code/MCUX/vizn'
 alias clip='clip.exe'
+
+# Change to directory of selected file #
+cf() {
+  file=$(f -i ${1})
+  cd ${${file}%/*}
+}
