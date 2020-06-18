@@ -7,7 +7,6 @@
 
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
-
 # Path to your oh-my-zsh installation.
 ZSH_DISABLE_COMPFIX=true
 export ZSH="$HOME/.oh-my-zsh"
@@ -124,5 +123,14 @@ source ~/dotfiles/alias
 source /etc/zsh_command_not_found
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 eval "$(fasd --init auto)"
+export LS_COLORS="$LS_COLORS:ow=1;34:tw=1;34:"
+if [ -z "$SSH_AUTH_SOCK" ]; then
+   # Check for a currently running instance of the agent
+   RUNNING_AGENT="`ps -ax | grep 'ssh-agent -s' | grep -v grep | wc -l | tr -d '[:space:]'`"
+   if [ "$RUNNING_AGENT" = "0" ]; then
+        # Launch a new instance of the agent
+        ssh-agent -s &> .ssh/ssh-agent
+   fi
+   eval `cat .ssh/ssh-agent`
+fi
 
-LS_COLORS='ow=01;36;40'
