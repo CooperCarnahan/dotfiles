@@ -122,7 +122,31 @@ export EDITOR='/usr/bin/nano'
 source /usr/share/rvm/scripts/rvm
 source ~/dotfiles/alias
 source /etc/zsh_command_not_found
+
+# Init fasd script
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 eval "$(fasd --init auto)"
 
 LS_COLORS='ow=01;36;40'
+
+# Set VIM keybindings for terminal
+set -o vi
+
+# Add Old E-Macs-style commands
+bindkey -v 
+bindkey "^[[1;5C" forward-word
+bindkey "^[[1;5D" backward-word
+bindkey "^E" autosuggest-accept
+
+# Better searching in command mode
+bindkey -M vicmd '?' history-incremental-search-backward
+bindkey -M vicmd '/' history-incremental-search-forward
+
+# Beginning search with arrow keys
+bindkey "^[OA" up-line-or-beginning-search
+bindkey "^[OB" down-line-or-beginning-search
+bindkey -M vicmd "k" up-line-or-beginning-search
+bindkey -M vicmd "j" down-line-or-beginning-search
+
+#Set jj to send 'escape' key during insert mode 
+bindkey -M viins 'jj' vi-cmd-mode
