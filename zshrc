@@ -121,6 +121,7 @@ export EDITOR='/usr/bin/nano'
 #[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"
 source /usr/share/rvm/scripts/rvm
 source ~/dotfiles/alias
+source ~/dotfiles/user_alias
 source /etc/zsh_command_not_found
 
 # Init fasd script
