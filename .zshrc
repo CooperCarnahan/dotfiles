@@ -92,12 +92,12 @@ source $ZSH/oh-my-zsh.sh
 # You may need to manually set your language environment
 # export LANG=en_US.UTF-8
 
-# Preferred editor for local and remote sessions
-# if [[ -n $SSH_CONNECTION ]]; then
-#   export EDITOR='vim'
-# else
-#   export EDITOR='mvim'
-# fi
+Preferred editor for local and remote sessions
+if [[ -n $SSH_CONNECTION ]]; then
+  export EDITOR='vim'
+ else
+  export EDITOR='nvim'
+fi
 
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
@@ -114,14 +114,13 @@ source $ZSH/oh-my-zsh.sh
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-export EDITOR='/usr/bin/nvim'
+export EDITOR='nvim'
 
 #export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
 #[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"
 source /usr/share/rvm/scripts/rvm
-source ~/dotfiles/alias
-source ~/dotfiles/user_alias
-source /etc/zsh_command_not_found
+source ~/.alias
+#source /etc/zsh_command_not_found
 
 # Init fasd script
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
@@ -140,23 +139,23 @@ fi
 LS_COLORS='ow=01;36;40'
 
 # # Set VIM keybindings for terminal
-# set -o vi
+ set -o vi
 
 # # Add Old E-Macs-style commands
-# bindkey -v 
-# bindkey "^[[1;5C" forward-word
-# bindkey "^[[1;5D" backward-word
-# bindkey "^E" autosuggest-accept
+ bindkey -v 
+ bindkey "^[[1;5C" forward-word
+ bindkey "^[[1;5D" backward-word
+ bindkey "^E" autosuggest-accept
 
 # # Better searching in command mode
-# bindkey -M vicmd '?' history-incremental-search-backward
-# bindkey -M vicmd '/' history-incremental-search-forward
+ bindkey -M vicmd '?' history-incremental-search-backward
+ bindkey -M vicmd '/' history-incremental-search-forward
 
 # # Beginning search with arrow keys
-# bindkey "^[OA" up-line-or-beginning-search
-# bindkey "^[OB" down-line-or-beginning-search
-# bindkey -M vicmd "k" up-line-or-beginning-search
-# bindkey -M vicmd "j" down-line-or-beginning-search
+ bindkey "^[OA" up-line-or-beginning-search
+ bindkey "^[OB" down-line-or-beginning-search
+ bindkey -M vicmd "k" up-line-or-beginning-search
+ bindkey -M vicmd "j" down-line-or-beginning-search
 
 # #Set jj to send 'escape' key during insert mode 
-# bindkey -M viins 'jj' vi-cmd-mode
+ bindkey -M viins 'jj' vi-cmd-mode
