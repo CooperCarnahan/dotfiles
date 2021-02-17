@@ -9,3 +9,21 @@ cf() {
   file=$(f -i ${1})
   cd ${${file}%/*}
 }
+
+# cd into recent directories
+zd() {
+    local dir
+    dir="$(fasd -Rdl "$1" | fzf -1 -0 --no-sort +m)" && cd "${dir}" || return 1
+}
+
+# j: jump to directories
+alias j='zd'
+
+# View recent f files
+function v() {
+    local file
+    file="$(fasd -Rfl "$1" | fzf -1 -0 --no-sort +m)" && $EDITOR "${file}" || return 1
+}
+
+# v: open recent file in $EDITOR
+alias v='v'
