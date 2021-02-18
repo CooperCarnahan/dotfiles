@@ -77,6 +77,7 @@ plugins=(
 git
 zsh-autosuggestions
 zsh-syntax-highlighting
+zsh-vim-mode
 fzf
 cp
 colorize
@@ -159,3 +160,7 @@ LS_COLORS='ow=01;36;40'
 
 # #Set jj to send 'escape' key during insert mode 
  bindkey -M viins 'jj' vi-cmd-mode
+
+# Set cursor to underline in insert mode
+MODE_CURSOR_VIINS="#00ff00 steady underline"
+

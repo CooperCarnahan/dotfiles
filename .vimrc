@@ -10,3 +10,5 @@ try
 source ~/.vim_runtime/vimrcs/my_configs.vim
 catch
 endtry
+
+set termguicolors

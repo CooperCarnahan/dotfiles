@@ -4,6 +4,9 @@ alias lc='colorls'
 alias src='source ~/.zshrc'
 alias c='f -ie code'
 
+# Fix tmux color issue in VIM
+alias tmux="TERM=screen-256color-bce tmux"
+
 # Change to directory of selected file #
 cf() {
   file=$(f -i ${1})
