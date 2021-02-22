@@ -74,14 +74,15 @@ ZSH_THEME="powerlevel10k/powerlevel10k"
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
-git
-zsh-autosuggestions
-zsh-syntax-highlighting
-zsh-vim-mode
-fzf
-cp
-colorize
-fasd
+    git
+    ssh-agent
+    zsh-autosuggestions
+    zsh-syntax-highlighting
+    zsh-vim-mode
+    fzf
+    cp
+    colorize
+    fasd
 )
 
 source $ZSH/oh-my-zsh.sh
@@ -106,8 +107,6 @@ fi
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-export EDITOR='nvim'
-
 #export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"
 # Placed elsewhere on different systems
@@ -119,16 +118,8 @@ export EDITOR='nvim'
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 eval "$(fasd --init auto)"
 export LS_COLORS="$LS_COLORS:ow=1;34:tw=1;34:"
-if [ -z "$SSH_AUTH_SOCK" ]; then
-   # Check for a currently running instance of the agent
-   RUNNING_AGENT="`ps -ax | grep 'ssh-agent -s' | grep -v grep | wc -l | tr -d '[:space:]'`"
-   if [ "$RUNNING_AGENT" = "0" ]; then
-        # Launch a new instance of the agent
-        ssh-agent -s &> .ssh/ssh-agent
-   fi
-   eval `cat .ssh/ssh-agent`
-fi
 
+# Change colors of ls directories
 LS_COLORS='ow=01;36;40'
 
 # # Set VIM keybindings for terminal
