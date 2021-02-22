@@ -103,24 +103,16 @@ fi
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
 
-# Set personal aliases, overriding those provided by oh-my-zsh libs,
-# plugins, and themes. Aliases can be placed here, though oh-my-zsh
-# users are encouraged to define aliases within the ZSH_CUSTOM folder.
-# For a full list of active aliases, run `alias`.
-#
-# Example aliases
-# alias zshconfig="mate ~/.zshrc"
-# alias ohmyzsh="mate ~/.oh-my-zsh"
-
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
 export EDITOR='nvim'
 
 #export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
-#[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"
-source /usr/share/rvm/scripts/rvm
-source ~/.alias
+[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"
+# Placed elsewhere on different systems
+[[ -s "/usr/share/rvm/scripts/rvm" ]] && source "/usr/share/rvm/scripts/rvm"
+
 #source /etc/zsh_command_not_found
 
 # Init fasd script
@@ -162,5 +154,12 @@ LS_COLORS='ow=01;36;40'
  bindkey -M viins 'jj' vi-cmd-mode
 
 # Set cursor to underline in insert mode
-MODE_CURSOR_VIINS="#00ff00 steady underline"
+ MODE_CURSOR_VIINS="#eceff1 blinking underline"
 
+# NVM
+ export NVM_DIR="$HOME/.nvm"
+ [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+ [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+# Include externally defined alias'
+source ~/.alias
