@@ -144,6 +144,12 @@ LS_COLORS='ow=01;36;40'
 # #Set jj to send 'escape' key during insert mode 
  bindkey -M viins 'jj' vi-cmd-mode
 
+# Remove alt-h,j,k,l keybinds so tmux can use them
+ bindkey -s "^[h" ""
+ bindkey -s "^[j" ""
+ bindkey -s "^[k" ""
+ bindkey -s "^[l" ""
+
 # Set cursor to underline in insert mode
  MODE_CURSOR_VIINS="#eceff1 blinking underline"
 
