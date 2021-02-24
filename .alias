@@ -30,3 +30,8 @@ function v() {
 
 # v: open recent file in $EDITOR
 alias v='v'
+
+# Include local alias'
+if [ -f $HOME/.alias.local ]; then
+    source $HOME/.alias.local
+fi
