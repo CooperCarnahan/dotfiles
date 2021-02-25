@@ -160,3 +160,6 @@ LS_COLORS='ow=01;36;40'
 
 # Include externally defined alias'
 source ~/.alias
+
+# Include zsh package install suggestions
+source /etc/zsh_command_not_found
