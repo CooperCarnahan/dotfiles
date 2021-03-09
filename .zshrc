@@ -162,4 +162,6 @@ LS_COLORS='ow=01;36;40'
 source ~/.alias
 
 # Include zsh package install suggestions
-source /etc/zsh_command_not_found
+if [ -z /etc/zsh_command_not_found ]; then 
+    source /etc/zsh_command_not_found
+fi
