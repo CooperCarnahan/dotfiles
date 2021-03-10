@@ -161,7 +161,10 @@ LS_COLORS='ow=01;36;40'
 # Include externally defined alias'
 source ~/.alias
 
-# Include zsh package install suggestions
-source /etc/zsh_command_not_found
-
+# fix zsh autosuggestion highlight color issue
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=241'
+
+# Include zsh package install suggestions
+if [ -z /etc/zsh_command_not_found ]; then 
+    source /etc/zsh_command_not_found
+fi
