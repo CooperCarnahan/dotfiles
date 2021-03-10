@@ -163,3 +163,5 @@ source ~/.alias
 
 # Include zsh package install suggestions
 source /etc/zsh_command_not_found
+
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=241'
