@@ -84,7 +84,7 @@ bindkey '^R' history-incremental-search-backward
 # bindkey -v 
 # bindkey "^[[1;5C" forward-word
 # bindkey "^[[1;5D" backward-word
-# bindkey "^E" autosuggest-accept
+bindkey "^E" autosuggest-accept
 
 # # Better searching in command mode
  bindkey -M vicmd '?' history-substring-search-up
@@ -114,16 +114,6 @@ bindkey '^R' history-incremental-search-backward
  export NVM_DIR="$HOME/.nvm"
 # [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 # [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-
-###################################
-#          ALIAS                  #
-###################################
-source ~/.alias
-
-# Include zsh package install suggestions
-if [ -z /etc/zsh_command_not_found ]; then 
-    source /etc/zsh_command_not_found
-fi
 
 ###################################
 #           ZINIT                 #
@@ -172,6 +162,8 @@ bindkey '^[OB' history-search-forward
 zinit ice from"gh-r" as"program"
 zinit light junegunn/fzf-bin
 zinit light Aloxaf/fzf-tab
+# set list-colors to enable filename colorizing
+zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
 
 # Syntax highlighting
 zinit wait lucid for \
@@ -186,5 +178,15 @@ zinit wait lucid for \
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+###################################
+#          ALIAS                  #
+###################################
+source ~/.alias
+
+# Include zsh package install suggestions
+if [ -z /etc/zsh_command_not_found ]; then 
+    source /etc/zsh_command_not_found
+fi
 
 zinit ice depth=1; zinit light romkatv/powerlevel10k
