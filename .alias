@@ -16,7 +16,11 @@ alias 9='cd -9'
 alias lc='colorls'
 alias src='source ~/.zshrc'
 alias c='f -ie code'
-alias ls='ls --color=auto'
+if [ $(uname -s) = "Darwin" ]; then
+    alias ls='ls  -G'
+else
+    alias ls='ls --color=auto'
+fi
 alias grep='grep --color=auto'
 
 # Fix tmux color issue in VIM
@@ -46,7 +50,9 @@ function v() {
 # v: open recent file in $EDITOR
 alias v='v'
 
-# Include local alias'
+###########################
+#      Local Alias'       #
+###########################
 if [ -f $HOME/.alias.local ]; then
     source $HOME/.alias.local
 fi
