@@ -1,0 +1,7 @@
+[user]
+	email = coopcarn@gmail.com
+	name = CooperCarnahan
+[interactive]
+	diffFilter = diff-so-fancy --patch
+[core]
+	pager = diff-so-fancy | less --tabs=4 -RFX
