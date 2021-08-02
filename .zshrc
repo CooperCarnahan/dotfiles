@@ -25,13 +25,16 @@
  ENABLE_CORRECTION="true"
 
 # Save command history
-export HISTFILEZISE=1000000000
-export HISTSIZE=1000000000
+export HISTSIZE=1000000
+export SAVEHIST=1000000
 export HISTFILE=~/.zsh_history
 
 setopt HIST_FIND_NO_DUPS
-setopt INC_APPEND_HISTORY
+# Shares history between terminals instantlye
+setopt SHARE_HISTORY
 
+# Disable beeping sound on in terminal
+unsetopt BEEP
 # Uncomment the following line to display red dots whilst waiting for completion.
 # COMPLETION_WAITING_DOTS="true"
 
