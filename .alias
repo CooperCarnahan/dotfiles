@@ -13,42 +13,38 @@ alias 6='cd -6'
 alias 7='cd -7'
 alias 8='cd -8'
 alias 9='cd -9'
-alias lc='colorls'
+
 alias src='source ~/.zshrc'
-alias c='f -ie code'
-if [ $(uname -s) = "Darwin" ]; then
-    alias ls='ls  -G'
-else
-    alias ls='ls --color=auto'
-fi
+alias lc='colorls'
+alias n='nvim'
+
+# Git alias'
+alias lg='lazygit'
+
 alias grep='grep --color=auto'
 
 # Fix tmux color issue in VIM
 alias tmux="TERM=screen-256color-bce tmux"
 
-# Change to directory of selected file #
-cf() {
-  file=$(f -i ${1})
-  cd ${${file}%/*}
-}
-
-# cd into recent directories
-zd() {
-    local dir
-    dir="$(fasd -Rdl "$1" | fzf -1 -0 --no-sort +m)" && cd "${dir}" || return 1
-}
-
 # j: jump to directories
 alias j='zd'
 
-# View recent f files
-function v() {
-    local file
-    file="$(fasd -Rfl "$1" | fzf -1 -0 --no-sort +m)" && $EDITOR "${file}" || return 1
-}
-
 # v: open recent file in $EDITOR
 alias v='v'
+
+alias c='f -ie code'
+
+###########################
+#    Platform-Specific    #
+###########################
+
+# MacOS
+if [ $(uname -s) = "Darwin" ]; then
+    alias ls='ls  -G'
+# Linux
+else
+    alias ls='ls --color=auto'
+fi
 
 ###########################
 #      Local Alias'       #

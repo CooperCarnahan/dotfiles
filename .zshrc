@@ -182,14 +182,26 @@ zinit wait lucid for \
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-###################################
-#          ALIAS                  #
-###################################
-source ~/.alias
-
 # Include zsh package install suggestions
 if [ -z /etc/zsh_command_not_found ]; then 
     source /etc/zsh_command_not_found
 fi
 
 zinit ice depth=1; zinit light romkatv/powerlevel10k
+
+###################################
+#          ALIAS                  #
+###################################
+source ~/.alias
+
+
+###################################
+#          fUNCTIONS              #
+###################################
+source ~/.functions
+
+###################################
+#          PATH                   #
+###################################
+
+export PATH=$PATH:~/go/bin
