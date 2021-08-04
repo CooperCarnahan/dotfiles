@@ -15,7 +15,14 @@ alias 8='cd -8'
 alias 9='cd -9'
 alias lc='colorls'
 alias src='source ~/.zshrc'
+alias lg='lazygit'
 alias c='f -ie code'
+
+# Git alias'
+alias gsur='git submodule update --init --recursive -j 12'
+alias gbsc='git branch --show-current'
+alias grh='git reset --hard'
+
 if [ $(uname -s) = "Darwin" ]; then
     alias ls='ls  -G'
 else
