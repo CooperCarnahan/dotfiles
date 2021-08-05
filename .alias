@@ -56,20 +56,8 @@ alias grh='git reset --hard'
 alias gcf='git commit --fixup'
 
 ###########################
-#    Platform-specific    #
-###########################
-if [ $(uname -s) = "Darwin" ]; then
-    alias ls='ls  -G'
-else
-    alias ls='ls --color=auto'
-fi
-
-alias c='f -ie code'
-
-###########################
 #    Platform-Specific    #
 ###########################
-
 # MacOS
 if [ $(uname -s) = "Darwin" ]; then
     alias ls='ls  -G'
