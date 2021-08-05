@@ -187,6 +187,11 @@ zinit wait lucid for \
 ###################################
 source ~/.alias
 
+###################################
+#          FUNCTIONS              #
+###################################
+source ~/.functions
+
 # Include zsh package install suggestions
 if [ -z /etc/zsh_command_not_found ]; then 
     source /etc/zsh_command_not_found

@@ -1,0 +1,31 @@
+#!/bin/sh
+
+###########################
+#   DIRECTORY NAVIGATION  #
+###########################
+
+# Change to directory of selected file #
+cf() {
+  file=$(f -i ${1})
+  cd ${${file}%/*}
+}
+
+# cd into recent directories
+zd() {
+    local dir
+    dir="$(fasd -Rdl "$1" | fzf -1 -0 --no-sort +m)" && cd "${dir}" || return 1
+}
+
+# View recent f files
+function v() {
+    local file
+    file="$(fasd -Rfl "$1" | fzf -1 -0 --no-sort +m)" && $EDITOR "${file}" || return 1
+}
+
+###########################
+#     LOCAL FUNCTIONS     #
+###########################
+
+if [ -f $HOME/.functions.local ]; then
+    source $HOME/.functions.local
+fi
