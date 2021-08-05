@@ -1,4 +1,17 @@
 #!/bin/sh
+
+###########################
+#        Misc.            #
+###########################
+alias lc='colorls'
+alias ll='ls -l'
+alias grep='grep --color=auto'
+# Fix tmux color issue in VIM
+alias tmux="TERM=screen-256color-bce tmux"
+
+###########################
+# Directory navigation    #
+###########################
 alias ..="cd .."
 alias ...="cd ../.."
 alias ....="cd ../../.."
@@ -13,24 +26,43 @@ alias 6='cd -6'
 alias 7='cd -7'
 alias 8='cd -8'
 alias 9='cd -9'
-
-alias src='source ~/.zshrc'
-alias lc='colorls'
-alias n='nvim'
-
-# Git alias'
-alias lg='lazygit'
-
-alias grep='grep --color=auto'
-
-# Fix tmux color issue in VIM
-alias tmux="TERM=screen-256color-bce tmux"
-
 # j: jump to directories
 alias j='zd'
+# Open specified frecent file in code
+alias c='f -ie code'
 
-# v: open recent file in $EDITOR
-alias v='v'
+###########################
+# Dotfile-related Alias'  #
+###########################
+alias src='source ~/.zshrc'
+alias ea='nvim ~/.alias'
+
+###########################
+#       YADM Alias'       #
+###########################
+alias y='yadm'
+alias ys='yadm status'
+alias ya='yadm add'
+alias yc='yadm commit'
+alias yp='yadm push'
+
+###########################
+#      Git Alias'         #
+###########################
+alias lg='lazygit'
+alias gsur='git submodule update --init --recursive -j 12'
+alias gbsc='git branch --show-current'
+alias grh='git reset --hard'
+alias gcf='git commit --fixup'
+
+###########################
+#    Platform-specific    #
+###########################
+if [ $(uname -s) = "Darwin" ]; then
+    alias ls='ls  -G'
+else
+    alias ls='ls --color=auto'
+fi
 
 alias c='f -ie code'
 

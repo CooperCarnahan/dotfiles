@@ -1,5 +1,9 @@
 #!/bin/sh
 
+###########################
+#   DIRECTORY NAVIGATION  #
+###########################
+
 # Change to directory of selected file #
 cf() {
   file=$(f -i ${1})
@@ -17,3 +21,11 @@ function v() {
     local file
     file="$(fasd -Rfl "$1" | fzf -1 -0 --no-sort +m)" && $EDITOR "${file}" || return 1
 }
+
+###########################
+#     LOCAL FUNCTIONS     #
+###########################
+
+if [ -f $HOME/.functions.local ]; then
+    source $HOME/.functions.local
+fi

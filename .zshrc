@@ -52,8 +52,8 @@ unsetopt BEEP
 # HIST_STAMPS="mm/dd/yyyy"
 
 # ssh_identities_local file specifies which ssh keys to load. Else loads id_rsa only by default.
-if [ -f $HOME/.ssh_identities.local ]; then
-    ssh_identities=$(cat .ssh_identities.local)
+if [ -f ~/.ssh_identities.local ]; then
+    ssh_identities=$(cat ~/.ssh_identities.local)
     zstyle :omz:plugins:ssh-agent identities $ssh_identities 
 fi
 
@@ -194,9 +194,8 @@ zinit ice depth=1; zinit light romkatv/powerlevel10k
 ###################################
 source ~/.alias
 
-
 ###################################
-#          fUNCTIONS              #
+#          FUNCTIONS              #
 ###################################
 source ~/.functions
 
