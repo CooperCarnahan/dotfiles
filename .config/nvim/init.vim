@@ -1,4 +1,4 @@
 
 runtime! keybinds.vim
-runtime! plug.vim
+runtime! plugins.vim
 runtime! general.vim
