@@ -14,11 +14,15 @@ Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
 Plug 'xuyuanp/nerdtree-git-plugin', { 'on': 'NERDTreeToggle' }
 Plug 'tiagofumo/vim-nerdtree-syntax-highlight', { 'on': 'NERDTreeToggle' }
 
+" Movement-Related
 Plug 'zhou13/vim-easyescape'
 Plug 'tpope/vim-surround'
+Plug 'justinmk/vim-sneak'
+Plug 'tpope/vim-repeat'
 
-" Git-related
+" Git-Related
 Plug 'airblade/vim-gitgutter'
+Plug 'antoinemadec/FixCursorHold.nvim' " Used to fix an issue with updatetime in gitgutter
 Plug 'tpope/vim-fugitive'
 
 " Code Completion
@@ -29,12 +33,16 @@ Plug 'ycm-core/YouCompleteMe'
 Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
 
-" Code formatting
+" Code Formatting
 Plug 'rhysd/vim-clang-format'
 
 Plug 'folke/twilight.nvim'            " Dims inactive portions of code automatically
 Plug 'vim-airline/vim-airline'        " Adds status bar at bottom of panel
 Plug 'vim-airline/vim-airline-themes'
+" Telescope-related
+Plug 'nvim-lua/popup.nvim'
+Plug 'nvim-lua/plenary.nvim'
+Plug 'nvim-telescope/telescope.nvim'
 
 " Misc.
 Plug 'gennaro-tedesco/nvim-peekup'       " Produces a list of all registers and their contents
@@ -44,15 +52,14 @@ Plug 'tpope/vim-commentary'              " Used for commenting and uncommenting 
 Plug 'luochen1990/rainbow'               " Adds color to brackets {}
 Plug 'yegappan/mru'
 Plug 'mileszs/ack.vim'
+Plug 'wincent/terminus'
 
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}  " We recommend updating the parsers on update
 Plug 'neovim/nvim-lspconfig'
 Plug 'hrsh7th/nvim-compe'
-
-" Telescope-related
-Plug 'nvim-lua/popup.nvim'
-Plug 'nvim-lua/plenary.nvim'
-Plug 'nvim-telescope/telescope.nvim'
+Plug 'svermeulen/vim-easyclip'
+Plug 'MattesGroeger/vim-bookmarks'
+Plug 'haya14busa/incsearch.vim'
 
 " Always leave devicons for last
 Plug 'ryanoasis/vim-devicons'
@@ -69,6 +76,11 @@ let g:SuperTabDefaultCompletionType = '<C-n>'
 """""""""""""""""""""""""""""
 " GitGutter Settings
 """""""""""""""""""""""""""""
+
+"""""""""""""""""""""""""""""
+" Vim-sneak Settings
+"""""""""""""""""""""""""""""
+highlight Sneak guifg=white guibg=orange ctermfg=black ctermbg=red
 
 """""""""""""""""""""""""""""
 "       Clang-Format        "
@@ -136,4 +148,14 @@ require('telescope').setup {
     }
 }
 EOF
+
+""""""""""""""""""""""""""""
+"       EasyClip           "
+""""""""""""""""""""""""""""
+let g:EasyClipUseSubstituteDefaults=1
+
+""""""""""""""""""""""""""""
+"       IncSearch          "
+""""""""""""""""""""""""""""
+let g:incsearch#auto_nohlsearch = 1
 

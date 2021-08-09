@@ -5,7 +5,13 @@ set history=1000                "Store lots of :cmdline history
 set showcmd                     "Show incomplete cmds down the bottom
 set visualbell                  "No sounds
 set autoread                    "Reload files changed outside vim
-set updatetime=500              "Various plugins will update quicker (gitgutter, etc.)
+set updatetime=100               "Various plugins will update quicker (gitgutter, etc.). 
+
+" Uncomment the following to have Vim jump to the last position when
+" reopening a file
+if has("autocmd")
+  au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+endif
 
 " ================ Color Configs ====================
 colorscheme material
@@ -17,7 +23,13 @@ hi  CursorLineNr ctermfg=white  "Set current line number color (in terminal prog
 hi  LineNr guifg=grey           "Set other line number color (in gui programs)
 hi  LineNr ctermfg=grey         "Set other line number color (in terminal programs)
 hi  SignColumn guibg=NONE       "Set sign column to nothing for opacity reasons
-hi  SignColumn ctermbg=NONE       "Set sign column to nothing for opacity reasons
+hi  SignColumn ctermbg=NONE     "Set sign column to nothing for opacity reasons
+
+" ================ Plugin Color Configs ====================
+hi  Sneak ctermbg=172           "Set sign column to nothing for opacity reasons
+hi  Sneak guibg=orange          "Set sign column to nothing for opacity reasons
+hi  Sneak ctermfg=white         "Set sign column to nothing for opacity reasons
+hi  Sneak guifg=white           "Set sign column to nothing for opacity reasons
 
 " ================ Autoreload init.vim ==================
 " Automatically reload vimrc
@@ -64,3 +76,4 @@ set incsearch       " Find the next match as we type the search
 set hlsearch        " Highlight searches by default
 set ignorecase      " Ignore case when searching...
 set smartcase       " ...unless we type a capital
+
