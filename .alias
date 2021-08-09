@@ -41,10 +41,11 @@ alias ea='nvim ~/.alias'
 #       YADM Alias'       #
 ###########################
 alias y='yadm'
-alias ys='yadm status'
+alias yst='yadm status'
 alias ya='yadm add'
 alias yc='yadm commit'
 alias yp='yadm push'
+alias yl='yadm pull'
 alias yco='yadm checkout'
 
 ###########################
