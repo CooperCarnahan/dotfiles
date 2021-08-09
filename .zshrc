@@ -55,11 +55,10 @@ unsetopt BEEP
 # see 'man strftime' for details.
 # HIST_STAMPS="mm/dd/yyyy"
 
-# ssh_identities_local file specifies which ssh keys to load. Else loads id_rsa only by default.
-if [ -f ~/.ssh_identities.local ]; then
-    ssh_identities=$(cat ~/.ssh_identities.local)
-    zstyle :omz:plugins:ssh-agent identities $ssh_identities 
-fi
+# Starts ssh-keychain which clobbers all agents into single entity
+# Clear all existing keys so hackers will have to reenter password
+keychain --clear --quiet
+source $HOME/.keychain/$(uname -n)-sh
 
 # Preferred editor for local and remote sessions
 if [[ -n $SSH_CONNECTION ]]; then
@@ -152,8 +151,6 @@ zinit light-mode for \
 
 zinit snippet OMZP::git
 zinit snippet OMZP::colorize
-#TODO Fix ssh-agent not adding identities automatically
-zinit snippet OMZP::ssh-agent
 
 # Autosuggestion stuff
 zinit for \
