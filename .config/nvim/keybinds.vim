@@ -21,12 +21,23 @@ nnoremap <leader>er :split $MYVIMRC<CR>
 noremap H ^
 noremap L $
 
+" Jump list
+noremap J <C-o>
+noremap K <C-i>
+
 " Searching
 " n always searches forwards"
 noremap <expr> <SID>(search-forward) 'Nn'[v:searchforward]  
 "N always searches backwards
 noremap <expr> <SID>(search-backward) 'nN'[v:searchforward] 
 
+" Tags
+nmap gd <C-]>
+
+" Jump to previous jump location and center
+nmap '' ''zz
+nmap <C-O> <C-o>zz
+nmap <C-i> <C-i>zz
 " Search moves to middle of screen and unfolds
 " nmap n <SID>(search-forward)zzzv     
 " xmap n <SID>(search-forward)zzzv
@@ -37,6 +48,9 @@ noremap <expr> <SID>(search-backward) 'nN'[v:searchforward]
 """"""""""""""""""""""""""""
 " Navigate splits using <Ctrl + j,k,l,h>
 """"""""""""""""""""""""""""
+nnoremap <leader>s :split<cr>
+nnoremap <leader>v :vsplit<cr>
+nnoremap <C-k> <C-W><C-K>
 nnoremap <C-j> <C-W><C-J>
 nnoremap <C-k> <C-W><C-K>
 nnoremap <C-l> <C-W><C-L>
@@ -58,16 +72,23 @@ nmap F <Plug>Sneak_S
 """"""""""""""""""""""""""""
 " Telescope Keybinds
 """"""""""""""""""""""""""""
+"Like Ctrl+p command in VSCode
 nnoremap <C-p> <cmd>lua require('telescope.builtin').find_files()<cr>
 nnoremap <leader>ff <cmd>lua require('telescope.builtin').find_files()<cr>
-
+"Like Ctrl+Shift+F command in VSCode
 nnoremap <C-f> <cmd>lua require('telescope.builtin').live_grep()<cr>
 nnoremap <leader>fg <cmd>lua require('telescope.builtin').live_grep()<cr>
-
+" Shows only files that have been opened thus far
 nnoremap <C-b> <cmd>lua require('telescope.builtin').buffers()<cr>
 nnoremap <leader>fb <cmd>lua require('telescope.builtin').buffers()<cr>
-
+" Shows files in order of how recently they were opened
 nnoremap <leader>fr <cmd>lua require('telescope.builtin').oldfiles()<cr>
+" Shows all marks
+nnoremap m/ <cmd>lua require('telescope.builtin').marks()<cr>
+nnoremap <leader>fm <cmd>lua require('telescope.builtin').marks()<cr>
+" Shows all tags
+nnoremap <C-t> <cmd>lua require('telescope.builtin').tags()<cr>
+nnoremap <leader>ft <cmd>lua require('telescope.builtin').tags()<cr>
 
 """"""""""""""""""""""""""""
 " Vim-Commentary Keybinds
@@ -78,11 +99,39 @@ nnoremap <C-_> :Commentary<cr>
 vnoremap <C-_> :Commentary<cr>gv
 
 """"""""""""""""""""""""""""
-" Vim-Bookmark Keybinds
+" Vim-Signature Keybinds
 """"""""""""""""""""""""""""
-" noremap  <leader><leader> :BookmarkToggle<cr>
-" noremap  gn :BookmarkNext<cr>
-" noremap  gp :BookmarkPrev<cr>
+let g:SignatureMap = {
+  \ 'Leader'             :  "m",
+  \ 'PlaceNextMark'      :  "m,",
+  \ 'ToggleMarkAtLine'   :  "m.",
+  \ 'PurgeMarksAtLine'   :  "m-",
+  \ 'DeleteMark'         :  "dm",
+  \ 'PurgeMarks'         :  "m<Space>",
+  \ 'PurgeMarkers'       :  "m<BS>",
+  \ 'GotoNextLineAlpha'  :  "']",
+  \ 'GotoPrevLineAlpha'  :  "'[",
+  \ 'GotoNextSpotAlpha'  :  "`]",
+  \ 'GotoPrevSpotAlpha'  :  "`[",
+  \ 'GotoNextLineByPos'  :  "]'",
+  \ 'GotoPrevLineByPos'  :  "['",
+  \ 'GotoNextSpotByPos'  :  "]`",
+  \ 'GotoPrevSpotByPos'  :  "gpm",
+  \ 'GotoNextMarker'     :  "gnm",
+  \ 'GotoPrevMarker'     :  "gpm",
+  \ 'GotoNextMarkerAny'  :  "]=",
+  \ 'GotoPrevMarkerAny'  :  "[=",
+  \ 'ListBufferMarkers'  :  "m?"
+  \ }
+
+""""""""""""""""""""""""""""
+" EasyClip Keybinds
+""""""""""""""""""""""""""""
+nmap x <Plug>MoveMotionPlug
+xmap x <Plug>MoveMotionXPlug
+nmap xx <Plug>MoveMotionLinePlug
+nmap <c-f> <plug>EasyClipSwapPasteForward
+nmap <c-d> <plug>EasyClipSwapPasteBackwards
 
 """"""""""""""""""""""""""""
 " Incsearch Keybinds

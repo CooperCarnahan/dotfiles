@@ -71,6 +71,14 @@ set list listchars=tab:\ \ ,trail:·
 set nowrap       "Don't wrap lines
 set linebreak    "Wrap lines at convenient points
 
+" ================ Marks ============================
+augroup VIMRC
+  autocmd BufLeave main.c normal! mM
+  autocmd BufLeave main.cpp normal! mM
+  autocmd BufLeave board.h normal! mB
+  autocmd BufLeave pin_mux.c normal! mP
+augroup END
+
 " ================ Search ===========================
 set incsearch       " Find the next match as we type the search
 set hlsearch        " Highlight searches by default

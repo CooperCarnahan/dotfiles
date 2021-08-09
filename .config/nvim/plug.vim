@@ -9,6 +9,17 @@ Plug 'kaicataldo/material.vim', { 'branch': 'main' }
 Plug 'shaunsingh/nord.nvim'
 Plug 'marko-cerovac/material.nvim'
 
+Plug 'folke/twilight.nvim'            " Dims inactive portions of code automatically
+Plug 'vim-airline/vim-airline'        " Adds status bar at bottom of panel
+Plug 'vim-airline/vim-airline-themes'
+
+" Start screen
+Plug 'mhinz/vim-startify'
+
+"Sessions
+Plug 'xolox/vim-misc'
+Plug 'xolox/vim-session'
+
 " NERD tree will be loaded on the first invocation of NERDTreeToggle command
 Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
 Plug 'xuyuanp/nerdtree-git-plugin', { 'on': 'NERDTreeToggle' }
@@ -19,11 +30,16 @@ Plug 'zhou13/vim-easyescape'
 Plug 'tpope/vim-surround'
 Plug 'justinmk/vim-sneak'
 Plug 'tpope/vim-repeat'
+Plug 'kshenoy/vim-signature' "Enhanced marking + gutter symbols for each mark
 
 " Git-Related
 Plug 'airblade/vim-gitgutter'
 Plug 'antoinemadec/FixCursorHold.nvim' " Used to fix an issue with updatetime in gitgutter
 Plug 'tpope/vim-fugitive'
+
+"Tags
+Plug 'preservim/tagbar'
+Plug 'ludovicchabant/vim-gutentags'
 
 " Code Completion
 Plug 'ervandew/supertab'
@@ -36,9 +52,6 @@ Plug 'honza/vim-snippets'
 " Code Formatting
 Plug 'rhysd/vim-clang-format'
 
-Plug 'folke/twilight.nvim'            " Dims inactive portions of code automatically
-Plug 'vim-airline/vim-airline'        " Adds status bar at bottom of panel
-Plug 'vim-airline/vim-airline-themes'
 " Telescope-related
 Plug 'nvim-lua/popup.nvim'
 Plug 'nvim-lua/plenary.nvim'
@@ -58,7 +71,6 @@ Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}  " We recommend upda
 Plug 'neovim/nvim-lspconfig'
 Plug 'hrsh7th/nvim-compe'
 Plug 'svermeulen/vim-easyclip'
-Plug 'MattesGroeger/vim-bookmarks'
 Plug 'haya14busa/incsearch.vim'
 
 " Always leave devicons for last
@@ -68,6 +80,31 @@ call plug#end()
 "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 "             SETTINGS
 "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+""""""""""""""""""""""""""""
+"  Airline 
+""""""""""""""""""""""""""""
+let g:airline_theme='deus'
+let g:airline#extensions#tabline#enabled = 1
+
+""""""""""""""""""""""""""""
+"  Startify 
+""""""""""""""""""""""""""""
+let g:startify_session_dir = '~/.vim/sessions'
+let g:startify_lists = [
+      \ { 'type': 'sessions',  'header': ['   Sessions']       },
+      \ { 'type': 'files',     'header': ['   MRU']            },
+      \ { 'type': 'dir',       'header': ['   MRU '. getcwd()] },
+      \ { 'type': 'bookmarks', 'header': ['   Bookmarks']      },
+      \ { 'type': 'commands',  'header': ['   Commands']       },
+      \ ]
+
+""""""""""""""""""""""""""""
+"  Sessions 
+""""""""""""""""""""""""""""
+let g:session_autoload=0
+let g:session_autosave="yes"
+let g:session_autosave_silent=1
+
 """"""""""""""""""""""""""""
 "  SuperTab 
 """"""""""""""""""""""""""""
@@ -153,9 +190,16 @@ EOF
 "       EasyClip           "
 """"""""""""""""""""""""""""
 let g:EasyClipUseSubstituteDefaults=1
+let g:EasyClipUseCutDefaults=0
 
 """"""""""""""""""""""""""""
 "       IncSearch          "
 """"""""""""""""""""""""""""
-let g:incsearch#auto_nohlsearch = 1
+let g:incsearch#auto_nohlsearch=1
 
+""""""""""""""""""""""""""""
+"       Gutentags          "
+""""""""""""""""""""""""""""
+let g:gutentags_ctags_exclude=['Release', 'Debug', 'build', '*.d', '*.o']
+" Add gutentags TAGS message when generating things in the background
+set statusline+=%{gutentags#statusline()}
