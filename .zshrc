@@ -24,6 +24,9 @@
 # Uncomment the following line to enable command auto-correction.
  ENABLE_CORRECTION="true"
 
+# Automatically do a pushd of each directory you change to
+setopt AUTO_PUSHD
+
 # Save command history
 export HISTSIZE=1000000
 export SAVEHIST=1000000
@@ -35,6 +38,7 @@ setopt SHARE_HISTORY
 
 # Disable beeping sound on in terminal
 unsetopt BEEP
+
 # Uncomment the following line to display red dots whilst waiting for completion.
 # COMPLETION_WAITING_DOTS="true"
 
@@ -64,6 +68,8 @@ if [[ -n $SSH_CONNECTION ]]; then
   export EDITOR='nvim'
 fi
 
+# Colored man pages
+export PAGER='most'
 
 #export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
 #[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"
@@ -172,8 +178,6 @@ zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
 zinit wait lucid for \
     atinit"zicompinit; zicdreplay"   \
     zdharma/fast-syntax-highlighting \
-    OMZP::colored-man-pages          
-
 
 ###################################
 #           THEME                 #
