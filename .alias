@@ -48,6 +48,7 @@ alias yc='yadm commit'
 alias yp='yadm push'
 alias yl='yadm pull'
 alias yco='yadm checkout'
+alias yd='yadm diff'
 
 ###########################
 #      Git Alias'         #
