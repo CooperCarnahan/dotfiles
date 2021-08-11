@@ -51,6 +51,7 @@ Plug 'honza/vim-snippets'
 
 " Code Formatting
 Plug 'rhysd/vim-clang-format'
+Plug 'sbdchd/neoformat'
 
 " Telescope-related
 Plug 'nvim-lua/popup.nvim'
