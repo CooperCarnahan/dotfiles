@@ -143,4 +143,4 @@ map N  <Plug>(incsearch-nohl-N)zz
 """"""""""""""""""""""""""""
 " FZF Keybinds
 """"""""""""""""""""""""""""
-nmap <C-f> :Rg<cr>
+nmap <C-f> :Rg 
