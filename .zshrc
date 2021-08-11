@@ -116,6 +116,12 @@ bindkey "^E" autosuggest-accept
 # Set cursor to underline in insert mode
  MODE_CURSOR_VIINS="#eceff1 blinking underline"
 
+# Use ripgrep for fzf searches
+if type rg &> /dev/null; then
+  export FZF_DEFAULT_COMMAND='rg --files'
+  export FZF_DEFAULT_OPTS='-m --height 50% --border'
+fi
+
 ###################################
 #           NVM                   #
 ###################################
@@ -149,11 +155,13 @@ zinit light-mode for \
 
 ### End of Zinit's installer chunk
 
+zinit ice wait lucid
 zinit snippet OMZP::git
+zinit ice wait lucid
 zinit snippet OMZP::colorize
 
 # Autosuggestion stuff
-zinit for \
+zinit wait lucid for \
     light-mode  zsh-users/zsh-history-substring-search \
     light-mode  zsh-users/zsh-autosuggestions \
     light-mode  zsh-users/zsh-completions
@@ -167,6 +175,7 @@ bindkey '^[OB' history-search-forward
 # fzf stuff
 zinit ice from"gh-r" as"program"
 zinit light junegunn/fzf-bin
+zinit ice wait lucid 0
 zinit light Aloxaf/fzf-tab
 # set list-colors to enable filename colorizing
 zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
