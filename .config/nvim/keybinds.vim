@@ -76,8 +76,8 @@ nmap F <Plug>Sneak_S
 nnoremap <C-p> <cmd>lua require('telescope.builtin').find_files()<cr>
 nnoremap <leader>ff <cmd>lua require('telescope.builtin').find_files()<cr>
 "Like Ctrl+Shift+F command in VSCode
-nnoremap <C-f> <cmd>lua require('telescope.builtin').live_grep()<cr>
-nnoremap <leader>fg <cmd>lua require('telescope.builtin').live_grep()<cr>
+" nnoremap <C-f> <cmd>lua require('telescope.builtin').live_grep()<cr>
+" nnoremap <leader>fg <cmd>lua require('telescope.builtin').live_grep()<cr>
 " Shows only files that have been opened thus far
 nnoremap <C-b> <cmd>lua require('telescope.builtin').buffers()<cr>
 nnoremap <leader>fb <cmd>lua require('telescope.builtin').buffers()<cr>
@@ -130,8 +130,6 @@ let g:SignatureMap = {
 nmap x <Plug>MoveMotionPlug
 xmap x <Plug>MoveMotionXPlug
 nmap xx <Plug>MoveMotionLinePlug
-nmap <c-f> <plug>EasyClipSwapPasteForward
-nmap <c-d> <plug>EasyClipSwapPasteBackwards
 
 """"""""""""""""""""""""""""
 " Incsearch Keybinds
@@ -141,3 +139,8 @@ map ?  <Plug>(incsearch-backward)
 map g/ <Plug>(incsearch-stay)
 map n  <Plug>(incsearch-nohl-n)zz
 map N  <Plug>(incsearch-nohl-N)zz
+
+""""""""""""""""""""""""""""
+" FZF Keybinds
+""""""""""""""""""""""""""""
+nmap <C-f> :Rg<cr>

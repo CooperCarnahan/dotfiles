@@ -6,6 +6,7 @@ set showcmd                     "Show incomplete cmds down the bottom
 set visualbell                  "No sounds
 set autoread                    "Reload files changed outside vim
 set updatetime=100               "Various plugins will update quicker (gitgutter, etc.). 
+set splitright
 
 " Uncomment the following to have Vim jump to the last position when
 " reopening a file

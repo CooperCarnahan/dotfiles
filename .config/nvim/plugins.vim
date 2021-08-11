@@ -9,8 +9,8 @@ Plug 'kaicataldo/material.vim', { 'branch': 'main' }
 Plug 'shaunsingh/nord.nvim'
 Plug 'marko-cerovac/material.nvim'
 
-Plug 'folke/twilight.nvim'            " Dims inactive portions of code automatically
-Plug 'vim-airline/vim-airline'        " Adds status bar at bottom of panel
+Plug 'folke/twilight.nvim'     " Dims inactive portions of code automatically
+Plug 'vim-airline/vim-airline' " Adds status bar at bottom of panel
 Plug 'vim-airline/vim-airline-themes'
 
 " Start screen
@@ -43,7 +43,7 @@ Plug 'ludovicchabant/vim-gutentags'
 
 " Code Completion
 Plug 'ervandew/supertab'
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'neoclide/coc.nvim', {'branch': 'release', 'do': ':CocInstall coc-snippets'}
 
 " Snippets
 Plug 'SirVer/ultisnips'
@@ -72,6 +72,10 @@ Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}  " We recommend upda
 Plug 'neovim/nvim-lspconfig'
 Plug 'hrsh7th/nvim-compe'
 Plug 'svermeulen/vim-easyclip'
+
+" Search-related
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
 Plug 'haya14busa/incsearch.vim'
 
 " Always leave devicons for last
@@ -184,13 +188,38 @@ EOF
 """"""""""""""""""""""""""""
 " Telescope Plugin settings
 lua <<EOF
-require('telescope').setup {
-    extensions = {
-        fzf_writer = {
-            use_highlighter = true
+require("telescope").setup {
+  defaults = {
+    file_ignore_patterns = { 'Release/.*', 'Debug/.*', 'build/.*'},
+  },
+  pickers = {
+    -- Your special builtin config goes in here
+    buffers = {
+      sort_lastused = true,
+      theme = "dropdown",
+      previewer = false,
+      mappings = {
+        i = {
+          ["<c-d>"] = require("telescope.actions").delete_buffer,
+          -- Right hand side can also be the name of the action as a string
+          ["<c-d>"] = "delete_buffer",
+        },
+        n = {
+          ["<c-d>"] = require("telescope.actions").delete_buffer,
         }
+      }
+    },
+    find_files = {
+      theme = "dropdown"
     }
+  },
+  extensions = {
+    fzf_writer = {
+        use_highlighter = true
+    }
+  }
 }
+
 EOF
 
 """"""""""""""""""""""""""""
