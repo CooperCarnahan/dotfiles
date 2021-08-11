@@ -57,6 +57,9 @@ Plug 'nvim-lua/popup.nvim'
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
 
+" TMUX
+Plug 'christoomey/vim-tmux-navigator'
+
 " Misc.
 Plug 'gennaro-tedesco/nvim-peekup'       " Produces a list of all registers and their contents
 Plug 'jeffkreeftmeijer/vim-numbertoggle'

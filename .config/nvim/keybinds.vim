@@ -50,11 +50,6 @@ nmap <C-i> <C-i>zz
 """"""""""""""""""""""""""""
 nnoremap <leader>s :split<cr>
 nnoremap <leader>v :vsplit<cr>
-nnoremap <C-k> <C-W><C-K>
-nnoremap <C-j> <C-W><C-J>
-nnoremap <C-k> <C-W><C-K>
-nnoremap <C-l> <C-W><C-L>
-nnoremap <C-h> <C-W><C-H>
 nnoremap <leader>w :q<CR>
 
 """"""""""""""""""""""""""""
