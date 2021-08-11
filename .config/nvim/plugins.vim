@@ -60,6 +60,11 @@ Plug 'nvim-telescope/telescope.nvim'
 " TMUX
 Plug 'christoomey/vim-tmux-navigator'
 
+" Markdown
+Plug 'godlygeek/tabular'
+Plug 'plasticboy/vim-markdown'
+Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
+
 " Misc.
 Plug 'gennaro-tedesco/nvim-peekup'       " Produces a list of all registers and their contents
 Plug 'jeffkreeftmeijer/vim-numbertoggle'
