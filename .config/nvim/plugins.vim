@@ -43,7 +43,7 @@ Plug 'ludovicchabant/vim-gutentags'
 
 " Code Completion
 Plug 'ervandew/supertab'
-Plug 'ycm-core/YouCompleteMe'
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 " Snippets
 Plug 'SirVer/ultisnips'
@@ -66,6 +66,7 @@ Plug 'luochen1990/rainbow'               " Adds color to brackets {}
 Plug 'yegappan/mru'
 Plug 'mileszs/ack.vim'
 Plug 'wincent/terminus'
+Plug 'folke/zen-mode.nvim'
 
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}  " We recommend updating the parsers on update
 Plug 'neovim/nvim-lspconfig'
@@ -146,6 +147,12 @@ let g:ycm_key_list_previous_completion = ['<C-p>', '<Up>']
 """""""""""""""""""""""""""""
 lua << EOF
 require("twilight").setup {
+  dimming = {
+    alpha = 0.25, -- amount of dimming
+    -- we try to get the foreground from the highlight groups or fallback color
+    color = { "Normal", "NONE"},
+    inactive = false, -- when true, other windows will be fully dimmed (unless they contain the same buffer)
+  },
   -- your configuration comes here
   -- or leave it empty to use the default settings
   -- refer to the configuration section below
@@ -203,3 +210,16 @@ let g:incsearch#auto_nohlsearch=1
 let g:gutentags_ctags_exclude=['Release', 'Debug', 'build', '*.d', '*.o']
 " Add gutentags TAGS message when generating things in the background
 set statusline+=%{gutentags#statusline()}
+
+""""""""""""""""""""""""""""
+"      Zen-Mode 
+""""""""""""""""""""""""""""
+lua << EOF
+  require("zen-mode").setup {
+    -- your configuration comes here
+    -- or leave it empty to use the default settings
+    -- refer to the configuration section below
+  }
+EOF
+hi ZenModeBg NONE
+
