@@ -20,6 +20,13 @@ if has("autocmd")
   au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 endif
 
+" Wrap lines when working with a markdown file
+augroup Markdown
+  autocmd!
+  autocmd FileType markdown set wrap
+  autocmd FileType markdown setlocal spell
+augroup END
+
 " ================ Color Configs ====================
 colorscheme onedark
 set termguicolors               "Enable true colors
