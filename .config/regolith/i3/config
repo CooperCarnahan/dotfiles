@@ -678,13 +678,13 @@ exec --no-startup-id $i3-wm.program.3
 
 #assign [class="Code"] code
 for_window [class="Code"] focus
-workspace "code" output DP-4
+workspace "code" output DP-2
 
 #assign [class="Brave-browser"] browser
 for_window [class="Brave-browser"] focus
-workspace "browser" output DP-4
+workspace "browser" output DP-2
 
-workspace "spotify" output DP-0
+workspace "spotify" output DP-4
 for_window [class="Spotify"] move to workspace spotify
 for_window [class="Spotify"] focus
 
