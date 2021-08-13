@@ -5,5 +5,5 @@
 	diffFilter = diff-so-fancy --patch
 [core]
 	pager = diff-so-fancy | less --tabs=4 -RFX
-	editor = code --wait
-	excludesfile = /Users/cooper/.gitignore_global
+	editor = nvim
+	excludesfile = ~/.gitignore_global
