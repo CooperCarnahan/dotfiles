@@ -13,17 +13,13 @@ Plug 'folke/twilight.nvim'     " Dims inactive portions of code automatically
 Plug 'vim-airline/vim-airline' " Adds status bar at bottom of panel
 Plug 'vim-airline/vim-airline-themes'
 
-" Start screen
+"Sessions
 Plug 'mhinz/vim-startify'
 
-"Sessions
-Plug 'xolox/vim-misc'
-Plug 'xolox/vim-session'
-
 " NERD tree will be loaded on the first invocation of NERDTreeToggle command
-Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
-Plug 'xuyuanp/nerdtree-git-plugin', { 'on': 'NERDTreeToggle' }
-Plug 'tiagofumo/vim-nerdtree-syntax-highlight', { 'on': 'NERDTreeToggle' }
+Plug 'scrooloose/nerdtree' " , { 'on': 'NERDTreeToggle' }
+Plug 'xuyuanp/nerdtree-git-plugin' ", 'on': 'NERDTreeToggle' }
+Plug 'tiagofumo/vim-nerdtree-syntax-highlight' " , { 'on': 'NERDTreeToggle' }
 
 " Movement-Related
 Plug 'zhou13/vim-easyescape'
@@ -108,7 +104,9 @@ let g:airline#extensions#tabline#enabled = 1
 """"""""""""""""""""""""""""
 "  Startify 
 """"""""""""""""""""""""""""
-let g:startify_session_dir = '~/.vim/sessions'
+let g:startify_session_dir = '~/.config/nvim/sessions'
+let g:startify_session_persistence = 1
+let g:startify_change_to_vcs_root = 1
 let g:startify_lists = [
       \ { 'type': 'sessions',  'header': ['   Sessions']       },
       \ { 'type': 'files',     'header': ['   MRU']            },
@@ -116,13 +114,10 @@ let g:startify_lists = [
       \ { 'type': 'bookmarks', 'header': ['   Bookmarks']      },
       \ { 'type': 'commands',  'header': ['   Commands']       },
       \ ]
-
-""""""""""""""""""""""""""""
-"  Sessions 
-""""""""""""""""""""""""""""
-let g:session_autoload=0
-let g:session_autosave="yes"
-let g:session_autosave_silent=1
+let g:startify_bookmarks = [
+      \ {'n': '~/.config/nvim'},
+      \ {'z': '~/.zshrc'},
+      \ ]
 
 """"""""""""""""""""""""""""
 "  SuperTab 
