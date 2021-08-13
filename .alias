@@ -3,7 +3,8 @@
 ###########################
 #        Misc.            #
 ###########################
-alias lc='colorls'
+alias lc='colorls --sd'
+alias lcgs='colorls --sd --gs'
 alias ll='ls -l'
 alias grep='grep --color=auto'
 # Fix tmux color issue in VIM

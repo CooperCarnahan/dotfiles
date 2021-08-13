@@ -158,7 +158,7 @@ zinit light-mode for \
 zinit ice wait lucid
 zinit snippet OMZP::git
 zinit ice wait lucid
-zinit snippet OMZP::colorize
+# zinit snippet OMZP::colorize
 
 # Autosuggestion stuff
 zinit wait lucid for \
@@ -178,7 +178,7 @@ zinit light junegunn/fzf-bin
 zinit ice wait lucid 0
 zinit light Aloxaf/fzf-tab
 # set list-colors to enable filename colorizing
-zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
+# zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
 
 # Syntax highlighting
 zinit wait lucid for \
@@ -208,6 +208,13 @@ source ~/.alias
 #          FUNCTIONS              #
 ###################################
 source ~/.functions
+
+###################################
+#          LOCAL ZSHRC            #
+###################################
+if [[ -f ~/.zshrc.local ]]; then
+  source ~/.zshrc.local
+fi
 
 ###################################
 #          PATH                   #
