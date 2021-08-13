@@ -32,6 +32,8 @@ Plug 'justinmk/vim-sneak'
 Plug 'tpope/vim-repeat'
 Plug 'kshenoy/vim-signature' "Enhanced marking + gutter symbols for each mark
 
+Plug 'tpope/vim-unimpaired'  "Adds various movements using the '[' and ']' keys
+
 " Git-Related
 Plug 'airblade/vim-gitgutter'
 Plug 'antoinemadec/FixCursorHold.nvim' " Used to fix an issue with updatetime in gitgutter
@@ -65,6 +67,9 @@ Plug 'christoomey/vim-tmux-navigator'
 Plug 'godlygeek/tabular'
 Plug 'plasticboy/vim-markdown'
 Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
+
+" C/C++
+Plug 'cdelledonne/vim-cmake'
 
 " Misc.
 Plug 'gennaro-tedesco/nvim-peekup'       " Produces a list of all registers and their contents
