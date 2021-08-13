@@ -261,3 +261,10 @@ lua << EOF
 EOF
 hi ZenModeBg NONE
 
+""""""""""""""""""""""""""""
+"  Neoformat 
+""""""""""""""""""""""""""""
+augroup fmt
+  autocmd!
+  autocmd BufWritePre * undojoin | Neoformat
+augroup END
