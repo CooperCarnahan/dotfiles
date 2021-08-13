@@ -122,6 +122,12 @@ if type rg &> /dev/null; then
   export FZF_DEFAULT_OPTS='-m --height 50% --border'
 fi
 
+if ! command -v bat &> /dev/null; then
+    echo "'bat' not installed. Using default 'cat'"
+else
+    export BAT_THEME=TwoDark
+fi
+
 ###################################
 #           NVM                   #
 ###################################

@@ -1,15 +1,38 @@
 #!/bin/sh
 
 ###########################
+#    Platform-Specific    #
+###########################
+# MacOS
+if [ $(uname -s) = "Darwin" ]; then
+    alias ls='ls  -G'
+# Linux
+else
+    alias ls='ls --color=auto'
+fi
+
+###########################
 #        Misc.            #
 ###########################
-alias lc='colorls --sd'
-alias lcgs='colorls --sd --gs'
-alias ll='ls -l'
 alias grep='grep --color=auto'
 # Fix tmux color issue in VIM
 alias tmux="TERM=screen-256color-bce tmux"
 alias python=python3
+
+if command -v colorls &> /dev/null; then
+    alias lc='colorls --sd'
+    alias ls='colorls --sd'
+    alias ll='colorls --sd -l'
+    alias lss='colorls --sd --gs'
+    alias lcgs='colorls --sd --gs'
+else
+    echo "Colorls not installed. Using default 'ls'"
+    alias ll='ls -l'
+fi
+
+if command -v bat &> /dev/null; then
+    alias cat='bat'
+fi
 
 ###########################
 # Directory navigation    #
@@ -59,17 +82,6 @@ alias gsur='git submodule update --init --recursive -j 12'
 alias gbsc='git branch --show-current'
 alias grh='git reset --hard'
 alias gcf='git commit --fixup'
-
-###########################
-#    Platform-Specific    #
-###########################
-# MacOS
-if [ $(uname -s) = "Darwin" ]; then
-    alias ls='ls  -G'
-# Linux
-else
-    alias ls='ls --color=auto'
-fi
 
 ###########################
 #      Local Alias'       #
