@@ -21,9 +21,12 @@ nnoremap <leader>er :split $MYVIMRC<CR>
 noremap H ^
 noremap L $
 
-" Jump list
-noremap J <C-o>
-noremap K <C-i>
+" Navigate buffers
+noremap J :bprevious<cr>
+noremap K :bnext<cr>
+
+" Yanking
+noremap Y y$
 
 " Searching
 " n always searches forwards"
@@ -50,7 +53,14 @@ nmap <C-i> <C-i>zz
 """"""""""""""""""""""""""""
 nnoremap <leader>s :split<cr>
 nnoremap <leader>v :vsplit<cr>
-nnoremap <leader>w :q<CR>
+"" Delete buffer
+nnoremap <leader>w :bd<CR>
+
+""""""""""""""""""""""""""""
+" Terminal
+""""""""""""""""""""""""""""
+map <Leader>t :terminal<cr>
+tnoremap <Esc> <C-\><C-n>
 
 """"""""""""""""""""""""""""
 " NERDTree Keybinds
