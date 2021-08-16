@@ -167,7 +167,7 @@ zinit ice wait lucid
 # zinit snippet OMZP::colorize
 
 # Autosuggestion stuff
-zinit wait lucid for \
+zinit lucid for \
     light-mode  zsh-users/zsh-history-substring-search \
     light-mode  zsh-users/zsh-autosuggestions \
     light-mode  zsh-users/zsh-completions
