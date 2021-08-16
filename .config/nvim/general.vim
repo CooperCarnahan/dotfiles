@@ -8,6 +8,9 @@ set autoread                    "Reload files changed outside vim
 set updatetime=100              "Various plugins will update quicker (gitgutter, etc.). 
 set splitright
 set hidden                      "Allows switching buffers without saving
+set foldmethod=expr
+set foldexpr=nvim_treesitter#foldexpr()
+set foldlevel=99
 
 " Uncomment the following to have Vim jump to the last position when
 " reopening a file
