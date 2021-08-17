@@ -156,6 +156,18 @@ map n  <Plug>(incsearch-nohl-n)zz
 map N  <Plug>(incsearch-nohl-N)zz
 
 """"""""""""""""""""""""""""
+" Fugitive
+""""""""""""""""""""""""""""
+nmap <leader>gs :Git<cr>
+nmap <leader>gh :diffget //2<cr>
+nmap <leader>gl :diffget //3<cr>
+nmap <leader>gd :Gdiffsplit!<cr>
+nmap <leader>gc :G commit<cr>
+nmap <leader>ga :Gwrite<cr>
+nmap <C-g>      :Commits<cr>
+nmap <leader>glog :Commits<cr>
+
+""""""""""""""""""""""""""""
 " FZF Keybinds
 """"""""""""""""""""""""""""
 nmap <C-f> :Rg 

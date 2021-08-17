@@ -11,6 +11,8 @@ set hidden                      "Allows switching buffers without saving
 set foldmethod=expr
 set foldexpr=nvim_treesitter#foldexpr()
 set foldlevel=99
+set scrolloff=999     "Jumps are centered if possible 
+set diffopt+=vertical "Diffs open in vertical splits instead of horizontal
 
 " Uncomment the following to have Vim jump to the last position when
 " reopening a file
