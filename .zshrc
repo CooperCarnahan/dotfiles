@@ -126,6 +126,9 @@ if ! command -v bat &> /dev/null; then
     echo "'bat' not installed. Using default 'cat'"
 else
     export BAT_THEME=TwoDark
+    if command -v delta &> /dev/null; then
+      export DELTA_PAGER=bat
+    fi
 fi
 
 ###################################

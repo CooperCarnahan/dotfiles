@@ -1,9 +1,27 @@
 [user]
 	email = coopcarn@gmail.com
 	name = CooperCarnahan
+[pager]
+  diff = delta
+  log = delta
+  reflog = delta
+  show = delta
 [interactive]
-	diffFilter = diff-so-fancy --patch
+  diffFilter = delta --color-only --features=interactive
+[delta]
+  features = decorations
+  line-numbers = true
+  side-by-side = true
+[delta "interactive"]
+  keep-plus-minus-markers = false
+[delta "decorations"]
+  commit-decoration-style = blue ol
+  commit-style = raw
+  file-style = omit
+  hunk-header-decoration-style = blue box
+  hunk-header-file-style = red
+  hunk-header-line-number-style = "#067a00"
+  hunk-header-style = file line-number syntax
 [core]
-	pager = diff-so-fancy | less --tabs=4 -RFX
 	editor = nvim
 	excludesfile = ~/.gitignore_global
