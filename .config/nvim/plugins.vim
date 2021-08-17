@@ -131,6 +131,12 @@ let g:SuperTabDefaultCompletionType = '<C-n>'
 """"""""""""""""""""""""""""
 let g:blamer_enabled = 1
 let g:blamer_delay = 300
+let g:blamer_prefix = '    '
+let g:blamer_date_format = '%m/%d/%y %I:%M %p'
+
+""""""""""""""""""""""""""""
+"  Startify 
+""""""""""""""""""""""""""""
 """""""""""""""""""""""""""""
 " GitGutter Settings
 """""""""""""""""""""""""""""
