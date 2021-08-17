@@ -34,6 +34,7 @@ Plug 'tpope/vim-unimpaired'  "Adds various movements using the '[' and ']' keys
 Plug 'airblade/vim-gitgutter'
 Plug 'antoinemadec/FixCursorHold.nvim' " Used to fix an issue with updatetime in gitgutter
 Plug 'tpope/vim-fugitive'
+Plug 'APZelos/blamer.nvim'
 
 "Tags
 Plug 'preservim/tagbar'
@@ -113,6 +114,7 @@ let g:startify_lists = [
       \ { 'type': 'dir',       'header': ['   MRU '. getcwd()] },
       \ { 'type': 'bookmarks', 'header': ['   Bookmarks']      },
       \ { 'type': 'commands',  'header': ['   Commands']       },
+      \ { 'type': 'commands',  'header': ['   Commands']       },
       \ ]
 let g:startify_bookmarks = [
       \ {'n': '~/.config/nvim'},
@@ -124,6 +126,11 @@ let g:startify_bookmarks = [
 """"""""""""""""""""""""""""
 let g:SuperTabDefaultCompletionType = '<C-n>'
 
+""""""""""""""""""""""""""""
+"  GitBlamer 
+""""""""""""""""""""""""""""
+let g:blamer_enabled = 1
+let g:blamer_delay = 300
 """""""""""""""""""""""""""""
 " GitGutter Settings
 """""""""""""""""""""""""""""
@@ -230,7 +237,6 @@ require("telescope").setup {
 }
 
 EOF
-
 """"""""""""""""""""""""""""
 "       EasyClip           "
 """"""""""""""""""""""""""""
