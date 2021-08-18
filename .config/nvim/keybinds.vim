@@ -62,15 +62,41 @@ nnoremap <C-H> <C-W><C-H>
 nnoremap <leader>w :bd<CR>
 
 """"""""""""""""""""""""""""
-" Terminal
+" EasyClip Keybinds
 """"""""""""""""""""""""""""
-map <Leader>t :terminal<cr>
-tnoremap <Esc> <C-\><C-n>
+nmap x <Plug>MoveMotionPlug
+xmap x <Plug>MoveMotionXPlug
+nmap xx <Plug>MoveMotionLinePlug
 
 """"""""""""""""""""""""""""
-" Tagbar
+" Fugitive
 """"""""""""""""""""""""""""
-nnoremap <C-t> :Tagbar<CR>
+nmap <leader>gs :Git<cr>
+nmap <leader>gh :diffget //2<cr>
+nmap <leader>gl :diffget //3<cr>
+nmap <leader>gd :Gdiffsplit!<cr>
+nmap <leader>gc :G commit<cr>
+nmap <leader>ga :Gwrite<cr>
+nmap <C-g>      :Commits<cr>
+nmap <leader>glog :Commits<cr>
+
+""""""""""""""""""""""""""""
+" FZF Keybinds
+""""""""""""""""""""""""""""
+nmap <C-f> :Rg 
+nmap <C-b> :Buffers<cr>
+nmap <C-p> :GFiles<cr>
+nmap <C-c> :Commits<cr>
+" nmap <C-t> :Tags<cr>
+"
+""""""""""""""""""""""""""""
+" Incsearch Keybinds
+""""""""""""""""""""""""""""
+map /  <Plug>(incsearch-forward)
+map ?  <Plug>(incsearch-backward)
+map g/ <Plug>(incsearch-stay)
+map n  <Plug>(incsearch-nohl-n)zz
+map N  <Plug>(incsearch-nohl-N)zz
 
 """"""""""""""""""""""""""""
 " NERDTree Keybinds
@@ -79,10 +105,9 @@ nnoremap <C-e> :NERDTreeToggle<CR>
 nnoremap <leader>ntt :NERDTreeToggle<CR>
 
 """"""""""""""""""""""""""""
-" Vim-Sneak Keybinds
+" Tagbar
 """"""""""""""""""""""""""""
-nmap f <Plug>Sneak_s
-nmap F <Plug>Sneak_S
+nnoremap <C-t> :Tagbar<CR>
 
 """"""""""""""""""""""""""""
 " Telescope Keybinds
@@ -104,6 +129,12 @@ nnoremap <leader>fm <cmd>lua require('telescope.builtin').marks()<cr>
 " Shows all tags
 " nnoremap <C-t> <cmd>lua require('telescope.builtin').tags()<cr>
 " nnoremap <leader>ft <cmd>lua require('telescope.builtin').tags()<cr>
+
+""""""""""""""""""""""""""""
+" Terminal
+""""""""""""""""""""""""""""
+map <Leader>t :terminal<cr>
+tnoremap <Esc> <C-\><C-n>
 
 """"""""""""""""""""""""""""
 " Vim-Commentary Keybinds
@@ -140,37 +171,7 @@ let g:SignatureMap = {
   \ }
 
 """"""""""""""""""""""""""""
-" EasyClip Keybinds
+" Vim-Sneak Keybinds
 """"""""""""""""""""""""""""
-nmap x <Plug>MoveMotionPlug
-xmap x <Plug>MoveMotionXPlug
-nmap xx <Plug>MoveMotionLinePlug
-
-""""""""""""""""""""""""""""
-" Incsearch Keybinds
-""""""""""""""""""""""""""""
-map /  <Plug>(incsearch-forward)
-map ?  <Plug>(incsearch-backward)
-map g/ <Plug>(incsearch-stay)
-map n  <Plug>(incsearch-nohl-n)zz
-map N  <Plug>(incsearch-nohl-N)zz
-
-""""""""""""""""""""""""""""
-" Fugitive
-""""""""""""""""""""""""""""
-nmap <leader>gs :Git<cr>
-nmap <leader>gh :diffget //2<cr>
-nmap <leader>gl :diffget //3<cr>
-nmap <leader>gd :Gdiffsplit!<cr>
-nmap <leader>gc :G commit<cr>
-nmap <leader>ga :Gwrite<cr>
-nmap <C-g>      :Commits<cr>
-nmap <leader>glog :Commits<cr>
-
-""""""""""""""""""""""""""""
-" FZF Keybinds
-""""""""""""""""""""""""""""
-nmap <C-f> :Rg 
-nmap <C-b> :Buffers<cr>
-nmap <C-p> :Files<cr>
-" nmap <C-t> :Tags<cr>
+nmap f <Plug>Sneak_s
+nmap F <Plug>Sneak_S

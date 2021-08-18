@@ -3,32 +3,11 @@
 """"""""""""""""""""""""""""""
 call plug#begin('~/.config/nvim/plugins')
 
-" Themes
-Plug 'sainnhe/edge'
-Plug 'kaicataldo/material.vim', { 'branch': 'main' }
-Plug 'shaunsingh/nord.nvim'
-Plug 'marko-cerovac/material.nvim'
+" C/C++
+Plug 'cdelledonne/vim-cmake'
 
-Plug 'folke/twilight.nvim'     " Dims inactive portions of code automatically
-Plug 'vim-airline/vim-airline' " Adds status bar at bottom of panel
-Plug 'vim-airline/vim-airline-themes'
-
-"Sessions
-Plug 'mhinz/vim-startify'
-
-" NERD tree will be loaded on the first invocation of NERDTreeToggle command
-Plug 'scrooloose/nerdtree' " , { 'on': 'NERDTreeToggle' }
-Plug 'xuyuanp/nerdtree-git-plugin' ", 'on': 'NERDTreeToggle' }
-Plug 'tiagofumo/vim-nerdtree-syntax-highlight' " , { 'on': 'NERDTreeToggle' }
-
-" Movement-Related
-Plug 'zhou13/vim-easyescape'
-Plug 'tpope/vim-surround'
-Plug 'justinmk/vim-sneak'
-Plug 'tpope/vim-repeat'
-Plug 'kshenoy/vim-signature' "Enhanced marking + gutter symbols for each mark
-
-Plug 'tpope/vim-unimpaired'  "Adds various movements using the '[' and ']' keys
+" Code Completion
+Plug 'neoclide/coc.nvim', {'branch': 'release', 'do': ':CocInstall coc-snippets'}
 
 " Git-Related
 Plug 'airblade/vim-gitgutter'
@@ -36,58 +15,72 @@ Plug 'antoinemadec/FixCursorHold.nvim' " Used to fix an issue with updatetime in
 Plug 'tpope/vim-fugitive'
 Plug 'APZelos/blamer.nvim'
 
-"Tags
-Plug 'preservim/tagbar'
-Plug 'ludovicchabant/vim-gutentags'
-
-" Code Completion
-Plug 'ervandew/supertab'
-Plug 'neoclide/coc.nvim', {'branch': 'release', 'do': ':CocInstall coc-snippets'}
-
-" Snippets
-Plug 'SirVer/ultisnips'
-Plug 'honza/vim-snippets'
-
-" Code Formatting
+" Formatting
 Plug 'rhysd/vim-clang-format'
 Plug 'sbdchd/neoformat'
 
-" Telescope-related
-Plug 'nvim-lua/popup.nvim'
-Plug 'nvim-lua/plenary.nvim'
-Plug 'nvim-telescope/telescope.nvim'
-
-" TMUX
-Plug 'christoomey/vim-tmux-navigator'
-
 " Markdown
-Plug 'godlygeek/tabular'
-Plug 'plasticboy/vim-markdown'
+Plug 'plasticboy/vim-markdown', { 'for': ['markdown']}
 Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
 
-" C/C++
-Plug 'cdelledonne/vim-cmake'
+" Movement-Related
+Plug 'zhou13/vim-easyescape'
+Plug 'tpope/vim-surround'
+Plug 'justinmk/vim-sneak'
+Plug 'tpope/vim-repeat'
+Plug 'kshenoy/vim-signature' "Enhanced marking + gutter symbols for each mark
+Plug 'tpope/vim-unimpaired'  "Adds various movements using the '[' and ']' keys
 
-" Misc.
-Plug 'gennaro-tedesco/nvim-peekup'       " Produces a list of all registers and their contents
-Plug 'jeffkreeftmeijer/vim-numbertoggle'
-Plug 'machakann/vim-highlightedyank'     " Highlights most recently yanked text
-Plug 'tpope/vim-commentary'              " Used for commenting and uncommenting code
-Plug 'luochen1990/rainbow'               " Adds color to brackets {}
-Plug 'yegappan/mru'
-Plug 'mileszs/ack.vim'
-Plug 'wincent/terminus'
-Plug 'folke/zen-mode.nvim'
-
-Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}  " We recommend updating the parsers on update
-Plug 'neovim/nvim-lspconfig'
-Plug 'hrsh7th/nvim-compe'
-Plug 'svermeulen/vim-easyclip'
+" NERDTree
+Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
+Plug 'xuyuanp/nerdtree-git-plugin', { 'on': 'NERDTreeToggle' }
+Plug 'tiagofumo/vim-nerdtree-syntax-highlight', { 'on': 'NERDTreeToggle' }
 
 " Search-related
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 Plug 'haya14busa/incsearch.vim'
+
+" Sessions
+Plug 'mhinz/vim-startify'
+
+" Snippets
+Plug 'SirVer/ultisnips'
+Plug 'honza/vim-snippets'
+
+" Tags
+Plug 'preservim/tagbar'
+Plug 'ludovicchabant/vim-gutentags'
+
+" Telescope
+Plug 'nvim-lua/popup.nvim'
+Plug 'nvim-lua/plenary.nvim'
+Plug 'nvim-telescope/telescope.nvim'
+
+" Themes
+Plug 'sainnhe/edge'
+Plug 'kaicataldo/material.vim', { 'branch': 'main' }
+Plug 'shaunsingh/nord.nvim'
+Plug 'marko-cerovac/material.nvim'
+Plug 'joshdick/onedark.vim'
+
+Plug 'vim-airline/vim-airline' " Adds status bar at bottom of panel
+Plug 'vim-airline/vim-airline-themes'
+
+" TMUX
+Plug 'christoomey/vim-tmux-navigator'
+
+" Misc.
+Plug 'hrsh7th/nvim-compe'
+Plug 'neovim/nvim-lspconfig'
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}       " We recommend updating the parsers on update
+Plug 'tpope/vim-commentary'                                       " Used for commenting and uncommenting code
+Plug 'svermeulen/vim-easyclip'
+Plug 'machakann/vim-highlightedyank'                              " Highlights most recently yanked text
+Plug 'jeffkreeftmeijer/vim-numbertoggle'
+Plug 'wincent/terminus'
+Plug 'folke/twilight.nvim', { 'on': ['ZenMode', 'Twilight'] }     " Dims inactive portions of code automatically
+Plug 'folke/zen-mode.nvim'
 
 " Always leave devicons for last
 Plug 'ryanoasis/vim-devicons'
@@ -102,8 +95,48 @@ call plug#end()
 let g:airline_theme='deus'
 let g:airline#extensions#tabline#enabled = 1
 
+"""""""""""""""""""""""""""""
+"       Clang-Format        "
+"""""""""""""""""""""""""""""
+let g:clang_format##detect_style_file=1
+autocmd FileType c ClangFormatAutoEnable
+
 """"""""""""""""""""""""""""
-"  Startify 
+"       EasyClip           "
+""""""""""""""""""""""""""""
+let g:EasyClipUseSubstituteDefaults=1
+let g:EasyClipUseCutDefaults=0
+
+""""""""""""""""""""""""""""
+"       GitBlamer          "
+""""""""""""""""""""""""""""
+let g:blamer_enabled = 1
+let g:blamer_delay = 300
+let g:blamer_prefix = '    '
+let g:blamer_date_format = '%m/%d/%y %I:%M %p'
+
+""""""""""""""""""""""""""""
+"       Gutentags          "
+""""""""""""""""""""""""""""
+let g:gutentags_ctags_exclude=['Release', 'Debug', 'build', '*.d', '*.o']
+" Add gutentags TAGS message when generating things in the background
+set statusline+=%{gutentags#statusline()}
+
+""""""""""""""""""""""""""""
+"       IncSearch          "
+""""""""""""""""""""""""""""
+let g:incsearch#auto_nohlsearch=1
+
+""""""""""""""""""""""""""""
+"       Neoformat          "
+""""""""""""""""""""""""""""
+augroup fmt
+  autocmd!
+  au BufWritePre * try | undojoin | Neoformat | catch /^Vim\%((\a\+)\)\=:E790/ | finally | silent Neoformat | endtry
+augroup END
+
+""""""""""""""""""""""""""""
+"         Startify         "
 """"""""""""""""""""""""""""
 let g:startify_session_dir = '~/.config/nvim/sessions'
 let g:startify_session_persistence = 1
@@ -122,88 +155,9 @@ let g:startify_bookmarks = [
       \ ]
 
 """"""""""""""""""""""""""""
-"  SuperTab 
+"        SuperTab          "
 """"""""""""""""""""""""""""
 let g:SuperTabDefaultCompletionType = '<C-n>'
-
-""""""""""""""""""""""""""""
-"  GitBlamer 
-""""""""""""""""""""""""""""
-let g:blamer_enabled = 1
-let g:blamer_delay = 300
-let g:blamer_prefix = '    '
-let g:blamer_date_format = '%m/%d/%y %I:%M %p'
-
-""""""""""""""""""""""""""""
-"  Startify 
-""""""""""""""""""""""""""""
-"""""""""""""""""""""""""""""
-" GitGutter Settings
-"""""""""""""""""""""""""""""
-
-"""""""""""""""""""""""""""""
-" Vim-sneak Settings
-"""""""""""""""""""""""""""""
-highlight Sneak guifg=white guibg=orange ctermfg=black ctermbg=red
-
-"""""""""""""""""""""""""""""
-"       Clang-Format        "
-"""""""""""""""""""""""""""""
-let g:clang_format##detect_style_file=1
-autocmd FileType c ClangFormatAutoEnable
-
-"""""""""""""""""""""""""""""
-"       UltiSnips           "
-"""""""""""""""""""""""""""""
-" Trigger configuration. You need to change this to something other than <tab> if you use one of the following:
-" - https://github.com/Valloric/YouCompleteMe
-" - https://github.com/nvim-lua/completion-nvim
-let g:UltiSnipsExpandTrigger="<tab>"
-let g:UltiSnipsJumpForwardTrigger="<tab>"
-let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
-
-"""""""""""""""""""""""""""""
-"       YouCompleteMe       "
-"""""""""""""""""""""""""""""
-let g:ycm_key_list_select_completion = ['<C-n>', '<Down>']
-let g:ycm_key_list_previous_completion = ['<C-p>', '<Up>']
-
-"""""""""""""""""""""""""""""
-"        Twilight           " 
-"""""""""""""""""""""""""""""
-lua << EOF
-require("twilight").setup {
-  dimming = {
-    alpha = 0.25, -- amount of dimming
-    -- we try to get the foreground from the highlight groups or fallback color
-    color = { "Normal", "NONE"},
-    inactive = false, -- when true, other windows will be fully dimmed (unless they contain the same buffer)
-  },
-  -- your configuration comes here
-  -- or leave it empty to use the default settings
-  -- refer to the configuration section below
-  }
-EOF
-
-""""""""""""""""""""""""""""
-"      TreeSitter          "
-""""""""""""""""""""""""""""
-" Enable Treesitter highlighting
-lua <<EOF
-require'nvim-treesitter.configs'.setup {
-  ensure_installed = "maintained", -- one of "all", "maintained" (parsers with maintainers), or a list of languages
-  ignore_install = { "javascript" }, -- List of parsers to ignore installing
-  highlight = {
-    enable = true,              -- false will disable the whole extension
-    disable = {  },  -- list of language that will be disabled
-    -- Setting this to true will run `:h syntax` and tree-sitter at the same time.
-    -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
-    -- Using this option may slow down your editor, and you may see some duplicate highlights.
-    -- Instead of true it can also be a list of languages
-    additional_vim_regex_highlighting = false,
-  },
-}
-EOF
 
 """"""""""""""""""""""""""""
 "       Telescope          "
@@ -241,28 +195,51 @@ require("telescope").setup {
     }
   }
 }
-
 EOF
-""""""""""""""""""""""""""""
-"       EasyClip           "
-""""""""""""""""""""""""""""
-let g:EasyClipUseSubstituteDefaults=1
-let g:EasyClipUseCutDefaults=0
 
 """"""""""""""""""""""""""""
-"       IncSearch          "
+"        TreeSitter        "
 """"""""""""""""""""""""""""
-let g:incsearch#auto_nohlsearch=1
+" Enable Treesitter highlighting
+lua <<EOF
+require'nvim-treesitter.configs'.setup {
+  ensure_installed = "maintained", -- one of "all", "maintained" (parsers with maintainers), or a list of languages
+  ignore_install = { "javascript" }, -- List of parsers to ignore installing
+  highlight = {
+    enable = true,              -- false will disable the whole extension
+    disable = {  },  -- list of language that will be disabled
+    -- Setting this to true will run `:h syntax` and tree-sitter at the same time.
+    -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
+    -- Using this option may slow down your editor, and you may see some duplicate highlights.
+    -- Instead of true it can also be a list of languages
+    additional_vim_regex_highlighting = false,
+  },
+}
+EOF
+
+"""""""""""""""""""""""""""""
+"       UltiSnips           "
+"""""""""""""""""""""""""""""
+" Trigger configuration. You need to change this to something other than <tab> if you use one of the following:
+" - https://github.com/Valloric/YouCompleteMe
+" - https://github.com/nvim-lua/completion-nvim
+let g:UltiSnipsExpandTrigger="<tab>"
+let g:UltiSnipsJumpForwardTrigger="<tab>"
+let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
+
+"""""""""""""""""""""""""""""
+"         Vim-Sneak         "
+"""""""""""""""""""""""""""""
+highlight Sneak guifg=white guibg=orange ctermfg=black ctermbg=red
+
+"""""""""""""""""""""""""""""
+"       YouCompleteMe       "
+"""""""""""""""""""""""""""""
+let g:ycm_key_list_select_completion = ['<C-n>', '<Down>']
+let g:ycm_key_list_previous_completion = ['<C-p>', '<Up>']
 
 """"""""""""""""""""""""""""
-"       Gutentags          "
-""""""""""""""""""""""""""""
-let g:gutentags_ctags_exclude=['Release', 'Debug', 'build', '*.d', '*.o']
-" Add gutentags TAGS message when generating things in the background
-set statusline+=%{gutentags#statusline()}
-
-""""""""""""""""""""""""""""
-"      Zen-Mode 
+"         ZenMode          "
 """"""""""""""""""""""""""""
 lua << EOF
   require("zen-mode").setup {
@@ -273,10 +250,3 @@ lua << EOF
 EOF
 hi ZenModeBg NONE
 
-""""""""""""""""""""""""""""
-"  Neoformat 
-""""""""""""""""""""""""""""
-augroup fmt
-  autocmd!
-  au BufWritePre * try | undojoin | Neoformat | catch /^Vim\%((\a\+)\)\=:E790/ | finally | silent Neoformat | endtry
-augroup END
