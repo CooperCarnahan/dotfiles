@@ -77,7 +77,7 @@ nmap <leader>gl :diffget //3<cr>
 nmap <leader>gd :Gdiffsplit!<cr>
 nmap <leader>gc :G commit<cr>
 nmap <leader>ga :Gwrite<cr>
-nmap <C-g>      :Commits<cr>
+nmap <C-g>      :Git<cr>
 nmap <leader>glog :Commits<cr>
 
 """"""""""""""""""""""""""""
