@@ -8,6 +8,7 @@ Plug 'cdelledonne/vim-cmake'
 
 " Code Completion
 Plug 'neoclide/coc.nvim', {'branch': 'release', 'do': ':CocInstall coc-snippets'}
+Plug 'jackguo380/vim-lsp-cxx-highlight'
 
 " Git-Related
 Plug 'airblade/vim-gitgutter'
@@ -110,8 +111,8 @@ let g:EasyClipUseCutDefaults=0
 """"""""""""""""""""""""""""
 "       GitBlamer          "
 """"""""""""""""""""""""""""
-let g:blamer_enabled = 1
-let g:blamer_delay = 300
+let g:blamer_enabled = 0
+let g:blamer_delay = 500
 let g:blamer_prefix = '    '
 let g:blamer_date_format = '%m/%d/%y %I:%M %p'
 
