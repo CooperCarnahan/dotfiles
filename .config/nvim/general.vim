@@ -78,6 +78,14 @@ set list listchars=tab:\ \ ,trail:·
 set nowrap       "Don't wrap lines
 set linebreak    "Wrap lines at convenient points
 
+" ================ Markdown ============================
+augroup markdown
+  autocmd!
+  autocmd FileType markdown setlocal textwidth=100
+  autocmd FileType markdown setlocal spell
+  autocmd FileType markdown setlocal wrap
+augroup end
+
 " ================ Marks ============================
 augroup VIMRC
   autocmd BufLeave main.c normal! mM
