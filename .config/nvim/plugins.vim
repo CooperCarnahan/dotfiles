@@ -9,6 +9,7 @@ Plug 'cdelledonne/vim-cmake'
 " Code Completion
 Plug 'neoclide/coc.nvim', {'branch': 'release', 'do': ':CocInstall coc-snippets'}
 Plug 'jackguo380/vim-lsp-cxx-highlight'
+Plug 'onsails/lspkind-nvim'
 
 " Git-Related
 Plug 'airblade/vim-gitgutter'
@@ -32,10 +33,8 @@ Plug 'tpope/vim-repeat'
 Plug 'kshenoy/vim-signature' "Enhanced marking + gutter symbols for each mark
 Plug 'tpope/vim-unimpaired'  "Adds various movements using the '[' and ']' keys
 
-" NERDTree
-Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
-Plug 'xuyuanp/nerdtree-git-plugin', { 'on': 'NERDTreeToggle' }
-Plug 'tiagofumo/vim-nerdtree-syntax-highlight', { 'on': 'NERDTreeToggle' }
+" NVIM-Tree
+Plug 'kyazdani42/nvim-tree.lua'
 
 " Search-related
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
@@ -65,6 +64,8 @@ Plug 'shaunsingh/nord.nvim'
 Plug 'marko-cerovac/material.nvim'
 Plug 'joshdick/onedark.vim'
 
+
+Plug 'akinsho/bufferline.nvim'
 Plug 'vim-airline/vim-airline' " Adds status bar at bottom of panel
 Plug 'vim-airline/vim-airline-themes'
 
@@ -82,8 +83,10 @@ Plug 'jeffkreeftmeijer/vim-numbertoggle'
 Plug 'wincent/terminus'
 Plug 'folke/twilight.nvim', { 'on': ['ZenMode', 'Twilight'] }     " Dims inactive portions of code automatically
 Plug 'folke/zen-mode.nvim'
+Plug 'mhinz/vim-sayonara', { 'on': 'Sayonara' }
 
 " Always leave devicons for last
+Plug 'kyazdani42/nvim-web-devicons' " Recommended (for coloured icons)
 Plug 'ryanoasis/vim-devicons'
 call plug#end()
 
@@ -94,12 +97,54 @@ call plug#end()
 "  Airline 
 """"""""""""""""""""""""""""
 let g:airline_theme='deus'
-let g:airline#extensions#tabline#enabled = 1
+" let g:airline#extensions#tabline#enabled = 1
+
+""""""""""""""""""""""""""""
+"  Bufferline 
+""""""""""""""""""""""""""""
+set termguicolors
+lua <<EOF
+require('bufferline').setup {
+  options = {
+    close_command = "bdelete! %d",       -- can be a string | function, see "Mouse actions"
+    right_mouse_command = "bdelete! %d", -- can be a string | function, see "Mouse actions"
+    left_mouse_command = "buffer %d",    -- can be a string | function, see "Mouse actions"
+    middle_mouse_command = nil,          -- can be a string | function, see "Mouse actions"
+    -- NOTE: this plugin is designed with this icon in mind,
+    -- and so changing this is NOT recommended, this is intended
+    -- as an escape hatch for people who cannot bear it for whatever reason
+    indicator_icon = '▎',
+    buffer_close_icon = '',
+    modified_icon = '●',
+    close_icon = '',
+    left_trunc_marker = '',
+    right_trunc_marker = '',
+    --- name_formatter can be used to change the buffer's label in the bufferline.
+    --- Please note some names can/will break the
+    --- bufferline so use this at your discretion knowing that it has
+    --- some limitations that will *NOT* be fixed.
+    name_formatter = function(buf)  -- buf contains a "name", "path" and "bufnr"
+      -- remove extension from markdown files for example
+      if buf.name:match('index') then
+        return vim.fn.fnamemodify(buf.name, 'git-status')
+      end
+      if buf.name:match('%.md') then
+        return vim.fn.fnamemodify(buf.name, ':t:r')
+      end
+    end,
+    offsets = {{filetype = "NvimTree", 
+    text = "File Explorer",
+    text_align = "left"}},
+  }
+}
+EOF
 
 """""""""""""""""""""""""""""
 "       Clang-Format        "
 """""""""""""""""""""""""""""
 let g:clang_format##detect_style_file=1
+let g:clang_format#code_style="llvm"
+let g:clang_format#enable_fallback_style=1
 autocmd FileType c ClangFormatAutoEnable
 
 """"""""""""""""""""""""""""
@@ -135,6 +180,14 @@ augroup fmt
   autocmd!
   au BufWritePre * try | undojoin | Neoformat | catch /^Vim\%((\a\+)\)\=:E790/ | finally | silent Neoformat | endtry
 augroup END
+
+""""""""""""""""""""""""""""
+"       NvimTree           "
+""""""""""""""""""""""""""""
+let g:nvim_tree_auto_open = 1 "0 by default, opens the tree when typing `vim $DIR` or `vim`
+let g:nvim_tree_ignore = [ '.git', 'node_modules', '.cache' ] "empty by default
+let g:nvim_tree_auto_ignore_ft = [ 'startify', 'dashboard' ] "empty by default, don't auto open tree on specific filetypes.
+let g:nvim_tree_follow = 1 "0 by default, this option allows the cursor to be updated when entering a buffer
 
 """"""""""""""""""""""""""""
 "         Startify         "

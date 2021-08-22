@@ -59,7 +59,7 @@ nnoremap <C-L> <C-W><C-L>
 nnoremap <C-H> <C-W><C-H>
 
 "" Delete buffer
-nnoremap <leader>w :bd<CR>
+nnoremap <leader>w :Sayonara!<CR>
 
 """"""""""""""""""""""""""""
 " EasyClip Keybinds
@@ -85,7 +85,7 @@ nmap <leader>glog :Commits<cr>
 """"""""""""""""""""""""""""
 nmap <C-f> :Rg 
 nmap <C-b> :Buffers<cr>
-nmap <C-p> :GFiles<cr>
+nmap <C-p> :Files<cr>
 nmap <C-c> :Commits<cr>
 " nmap <C-t> :Tags<cr>
 "
@@ -99,10 +99,9 @@ map n  <Plug>(incsearch-nohl-n)zz
 map N  <Plug>(incsearch-nohl-N)zz
 
 """"""""""""""""""""""""""""
-" NERDTree Keybinds
+" Nvim-Tree Keybinds
 """"""""""""""""""""""""""""
-nnoremap <C-e> :NERDTreeToggle<CR>
-nnoremap <leader>ntt :NERDTreeToggle<CR>
+nnoremap <C-e> :NvimTreeToggle<CR>
 
 """"""""""""""""""""""""""""
 " Tagbar
