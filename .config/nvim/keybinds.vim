@@ -76,7 +76,7 @@ nmap <leader>gh :diffget //2<cr>
 nmap <leader>gl :diffget //3<cr>
 nmap <leader>gd :Gdiffsplit!<cr>
 nmap <leader>gc :G commit<cr>
-nmap <leader>ga :Gwrite<cr>
+nmap <leader>ga :Neoformat | Gwrite<cr>
 nmap <C-g>      :Git<cr>
 nmap <leader>glog :Commits<cr>
 
