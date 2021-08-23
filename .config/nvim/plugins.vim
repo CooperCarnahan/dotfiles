@@ -145,7 +145,7 @@ EOF
 let g:clang_format##detect_style_file=1
 let g:clang_format#code_style="llvm"
 let g:clang_format#enable_fallback_style=1
-autocmd FileType c ClangFormatAutoEnable
+" autocmd FileType c ClangFormatAutoEnable
 
 """"""""""""""""""""""""""""
 "       EasyClip           "
@@ -176,10 +176,38 @@ let g:incsearch#auto_nohlsearch=1
 """"""""""""""""""""""""""""
 "       Neoformat          "
 """"""""""""""""""""""""""""
-augroup fmt
-  autocmd!
-  au BufWritePre * try | undojoin | Neoformat | catch /^Vim\%((\a\+)\)\=:E790/ | finally | silent Neoformat | endtry
-augroup END
+"" Autoformat on save
+" augroup fmt
+"   autocmd!
+"   au BufWritePre * try | undojoin | Neoformat | catch /^Vim\%((\a\+)\)\=:E790/ | finally | silent Neoformat | endtry
+" augroup END
+
+""""""""""""""""""""""""""""
+"     Nvim-TreeExplorer    "
+""""""""""""""""""""""""""""
+let g:nvim_tree_ignore = [ '.git', 'node_modules', '.cache' ] "empty by default
+let g:nvim_tree_follow = 1 "0 by default, this option allows the cursor to be updated when entering a buffer
+let g:nvim_tree_auto_open = 1 "0 by default, opens the tree when typing `vim $DIR` or `vim`
+let g:nvim_tree_auto_close = 1 "0 by default, closes the tree when it's the last window
+let g:nvim_tree_auto_ignore_ft = [ 'startify', 'dashboard' ] "empty by default, don't auto open tree on specific filetypes.
+
+
+lua <<EOF
+require'nvim-web-devicons'.setup {
+ -- your personal icons can go here (to override)
+ -- DevIcon will be appended to `name`
+ override = {
+  zsh = {
+    icon = "",
+    color = "#428850",
+    name = "Zsh"
+  }
+ };
+ -- globally enable default icons (default to false)
+ -- will get overriden by `get_icons` option
+ default = true;
+}
+EOF
 
 """"""""""""""""""""""""""""
 "       NvimTree           "

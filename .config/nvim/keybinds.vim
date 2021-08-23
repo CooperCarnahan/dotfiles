@@ -99,7 +99,12 @@ map n  <Plug>(incsearch-nohl-n)zz
 map N  <Plug>(incsearch-nohl-N)zz
 
 """"""""""""""""""""""""""""
-" Nvim-Tree Keybinds
+" Neoformat Keybinds
+""""""""""""""""""""""""""""
+nmap <leader>f :Neoformat<CR>
+
+""""""""""""""""""""""""""""
+" NvimTree Keybinds
 """"""""""""""""""""""""""""
 nnoremap <C-e> :NvimTreeToggle<CR>
 
