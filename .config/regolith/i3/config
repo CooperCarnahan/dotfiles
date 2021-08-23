@@ -161,9 +161,9 @@ bindsym $mod+$i3-wm.binding.right focus right
 bindsym $mod+$ws1_key workspace number $ws1
 bindsym $mod+$ws2_key workspace code
 bindsym $mod+$ws3_key workspace browser
-bindsym $mod+$ws4_key workspace number $ws4
+bindsym $mod+$ws4_key workspace teams
 bindsym $mod+$ws5_key workspace number $ws5
-bindsym $mod+$ws6_key workspace number $ws6
+bindsym $mod+$ws6_key workspace spotify
 bindsym $mod+$ws7_key workspace number $ws7
 bindsym $mod+$ws8_key workspace number $ws8
 bindsym $mod+$ws9_key workspace number $ws9
@@ -284,8 +284,8 @@ set_from_resource $i3-wm.binding.focus_toggle i3-wm.binding.focus_toggle Shift+t
 bindsym $mod+$i3-wm.binding.focus_toggle focus mode_toggle
 
 ## Modify // Window Layout Mode // <> t ##
-set_from_resource $i3-wm.binding.layout_mode i3-wm.binding.layout_mode t
-bindsym $mod+$i3-wm.binding.layout_mode layout toggle tabbed splith splitv
+# set_from_resource $i3-wm.binding.layout_mode i3-wm.binding.layout_mode l
+# bindsym $mod+$i3-wm.binding.layout_mode layout toggle tabbed splith splitv
 
 ## Modify // Move Window to Workspace 1 - 10 // <><Shift> 0..9 ##
 bindsym $mod+Shift+$ws1_key move container to workspace number $ws1
@@ -430,6 +430,12 @@ bindsym $mod+$i3-wm.binding.wifi exec $i3-wm.program.wifi
 
 ## Navigate to Browser workspace // <> b ##
 bindsym $mod+b workspace browser
+
+## Navigate to spotify workspace // <> b ##
+bindsym $mod+s workspace spotify
+
+## Navigate to teams workspace // <> b ##
+bindsym $mod+t workspace teams
 
 ## Launch // File Browser // <><Shift> n ##
 set_from_resource $i3-wm.binding.files i3-wm.binding.files Shift+n
@@ -684,11 +690,14 @@ workspace "code" output DP-2
 for_window [class="Brave-browser"] focus
 workspace "browser" output DP-2
 
+for_window [class="Microsoft Teams - Preview"] focus
+workspace "teams" output DP-2
+# for_window [class="Microsoft Teams - Preview"] move scratchpad
+
 workspace "spotify" output DP-4
+for_window [class="todoist"] move to workspace spotify focus
 for_window [class="Spotify"] move to workspace spotify
 for_window [class="Spotify"] focus
-
-for_window [class="Microsoft Teams - Preview"] move scratchpad
 
 exec_always --no-startup-id $HOME/.config/polybar/launch.sh
 
