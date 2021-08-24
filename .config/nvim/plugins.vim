@@ -165,6 +165,7 @@ let g:blamer_date_format = '%m/%d/%y %I:%M %p'
 "       Gutentags          "
 """"""""""""""""""""""""""""
 let g:gutentags_ctags_exclude=['Release', 'Debug', 'build', '*.d', '*.o']
+let g:gutentags_ctags_extra_args=['--fields="+n"']
 " Add gutentags TAGS message when generating things in the background
 set statusline+=%{gutentags#statusline()}
 
