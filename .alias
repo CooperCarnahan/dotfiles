@@ -31,6 +31,11 @@ else
     alias ll='ls -l'
 fi
 
+# Installing bat from apt uses 'batcat' to avoid naming clash
+if command -v batcat &> /dev/null; then
+    alias batcat='bat'
+fi
+
 if command -v bat &> /dev/null; then
     alias cat='bat'
 fi
