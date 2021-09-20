@@ -37,7 +37,8 @@ Plug 'kshenoy/vim-signature' "Enhanced marking + gutter symbols for each mark
 Plug 'tpope/vim-unimpaired'  "Adds various movements using the '[' and ']' keys
 
 " NVIM-Tree
-Plug 'kyazdani42/nvim-tree.lua'
+" Plug 'kyazdani42/nvim-tree.lua' "nvim-tree breaks on M1 Macs :(
+Plug 'preservim/nerdtree' ", { 'on': {'NerdTree'}}
 
 " Search-related
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
@@ -133,7 +134,7 @@ require('bufferline').setup {
         return vim.fn.fnamemodify(buf.name, ':t:r')
       end
     end,
-    offsets = {{filetype = "NvimTree", 
+    offsets = {{filetype = "NERDTree", 
     text = "File Explorer",
     text_align = "left"}},
   }
@@ -193,6 +194,12 @@ let g:nvim_tree_auto_open = 1 "0 by default, opens the tree when typing `vim $DI
 let g:nvim_tree_auto_close = 1 "0 by default, closes the tree when it's the last window
 let g:nvim_tree_auto_ignore_ft = [ 'startify', 'dashboard' ] "empty by default, don't auto open tree on specific filetypes.
 
+let g:nvim_tree_show_icons = {
+    \ 'git': 0,
+    \ 'folders': 0,
+    \ 'files': 0,
+    \ 'folder_arrows': 0,
+    \ }
 
 lua <<EOF
 require'nvim-web-devicons'.setup {

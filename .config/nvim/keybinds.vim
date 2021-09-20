@@ -104,9 +104,14 @@ map N  <Plug>(incsearch-nohl-N)zz
 nmap <leader>f :Neoformat<CR>
 
 """"""""""""""""""""""""""""
+" NerdTree Keybinds
+""""""""""""""""""""""""""""
+nnoremap <C-e> :NERDTree<CR>
+
+""""""""""""""""""""""""""""
 " NvimTree Keybinds
 """"""""""""""""""""""""""""
-nnoremap <C-e> :NvimTreeToggle<CR>
+" nnoremap <C-e> :NvimTreeToggle<CR>
 
 """"""""""""""""""""""""""""
 " Tagbar
