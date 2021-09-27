@@ -19,6 +19,9 @@ alias grep='grep --color=auto'
 alias tmux="TERM=screen-256color-bce tmux"
 alias python=python3
 
+# Paste using ctrl-v instead of middle-click
+alias xclip="xclip -sel clip"
+
 # Colorls is slow as heck on WSL1
 if command -v colorls &> /dev/null && [ ! "$HOST" = "NXL93020" ] ; then
     alias lc='colorls --sd'
