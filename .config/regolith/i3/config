@@ -162,7 +162,7 @@ bindsym $mod+$ws1_key workspace number $ws1
 bindsym $mod+$ws2_key workspace code
 bindsym $mod+$ws3_key workspace browser
 bindsym $mod+$ws4_key workspace teams
-bindsym $mod+$ws5_key workspace number $ws5
+bindsym $mod+$ws5_key workspace todo
 bindsym $mod+$ws6_key workspace spotify
 bindsym $mod+$ws7_key workspace number $ws7
 bindsym $mod+$ws8_key workspace number $ws8
@@ -394,9 +394,9 @@ set_from_resource $i3-wm.program.lock i3-wm.program.lock dbus-send --type=method
 bindsym $mod+$i3-wm.binding.lock exec $i3-wm.program.lock
 
 ## Session // Sleep // <><Shift> s ##
-set_from_resource $i3-wm.binding.sleep i3-wm.binding.sleep Shift+s
-set_from_resource $i3-wm.program.sleep i3-wm.program.sleep systemctl suspend
-bindsym $mod+$i3-wm.binding.sleep exec $i3-wm.program.sleep
+# set_from_resource $i3-wm.binding.sleep i3-wm.binding.sleep Shift+s
+# set_from_resource $i3-wm.program.sleep i3-wm.program.sleep systemctl suspend
+# bindsym $mod+$i3-wm.binding.sleep exec $i3-wm.program.sleep
 
 ###############################################################################
 # System Management
@@ -407,11 +407,24 @@ bindsym $mod+$i3-wm.binding.sleep exec $i3-wm.program.sleep
 #set_from_resource $i3-wm.program.settings i3-wm.program.settings gnome-control-center --class=floating_window
 #bindsym $mod+$i3-wm.binding.settings exec $i3-wm.program.settings
 
+## Navigate to Default workspace // <> d ##
+# bindsym $mod+d workspace number $ws1
+
 ## Navigate to Code workspace // <> c ##
 bindsym $mod+c workspace code
 
-## Navigate to Default workspace // <> d ##
-bindsym $mod+d workspace number $ws1
+## Navigate to Browser workspace // <> b ##
+bindsym $mod+b workspace browser
+
+## Navigate to Teams workspace // <> t ##
+bindsym $mod+t workspace teams
+
+## Navigate to todo workspace // <> d ##
+bindsym $mod+d workspace todo
+
+## Navigate to Spotify workspace // <> s ##
+bindsym $mod+s workspace spotify
+
 
 ## Modify // Display Settings // <> d ##
 #set_from_resource $i3-wm.binding.display i3-wm.binding.display d
@@ -427,15 +440,6 @@ bindsym $mod+$i3-wm.binding.wifi exec $i3-wm.program.wifi
 #set_from_resource $i3-wm.binding.bluetooth i3-wm.binding.bluetooth b
 #set_from_resource $i3-wm.program.bluetooth i3-wm.program.bluetooth gnome-control-center --class=floating_window bluetooth
 #bindsym $mod+$i3-wm.binding.bluetooth exec $i3-wm.program.bluetooth
-
-## Navigate to Browser workspace // <> b ##
-bindsym $mod+b workspace browser
-
-## Navigate to spotify workspace // <> b ##
-bindsym $mod+s workspace spotify
-
-## Navigate to teams workspace // <> b ##
-bindsym $mod+t workspace teams
 
 ## Launch // File Browser // <><Shift> n ##
 set_from_resource $i3-wm.binding.files i3-wm.binding.files Shift+n
@@ -681,26 +685,34 @@ exec --no-startup-id $i3-wm.program.2
 set_from_resource $i3-wm.program.3 i3-wm.program.3 :
 exec --no-startup-id $i3-wm.program.3
 
+# Monitor Mappings
+set $center DP-2
+set $right  DP-4
+set $left   DP-0
 
-#assign [class="Code"] code
 for_window [class="Code"] focus
-workspace "code" output DP-2
+workspace "code" output $center
 
-#assign [class="Brave-browser"] browser
 for_window [class="Brave-browser"] focus
-workspace "browser" output DP-2
+workspace "browser" output $center
 
-for_window [class="Microsoft Teams - Preview"] focus
-workspace "teams" output DP-2
-# for_window [class="Microsoft Teams - Preview"] move scratchpad
+workspace "teams" output $center
+assign [class="Microsoft Teams - Preview"] "teams"
 
-workspace "spotify" output DP-4
-for_window [class="todoist"] move to workspace spotify focus
+workspace "todo" output $center
+assign [class="Todoist"] "todo"
+
+# Open spotify on right monitor and focus window when opened
+workspace "spotify" output $right
 for_window [class="Spotify"] move to workspace spotify
 for_window [class="Spotify"] focus
 
-exec_always --no-startup-id $HOME/.config/polybar/launch.sh
+############################
+#  Startup Tasks
+###########################
+exec --no-startup-id spotify
+exec_always --no-startup-id $HOME/.config/polybar/siduck76/launch.sh
 
 # Set wallpaper bg upon startup
-exec --no-startup-id feh --bg-fill --randomize ~/Pictures/Wallpapers/Unsplash
+# exec --no-startup-id feh --bg-fill --randomize ~/Pictures/Wallpapers/Unsplash
 
