@@ -36,8 +36,13 @@ Plug 'tpope/vim-repeat'
 Plug 'kshenoy/vim-signature' "Enhanced marking + gutter symbols for each mark
 Plug 'tpope/vim-unimpaired'  "Adds various movements using the '[' and ']' keys
 
-" NVIM-Tree
-Plug 'kyazdani42/nvim-tree.lua'
+" " NVIM-Tree
+" Plug 'kyazdani42/nvim-tree.lua'
+
+" NERDTree
+Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }                    
+Plug 'xuyuanp/nerdtree-git-plugin', { 'on': 'NERDTreeToggle' }            
+Plug 'tiagofumo/vim-nerdtree-syntax-highlight', { 'on': 'NERDTreeToggle' }
 
 " Search-related
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
@@ -192,7 +197,6 @@ let g:nvim_tree_follow = 1 "0 by default, this option allows the cursor to be up
 let g:nvim_tree_auto_open = 1 "0 by default, opens the tree when typing `vim $DIR` or `vim`
 let g:nvim_tree_auto_close = 1 "0 by default, closes the tree when it's the last window
 let g:nvim_tree_auto_ignore_ft = [ 'startify', 'dashboard' ] "empty by default, don't auto open tree on specific filetypes.
-
 
 lua <<EOF
 require'nvim-web-devicons'.setup {
