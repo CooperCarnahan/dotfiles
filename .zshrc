@@ -229,4 +229,6 @@ fi
 #          PATH                   #
 ###################################
 
-export PATH=$PATH:~/go/bin
+if [[ -d /usr/local/go ]]; then
+  export PATH=$PATH:/usr/local/go/bin
+fi
