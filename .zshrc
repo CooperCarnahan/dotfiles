@@ -69,11 +69,12 @@ export EDITOR='nvim'
 
 # Colored man pages
 export PAGER='most'
+export BAT_PAGER='less'
 
 #export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
-#[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"
-# Placed elsewhere on different systems
-#[[ -s "/usr/share/rvm/scripts/rvm" ]] && source "/usr/share/rvm/scripts/rvm"
+[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"
+ # Placed elsewhere on different systems
+[[ -s "/usr/share/rvm/scripts/rvm" ]] && source "/usr/share/rvm/scripts/rvm"
 
 # Init fasd script
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
@@ -186,6 +187,9 @@ zinit light Aloxaf/fzf-tab
 zinit wait lucid for \
     atinit"zicompinit; zicdreplay"   \
     zdharma-continuum/fast-syntax-highlighting \
+
+# Package suggestions
+source /etc/zsh_command_not_found
 
 ###################################
 #           THEME                 #
