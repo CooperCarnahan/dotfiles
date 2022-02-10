@@ -35,9 +35,13 @@ noremap <expr> <SID>(search-forward) 'Nn'[v:searchforward]
 noremap <expr> <SID>(search-backward) 'nN'[v:searchforward] 
 
 " Tags
-nmap gd <Plug>(coc-definition)
-nmap gr <Plug>(coc-references)
-vmap ]f <Plug>(coc-format-selected)
+if exists('g:vscode')
+    " VSCode extension
+else
+  nmap gd <Plug>(coc-definition)
+  nmap gr <Plug>(coc-references)
+  vmap ]f <Plug>(coc-format-selected)
+endif
 
 " Jump to previous jump location and center
 nmap '' ''zz
