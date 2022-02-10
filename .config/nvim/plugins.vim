@@ -44,6 +44,9 @@ Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
 Plug 'xuyuanp/nerdtree-git-plugin', { 'on': 'NERDTreeToggle' }            
 Plug 'tiagofumo/vim-nerdtree-syntax-highlight', { 'on': 'NERDTreeToggle' }
 
+" Rust
+Plug 'rust-lang/rust.vim'
+
 " Search-related
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
@@ -80,7 +83,7 @@ Plug 'christoomey/vim-tmux-navigator'
 
 " Misc.
 Plug 'hrsh7th/nvim-compe'
-Plug 'neovim/nvim-lspconfig'
+" Plug 'neovim/nvim-lspconfig'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}       " We recommend updating the parsers on update
 Plug 'tpope/vim-commentary'                                       " Used for commenting and uncommenting code
 Plug 'svermeulen/vim-easyclip'
