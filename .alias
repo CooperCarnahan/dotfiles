@@ -23,16 +23,14 @@ alias python=python3
 alias xclip="xclip -sel clip"
 
 # Colorls is slow as heck on WSL1
-if command -v colorls &> /dev/null && [ ! "$HOST" = "NXL93020" ] ; then
-    alias lc='colorls --sd'
-    alias ls='colorls --sd'
-    alias ll='colorls --sd -l'
-    alias lss='colorls --sd --gs'
-    alias lcgs='colorls --sd --gs'
-else
-    echo "Colorls not installed or using (slow) work laptop. Using default 'ls'"
-    alias ll='ls -l'
+if command -v lsd &> /dev/null; then
+    alias ls='lsd'
 fi
+
+alias la='ls -a'
+alias ll='ls -l'
+alias lla='ls -la'
+alias lt='ls --tree'
 
 # Installing bat from apt uses 'batcat' to avoid naming clash
 if command -v batcat &> /dev/null; then
