@@ -1,0 +1,20 @@
+---
+prs:
+  model: even
+  choices:
+    - paper
+    - rock
+    - scissors
+restaurant:
+  model: gaussian
+  stddev_scaling_factor: 3.0
+  choices:
+    - "Tiny Champion's"
+    - "El Tiempo"
+    - "Papa John's"
+    - "I'm Thinking Arby's"
+    - "Mia's"
+    - "Chili's"
+    - "Superica"
+    - "Luna Pizza"
+    - "Pink's Pizza"
