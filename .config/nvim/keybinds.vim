@@ -89,12 +89,12 @@ nmap <leader>glog :Commits<cr>
 """"""""""""""""""""""""""""
 " FZF Keybinds
 """"""""""""""""""""""""""""
-nmap <C-f> :Rg 
-nmap <C-b> :Buffers<cr>
-nmap <C-p> :Files<cr>
-nmap <C-c> :Commits<cr>
-" nmap <C-t> :Tags<cr>
-"
+nmap <C-f> :<cmd>Telescope current_buffer_fuzzy_find<cr>
+nmap <C-b> :<cmd>Telescope buffers<cr>
+nmap <C-p> :<cmd>lua require('telescope-config').project_files()<cr> " Uses "Telescope git_files unless no git file is found"
+nmap <C-c> :<cmd>Telescope git_commits<cr>
+nmap <C-t> :<cmd>Telescope current_buffer_tags<cr> 
+
 """"""""""""""""""""""""""""
 " Incsearch Keybinds
 """"""""""""""""""""""""""""
@@ -123,7 +123,7 @@ nnoremap <leader>ntt :NERDTreeToggle<CR>
 """"""""""""""""""""""""""""
 " Tagbar
 """"""""""""""""""""""""""""
-nnoremap <C-t> :Tagbar<CR>
+nnoremap <leader>t :Tagbar<CR>
 
 """"""""""""""""""""""""""""
 " Telescope Keybinds
@@ -149,7 +149,7 @@ nnoremap <leader>fm <cmd>lua require('telescope.builtin').marks()<cr>
 """"""""""""""""""""""""""""
 " Terminal
 """"""""""""""""""""""""""""
-map <Leader>t :terminal<cr>
+" map <Leader>t :terminal<cr>
 tnoremap <Esc> <C-\><C-n>
 
 """"""""""""""""""""""""""""
