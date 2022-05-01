@@ -229,3 +229,9 @@ fi
 if [[ -d /usr/local/go ]]; then
   export PATH=$PATH:/usr/local/go/bin
 fi
+
+if [[ -d $HOME/go ]]; then
+  export PATH=$PATH:$HOME/go/bin
+fi
+
+source /home/cooper/.config/broot/launcher/bash/br
