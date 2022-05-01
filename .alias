@@ -32,6 +32,8 @@ alias ll='ls -l'
 alias lla='ls -la'
 alias lt='ls --tree'
 
+alias v='nvim'
+
 # Installing bat from apt uses 'batcat' to avoid naming clash
 if command -v batcat &> /dev/null; then
     alias batcat='bat'
