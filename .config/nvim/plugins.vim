@@ -40,6 +40,7 @@ Plug 'justinmk/vim-sneak'
 Plug 'tpope/vim-repeat'
 Plug 'kshenoy/vim-signature' "Enhanced marking + gutter symbols for each mark
 Plug 'tpope/vim-unimpaired'  "Adds various movements using the '[' and ']' keys
+Plug 'bkad/CamelCaseMotion'  "Allows moving via CamelCase "words" using leader prefix
 
 " " NVIM-Tree
 " Plug 'kyazdani42/nvim-tree.lua'
@@ -72,6 +73,9 @@ Plug 'ludovicchabant/vim-gutentags'
 Plug 'nvim-lua/popup.nvim'
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
+
+" Terminal
+Plug 'voldikss/vim-floaterm'
 
 " Themes
 Plug 'sainnhe/edge'
@@ -184,6 +188,12 @@ let g:clang_format#enable_fallback_style=1
 """"""""""""""""""""""""""""
 let g:EasyClipUseSubstituteDefaults=1
 let g:EasyClipUseCutDefaults=0
+
+""""""""""""""""""""""""""""
+"       FloatTerm          "
+""""""""""""""""""""""""""""
+let g:floaterm_width=0.8
+let g:floaterm_height=0.8
 
 """"""""""""""""""""""""""""
 "       GitBlamer          "

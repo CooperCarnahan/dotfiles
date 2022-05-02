@@ -75,6 +75,11 @@ xmap x <Plug>MoveMotionXPlug
 nmap xx <Plug>MoveMotionLinePlug
 
 """"""""""""""""""""""""""""
+" FloatTerm
+""""""""""""""""""""""""""""
+nmap <leader>lg :FloatermNew lazygit<cr>
+
+""""""""""""""""""""""""""""
 " Fugitive
 """"""""""""""""""""""""""""
 nmap <leader>gs :Git<cr>
