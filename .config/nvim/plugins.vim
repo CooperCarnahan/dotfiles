@@ -212,6 +212,11 @@ let g:gutentags_ctags_extra_args=['--fields="+n"']
 set statusline+=%{gutentags#statusline()}
 
 """"""""""""""""""""""""""""
+"       Gutter             "
+""""""""""""""""""""""""""""
+set signcolumn=yes
+
+""""""""""""""""""""""""""""
 "       IncSearch          "
 """"""""""""""""""""""""""""
 let g:incsearch#auto_nohlsearch=1
