@@ -234,4 +234,8 @@ if [[ -d $HOME/go ]]; then
   export PATH=$PATH:$HOME/go/bin
 fi
 
+if [[ -d $HOME/.scripts ]]; then
+  export PATH=$PATH:$HOME/.scripts
+fi
+
 source /home/cooper/.config/broot/launcher/bash/br
