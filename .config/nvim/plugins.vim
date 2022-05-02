@@ -10,6 +10,11 @@ Plug 'cdelledonne/vim-cmake'
 Plug 'neoclide/coc.nvim', {'branch': 'release', 'do': ':CocInstall coc-snippets'}
 Plug 'jackguo380/vim-lsp-cxx-highlight'
 Plug 'onsails/lspkind-nvim'
+Plug 'hrsh7th/cmp-nvim-lsp'
+Plug 'hrsh7th/cmp-buffer'
+Plug 'hrsh7th/cmp-path'
+Plug 'hrsh7th/cmp-cmdline'
+Plug 'hrsh7th/nvim-cmp'
 
 " Git-Related
 Plug 'airblade/vim-gitgutter'
@@ -101,7 +106,6 @@ Plug 'nixprime/cpsm'
 Plug 'romgrk/fzy-lua-native'
 
 " Misc.
-Plug 'hrsh7th/nvim-compe'
 " Plug 'neovim/nvim-lspconfig'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}       " We recommend updating the parsers on update
 Plug 'tpope/vim-commentary'                                       " Used for commenting and uncommenting code
