@@ -188,9 +188,6 @@ zinit wait lucid for \
     atinit"zicompinit; zicdreplay"   \
     zdharma-continuum/fast-syntax-highlighting \
 
-# Package suggestions
-source /etc/zsh_command_not_found
-
 ###################################
 #           THEME                 #
 ###################################
@@ -238,4 +235,10 @@ if [[ -d $HOME/.scripts ]]; then
   export PATH=$PATH:$HOME/.scripts
 fi
 
-source /home/cooper/.config/broot/launcher/bash/br
+source $HOME/.config/broot/launcher/bash/br
+
+###################################
+#          rpick                  #
+###################################
+
+export RPICK_CONFIG=~/.config/rpick.yml
