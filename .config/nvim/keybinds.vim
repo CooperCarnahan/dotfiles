@@ -82,14 +82,14 @@ nmap <leader>lg :FloatermNew lazygit<cr>
 """"""""""""""""""""""""""""
 " Fugitive
 """"""""""""""""""""""""""""
-nmap <leader>gs :Git<cr>
-nmap <leader>gh :diffget //2<cr>
-nmap <leader>gl :diffget //3<cr>
-nmap <leader>gd :Gdiffsplit!<cr>
-nmap <leader>gc :G commit<cr>
-nmap <leader>ga :Neoformat <bar> Gwrite<cr>
-nmap <C-g>      :Git<cr>
-nmap <leader>glog :Commits<cr>
+" nmap <leader>gs :Git<cr>
+" nmap <leader>gh :diffget //2<cr>
+" nmap <leader>gl :diffget //3<cr>
+" nmap <leader>gd :Gdiffsplit!<cr>
+" nmap <leader>gc :G commit<cr>
+" nmap <leader>ga :Neoformat <bar> Gwrite<cr>
+" nmap <C-g>      :Git<cr>
+" nmap <leader>glog :Commits<cr>
 
 """"""""""""""""""""""""""""
 " FZF Keybinds
@@ -134,6 +134,7 @@ nmap <C-p> :<cmd>Telescope find_files<cr>
 nmap <C-c> :<cmd>Telescope git_commits<cr>
 nmap <C-t> :<cmd>Telescope current_buffer_tags<cr> 
 nmap <C-g> :<cmd>Telescope live_grep<cr>
+nmap <leader>g :<cmd>Telescope grep_string<cr>
 "Like Ctrl+p command in VSCode
 " nnoremap <C-p> <cmd>lua require('telescope.builtin').find_files()<cr>
 " nnoremap <leader>ff <cmd>lua require('telescope.builtin').find_files()<cr>
