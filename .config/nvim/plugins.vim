@@ -6,15 +6,9 @@ call plug#begin('~/.config/nvim/plugins')
 " C/C++
 Plug 'cdelledonne/vim-cmake'
 
-" Code Completion
-Plug 'neoclide/coc.nvim', {'branch': 'release', 'do': ':CocInstall coc-snippets'}
-Plug 'jackguo380/vim-lsp-cxx-highlight'
-Plug 'onsails/lspkind-nvim'
-Plug 'hrsh7th/cmp-nvim-lsp'
-Plug 'hrsh7th/cmp-buffer'
-Plug 'hrsh7th/cmp-path'
-Plug 'hrsh7th/cmp-cmdline'
-Plug 'hrsh7th/nvim-cmp'
+" CoC
+" Plug 'neoclide/coc.nvim', {'branch': 'release', 'do': ':CocInstall coc-snippets'}
+" Plug 'jackguo380/vim-lsp-cxx-highlight'
 
 " Git-Related
 Plug 'airblade/vim-gitgutter'
@@ -28,6 +22,16 @@ Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 " Formatting
 Plug 'rhysd/vim-clang-format'
 Plug 'sbdchd/neoformat'
+
+" LSP
+Plug 'williamboman/nvim-lsp-installer'
+Plug 'neovim/nvim-lspconfig'
+Plug 'onsails/lspkind-nvim'
+Plug 'hrsh7th/cmp-nvim-lsp'
+Plug 'hrsh7th/cmp-buffer'
+Plug 'hrsh7th/cmp-path'
+Plug 'hrsh7th/cmp-cmdline'
+Plug 'hrsh7th/nvim-cmp'
 
 " Markdown
 Plug 'plasticboy/vim-markdown', { 'for': ['markdown']}
@@ -52,6 +56,7 @@ Plug 'tiagofumo/vim-nerdtree-syntax-highlight', { 'on': 'NERDTreeToggle' }
 
 " Rust
 Plug 'rust-lang/rust.vim'
+Plug 'simrat39/rust-tools.nvim'
 
 " Search-related
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
@@ -62,8 +67,12 @@ Plug 'haya14busa/incsearch.vim'
 Plug 'mhinz/vim-startify'
 
 " Snippets
-Plug 'SirVer/ultisnips'
-Plug 'honza/vim-snippets'
+Plug 'L3MON4D3/LuaSnip'
+Plug 'saadparwaiz1/cmp_luasnip'
+Plug 'rafamadriz/friendly-snippets'
+" Plug 'SirVer/ultisnips'
+" Plug 'quangnguyen30192/cmp-nvim-ultisnips'
+" Plug 'honza/vim-snippets'
 
 " Tags
 Plug 'preservim/tagbar'
@@ -110,7 +119,6 @@ Plug 'nixprime/cpsm'
 Plug 'romgrk/fzy-lua-native'
 
 " Misc.
-" Plug 'neovim/nvim-lspconfig'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}       " We recommend updating the parsers on update
 Plug 'tpope/vim-commentary'                                       " Used for commenting and uncommenting code
 Plug 'svermeulen/vim-easyclip'
@@ -192,8 +200,12 @@ let g:EasyClipUseCutDefaults=0
 """"""""""""""""""""""""""""
 "       FloatTerm          "
 """"""""""""""""""""""""""""
-let g:floaterm_width=0.8
-let g:floaterm_height=0.8
+" let g:floaterm_width=0.8
+" let g:floaterm_height=0.8
+lua<<EOF
+vim.api.nvim_set_var("floaterm_width",.8)
+vim.api.nvim_set_var("floaterm_height",.8)
+EOF
 
 """"""""""""""""""""""""""""
 "       GitBlamer          "
@@ -222,13 +234,43 @@ set signcolumn=yes
 let g:incsearch#auto_nohlsearch=1
 
 """"""""""""""""""""""""""""
-"       Neoformat          "
+"     LSP-Installer        "
 """"""""""""""""""""""""""""
-"" Autoformat on save
-" augroup fmt
-"   autocmd!
-"   au BufWritePre * try | undojoin | Neoformat | catch /^Vim\%((\a\+)\)\=:E790/ | finally | silent Neoformat | endtry
-" augroup END
+lua <<EOF
+require("luasnip.loaders.from_vscode").lazy_load()
+EOF
+
+""""""""""""""""""""""""""""
+"     LSP-Installer        "
+""""""""""""""""""""""""""""
+lua <<EOF
+require("nvim-lsp-installer").setup({
+    ensure_installed = { "rust_analyzer", "sumneko_lua" }, -- ensure these servers are always installed
+    automatic_installation = true, -- automatically detect which servers to install (based on which servers are set up via lspconfig)
+    ui = {
+        icons = {
+            server_installed = "✓",
+            server_pending = "➜",
+            server_uninstalled = "✗"
+        }
+    }
+})
+EOF
+
+""""""""""""""""""""""""""""
+"         Nvim-CMP         "
+""""""""""""""""""""""""""""
+set completeopt=menu,menuone,noselect
+lua<<EOF
+require('nvim-cmp')
+EOF
+
+""""""""""""""""""""""""""""
+"      Nvim-LspConfig      "
+""""""""""""""""""""""""""""
+lua<<EOF
+require('nvim-lspconfig')
+EOF
 
 """"""""""""""""""""""""""""
 "     Nvim-TreeExplorer    "

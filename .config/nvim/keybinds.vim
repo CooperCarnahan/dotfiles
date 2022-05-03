@@ -38,7 +38,7 @@ noremap <expr> <SID>(search-backward) 'nN'[v:searchforward]
 if exists('g:vscode')
     " VSCode extension
 else
-  nmap gd <Plug>(coc-definition)
+  " nmap gd <Plug>(coc-definition)
   nmap gr <Plug>(coc-references)
   vmap ]f <Plug>(coc-format-selected)
 endif
