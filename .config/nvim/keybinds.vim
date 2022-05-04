@@ -77,7 +77,8 @@ nmap xx <Plug>MoveMotionLinePlug
 """"""""""""""""""""""""""""
 " FloatTerm
 """"""""""""""""""""""""""""
-nmap <leader>lg :FloatermNew lazygit<cr>
+nnoremap <leader>lg :FloatermNew --cwd=<buffer> lazygit<cr>
+tmap <ESC> <C-\><C-n>
 
 """"""""""""""""""""""""""""
 " Fugitive
