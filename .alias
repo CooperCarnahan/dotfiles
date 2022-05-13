@@ -23,12 +23,12 @@ alias python=python3
 alias xclip="xclip -sel clip"
 
 # Colorls is slow as heck on WSL1
-if command -v lsd &> /dev/null; then
-    alias ls='lsd'
+if command -v exa &> /dev/null; then
+    alias ls='exa -l -s extension --icons --no-time --no-user --no-permissions'
 fi
 
 alias la='ls -a'
-alias ll='ls -l'
+alias ll='exa -l -s extension --icons'
 alias lla='ls -la'
 alias lt='ls --tree'
 
