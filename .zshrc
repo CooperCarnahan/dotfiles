@@ -68,7 +68,7 @@ export EDITOR='nvim'
 # fi
 
 # Colored man pages
-export PAGER='most'
+export PAGER='less -r'
 export BAT_PAGER='less'
 
 #export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
