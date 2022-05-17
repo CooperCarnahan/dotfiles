@@ -183,6 +183,9 @@ zinit light Aloxaf/fzf-tab
 # set list-colors to enable filename colorizing
 # zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
 
+# git stuff
+zinit load wfxr/forgit
+
 # Syntax highlighting
 zinit wait lucid for \
     atinit"zicompinit; zicdreplay"   \
