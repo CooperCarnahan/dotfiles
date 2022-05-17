@@ -67,9 +67,8 @@ source $HOME/.keychain/$(uname -n)-sh
 export EDITOR='nvim'
 # fi
 
-# Colored man pages
 export PAGER='less -r'
-export BAT_PAGER='less'
+export BAT_PAGER='less -r'
 
 #export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"
