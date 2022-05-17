@@ -110,4 +110,12 @@ EOF
   echo
 }
 
+# install rust
+cargo_install() {
+  curl https://sh.rustup.rs -sSf | sh
+}
+
 setup_shell
+cargo_install
+
+
