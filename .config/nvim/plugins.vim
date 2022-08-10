@@ -62,6 +62,7 @@ Plug 'simrat39/rust-tools.nvim'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 Plug 'haya14busa/incsearch.vim'
+Plug 'tpope/vim-abolish'
 
 " Sessions
 Plug 'mhinz/vim-startify'
