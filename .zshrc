@@ -86,6 +86,9 @@ eval "$(fasd --init auto)"
 # # Set VIM keybindings for terminal
 # set -o vi
 
+bindkey "^N" down-line-or-search
+bindkey "^P" up-line-or-search
+
 bindkey '^R' history-incremental-search-backward
 
 # # Add Old E-Macs-style commands
@@ -244,3 +247,7 @@ source $HOME/.config/broot/launcher/bash/br
 ###################################
 
 export RPICK_CONFIG=~/.config/rpick.yml
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
