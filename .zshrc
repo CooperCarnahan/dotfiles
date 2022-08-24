@@ -75,9 +75,8 @@ export BAT_PAGER='less -r'
  # Placed elsewhere on different systems
 [[ -s "/usr/share/rvm/scripts/rvm" ]] && source "/usr/share/rvm/scripts/rvm"
 
-# Init fasd script
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-eval "$(fasd --init auto)"
+# enable zoxide
+eval "$(zoxide init zsh)"
 
 ###################################
 #       ZSH VIM MODE KEYBINDS     #
