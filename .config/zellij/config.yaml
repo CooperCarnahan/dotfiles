@@ -115,7 +115,7 @@ keybinds:
         - action: [SwitchToMode: Tab,]
           key: [Ctrl: 't',]
         - action: [SwitchToMode: Normal,]
-          key: [Ctrl: 'p', Char: "\n", Char: ' ', Esc]
+          key: [Ctrl: 'y', Char: "\n", Char: ' ', Esc]
         - action: [SwitchToMode: Scroll,]
           key: [Ctrl: 's']
         - action: [SwitchToMode: Session,]
