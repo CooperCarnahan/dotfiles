@@ -239,7 +239,13 @@ if [[ -d $HOME/.scripts ]]; then
   export PATH=$PATH:$HOME/.scripts
 fi
 
-source $HOME/.config/broot/launcher/bash/br
+###################################
+#          broot                  #
+###################################
+#
+if command -v broot &> /dev/null; then
+  source $HOME/.config/broot/launcher/bash/br
+fi
 
 ###################################
 #          mcfly                  #
@@ -254,6 +260,8 @@ fi
 ###################################
 
 export RPICK_CONFIG=~/.config/rpick.yml
+
+source /home/cooper/.config/broot/launcher/bash/br
 
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
