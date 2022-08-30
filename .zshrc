@@ -164,6 +164,8 @@ zinit snippet OMZP::git
 zinit ice wait lucid
 # zinit snippet OMZP::colorize
 
+zinit light junegunn/fzf-bin
+zinit light Aloxaf/fzf-tab
 # Autosuggestion stuff
 zinit lucid for \
     light-mode  zsh-users/zsh-history-substring-search \
@@ -178,9 +180,7 @@ bindkey '^[OB' history-search-forward
 
 # fzf stuff
 zinit ice from"gh-r" as"program"
-zinit light junegunn/fzf-bin
 zinit ice wait lucid 0
-zinit light Aloxaf/fzf-tab
 # set list-colors to enable filename colorizing
 # zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
 
