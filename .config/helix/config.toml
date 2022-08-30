@@ -3,5 +3,19 @@ theme = "onedark"
 [editor]
 line-number = "relative"
 
+[editor.cursor-shape]
+insert = "bar"
+normal = "block"
+select = "underline"
+
+[keys.normal]
+H = "goto_line_start"
+L = "goto_line_end"
+g = { b = "goto_file_start" }
+'{' = "goto_prev_paragraph"
+'}' = "goto_next_paragraph"
+
 [keys.insert]
 j = { k = "normal_mode" }
+'C-.' = "completion"
+
