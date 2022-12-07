@@ -2,6 +2,9 @@ theme = "onedark"
 
 [editor]
 line-number = "relative"
+indent-guides.render = true
+cursorline = true
+color-modes = true
 
 [editor.cursor-shape]
 insert = "bar"
@@ -14,8 +17,18 @@ L = "goto_line_end"
 g = { b = "goto_file_start" }
 '{' = "goto_prev_paragraph"
 '}' = "goto_next_paragraph"
+'0' = "goto_line_start"
+'$' = "goto_line_end"
 
+[keys.select]
+H = "goto_line_start"
+L = "goto_line_end"
+g = { b = "goto_file_start" }
+'{' = "goto_prev_paragraph"
+'}' = "goto_next_paragraph"
+'0' = "goto_line_start"
+'$' = "goto_line_end"
+  
 [keys.insert]
 j = { k = "normal_mode" }
-'C-.' = "completion"
 
