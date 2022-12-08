@@ -19,6 +19,7 @@ g = { b = "goto_file_start" }
 '}' = "goto_next_paragraph"
 '0' = "goto_line_start"
 '$' = "goto_line_end"
+D = "kill_to_line_end"
 
 [keys.select]
 H = "goto_line_start"
@@ -32,3 +33,6 @@ g = { b = "goto_file_start" }
 [keys.insert]
 j = { k = "normal_mode" }
 
+[keys.select]
+H = "goto_line_start"
+L = "goto_line_end"
