@@ -29,5 +29,5 @@ for _, lsp in pairs(servers) do
   }
 end
 
-require('rust-tools').setup({})
+-- require('rust-tools').setup({on_attach = on_attach})
 
