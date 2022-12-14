@@ -165,7 +165,7 @@ require('bufferline').setup {
     -- NOTE: this plugin is designed with this icon in mind,
     -- and so changing this is NOT recommended, this is intended
     -- as an escape hatch for people who cannot bear it for whatever reason
-    indicator_icon = '▎',
+    indicator = '▎',
     buffer_close_icon = '',
     modified_icon = '●',
     close_icon = '',
@@ -261,7 +261,7 @@ EOF
 """"""""""""""""""""""""""""
 lua <<EOF
 require("nvim-lsp-installer").setup({
-    ensure_installed = { "rust_analyzer", "sumneko_lua" }, -- ensure these servers are always installed
+    ensure_installed = { "clangd", "rust_analyzer", "sumneko_lua" }, -- ensure these servers are always installed
     automatic_installation = true, -- automatically detect which servers to install (based on which servers are set up via lspconfig)
     ui = {
         icons = {
@@ -384,7 +384,7 @@ EOF
 " Enable Treesitter highlighting
 lua <<EOF
 require'nvim-treesitter.configs'.setup {
-  ensure_installed = {"rust", "c", "go", "markdown", "toml", "yaml", "bash", "python", "html", "javascript"}, -- one of "all", "maintained" (parsers with maintainers), or a list of languages
+  ensure_installed = {"rust", "c", "cpp", "go", "markdown", "toml", "yaml", "bash", "python", "html", "javascript"}, -- one of "all", "maintained" (parsers with maintainers), or a list of languages
   ignore_install = { "javascript" }, -- List of parsers to ignore installing
   highlight = {
     enable = true,              -- false will disable the whole extension
