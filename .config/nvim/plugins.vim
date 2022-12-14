@@ -56,9 +56,9 @@ Plug 'xuyuanp/nerdtree-git-plugin', { 'on': 'NERDTreeToggle' }
 Plug 'tiagofumo/vim-nerdtree-syntax-highlight', { 'on': 'NERDTreeToggle' }
 
 " Notify
-Plug 'MunifTanjim/nui.nvim'
-Plug 'rcarriga/nvim-notify'
-Plug 'folke/noice.nvim'
+" Plug 'MunifTanjim/nui.nvim'
+" Plug 'rcarriga/nvim-notify'
+" Plug 'folke/noice.nvim'
 
 " Rust
 Plug 'rust-lang/rust.vim'
@@ -106,24 +106,24 @@ Plug 'vim-airline/vim-airline-themes'
 " TMUX
 Plug 'christoomey/vim-tmux-navigator'
 
-" " Wilder
-" if has('nvim')
-"   function! UpdateRemotePlugins(...)
-"     " Needed to refresh runtime files
-"     let &rtp=&rtp
-"     UpdateRemotePlugins
-"   endfunction
+" Wilder
+if has('nvim')
+  function! UpdateRemotePlugins(...)
+    " Needed to refresh runtime files
+    let &rtp=&rtp
+    UpdateRemotePlugins
+  endfunction
 
-"   Plug 'gelguy/wilder.nvim', { 'do': function('UpdateRemotePlugins') }
-" else
-"   Plug 'gelguy/wilder.nvim'
+  Plug 'gelguy/wilder.nvim', { 'do': function('UpdateRemotePlugins') }
+else
+  Plug 'gelguy/wilder.nvim'
 
   " To use Python remote plugin features in Vim, can be skipped
-  " Plug 'roxma/nvim-yarp'
-  " Plug 'roxma/vim-hug-neovim-rpc'
-" endif
-" Plug 'nixprime/cpsm'
-" Plug 'romgrk/fzy-lua-native'
+  Plug 'roxma/nvim-yarp'
+  Plug 'roxma/vim-hug-neovim-rpc'
+endif
+Plug 'nixprime/cpsm'
+Plug 'romgrk/fzy-lua-native'
 
 " Misc.
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}       " We recommend updating the parsers on update
@@ -276,9 +276,9 @@ EOF
 """"""""""""""""""""""""""""
 "         Noice            "
 """"""""""""""""""""""""""""
-lua<<EOF
-require("noice").setup()
-EOF
+" lua<<EOF
+" require("noice").setup()
+" EOF
 
 
 """"""""""""""""""""""""""""
@@ -416,81 +416,81 @@ highlight Sneak guifg=white guibg=orange ctermfg=black ctermbg=red
 """""""""""""""""""""""""""""
 "         Wilder            "
 """""""""""""""""""""""""""""
-" call wilder#setup({'modes': [':', '/', '?']})
+call wilder#setup({'modes': [':', '/', '?']})
 
-" call wilder#set_option('pipeline', [
-"       \   wilder#branch(
-"       \     wilder#python_file_finder_pipeline({
-"       \       'file_command': {_, arg -> stridx(arg, '.') != -1 ? ['fd', '-tf', '-H'] : ['fd', '-tf']},
-"       \       'dir_command': ['fd', '-td'],
-"       \       'filters': ['cpsm_filter'],
-"       \     }),
-"       \     wilder#substitute_pipeline({
-"       \       'pipeline': wilder#python_search_pipeline({
-"       \         'skip_cmdtype_check': 1,
-"       \         'pattern': wilder#python_fuzzy_pattern({
-"       \           'start_at_boundary': 0,
-"       \         }),
-"       \       }),
-"       \     }),
-"       \     wilder#cmdline_pipeline({
-"       \       'fuzzy': 2,
-"       \       'fuzzy_filter': has('nvim') ? wilder#lua_fzy_filter() : wilder#vim_fuzzy_filter(),
-"       \     }),
-"       \     [
-"       \       wilder#check({_, x -> empty(x)}),
-"       \       wilder#history(),
-"       \     ],
-"       \     wilder#python_search_pipeline({
-"       \       'pattern': wilder#python_fuzzy_pattern({
-"       \         'start_at_boundary': 0,
-"       \       }),
-"       \     }),
-"       \   ),
-"       \ ])
+call wilder#set_option('pipeline', [
+      \   wilder#branch(
+      \     wilder#python_file_finder_pipeline({
+      \       'file_command': {_, arg -> stridx(arg, '.') != -1 ? ['fd', '-tf', '-H'] : ['fd', '-tf']},
+      \       'dir_command': ['fd', '-td'],
+      \       'filters': ['cpsm_filter'],
+      \     }),
+      \     wilder#substitute_pipeline({
+      \       'pipeline': wilder#python_search_pipeline({
+      \         'skip_cmdtype_check': 1,
+      \         'pattern': wilder#python_fuzzy_pattern({
+      \           'start_at_boundary': 0,
+      \         }),
+      \       }),
+      \     }),
+      \     wilder#cmdline_pipeline({
+      \       'fuzzy': 2,
+      \       'fuzzy_filter': has('nvim') ? wilder#lua_fzy_filter() : wilder#vim_fuzzy_filter(),
+      \     }),
+      \     [
+      \       wilder#check({_, x -> empty(x)}),
+      \       wilder#history(),
+      \     ],
+      \     wilder#python_search_pipeline({
+      \       'pattern': wilder#python_fuzzy_pattern({
+      \         'start_at_boundary': 0,
+      \       }),
+      \     }),
+      \   ),
+      \ ])
 
-" call wilder#set_option('renderer', wilder#wildmenu_renderer(
-"       \ wilder#wildmenu_airline_theme({
-"       \   'highlights': {},
-"       \   'highlighter': wilder#basic_highlighter(),
-"       \   'separator': ' · ',
-"       \ })))
+call wilder#set_option('renderer', wilder#wildmenu_renderer(
+      \ wilder#wildmenu_airline_theme({
+      \   'highlights': {},
+      \   'highlighter': wilder#basic_highlighter(),
+      \   'separator': ' · ',
+      \ })))
 
-" let s:highlighters = [
-"       \ wilder#pcre2_highlighter(),
-"       \ has('nvim') ? wilder#lua_fzy_highlighter() : wilder#cpsm_highlighter(),
-"       \ ]
+let s:highlighters = [
+      \ wilder#pcre2_highlighter(),
+      \ has('nvim') ? wilder#lua_fzy_highlighter() : wilder#cpsm_highlighter(),
+      \ ]
 
-" let s:popupmenu_renderer = wilder#popupmenu_renderer(wilder#popupmenu_border_theme({
-"       \ 'border': 'rounded',
-"       \ 'empty_message': wilder#popupmenu_empty_message_with_spinner(),
-"       \ 'highlighter': s:highlighters,
-"       \ 'left': [
-"       \   ' ',
-"       \   wilder#popupmenu_devicons(),
-"       \   wilder#popupmenu_buffer_flags({
-"       \     'flags': ' a + ',
-"       \     'icons': {'+': '???', 'a': '???', 'h': '???'},
-"       \   }),
-"       \ ],
-"       \ 'right': [
-"       \   ' ',
-"       \   wilder#popupmenu_scrollbar(),
-"       \ ],
-"       \ }))
+let s:popupmenu_renderer = wilder#popupmenu_renderer(wilder#popupmenu_border_theme({
+      \ 'border': 'rounded',
+      \ 'empty_message': wilder#popupmenu_empty_message_with_spinner(),
+      \ 'highlighter': s:highlighters,
+      \ 'left': [
+      \   ' ',
+      \   wilder#popupmenu_devicons(),
+      \   wilder#popupmenu_buffer_flags({
+      \     'flags': ' a + ',
+      \     'icons': {'+': '???', 'a': '???', 'h': '???'},
+      \   }),
+      \ ],
+      \ 'right': [
+      \   ' ',
+      \   wilder#popupmenu_scrollbar(),
+      \ ],
+      \ }))
 
-" let s:wildmenu_renderer = wilder#wildmenu_renderer({
-"       \ 'highlighter': s:highlighters,
-"       \ 'separator': ' ?? ',
-"       \ 'left': [' ', wilder#wildmenu_spinner(), ' '],
-"       \ 'right': [' ', wilder#wildmenu_index()],
-"       \ })
+let s:wildmenu_renderer = wilder#wildmenu_renderer({
+      \ 'highlighter': s:highlighters,
+      \ 'separator': ' ?? ',
+      \ 'left': [' ', wilder#wildmenu_spinner(), ' '],
+      \ 'right': [' ', wilder#wildmenu_index()],
+      \ })
 
-" call wilder#set_option('renderer', wilder#renderer_mux({
-"       \ ':': s:popupmenu_renderer,
-"       \ '/': s:wildmenu_renderer,
-"       \ 'substitute': s:wildmenu_renderer,
-"       \ }))
+call wilder#set_option('renderer', wilder#renderer_mux({
+      \ ':': s:popupmenu_renderer,
+      \ '/': s:wildmenu_renderer,
+      \ 'substitute': s:wildmenu_renderer,
+      \ }))
 
 """""""""""""""""""""""""""""
 "       YouCompleteMe       "
