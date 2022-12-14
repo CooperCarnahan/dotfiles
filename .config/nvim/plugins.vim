@@ -406,6 +406,8 @@ require'nvim-treesitter.configs'.setup {
         -- You can use the capture groups defined in textobjects.scm
         ["af"] = "@function.outer",
         ["if"] = "@function.inner",
+        ["aa"] = "@parameter.outer",
+        ["ia"] = "@parameter.outer",
         ["ac"] = "@class.outer",
         -- You can optionally set descriptions to the mappings (used in the desc parameter of
         -- nvim_buf_set_keymap) which plugins like which-key display
@@ -452,6 +454,18 @@ require'nvim-treesitter.configs'.setup {
       goto_previous_end = {
         ["[F"] = "@function.outer",
         ["[]"] = "@class.outer",
+      },
+      goto_next_start = {
+        ["]a"] = "@parameter.outer",
+      },
+      goto_next_end = {
+        ["]A"] = "@parameter.outer",
+      },
+      goto_previous_start = {
+        ["[a"] = "@parameter.outer",
+      },
+      goto_previous_end = {
+        ["[A"] = "@parameter.outer",
       },
     },
   },
