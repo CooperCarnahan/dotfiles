@@ -3,6 +3,8 @@
 """"""""""""""""""""""""""""""
 call plug#begin('~/.config/nvim/plugins')
 
+Plug 'lewis6991/impatient.nvim'
+
 " C/C++
 Plug 'cdelledonne/vim-cmake'
 
@@ -106,6 +108,11 @@ Plug 'vim-airline/vim-airline-themes'
 " TMUX
 Plug 'christoomey/vim-tmux-navigator'
 
+" TreeSitter
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}       " We recommend updating the parsers on update
+Plug 'nvim-treesitter/nvim-treesitter-textobjects'
+Plug 'nvim-treesitter/nvim-treesitter-context'
+
 " Wilder
 if has('nvim')
   function! UpdateRemotePlugins(...)
@@ -126,8 +133,6 @@ Plug 'nixprime/cpsm'
 Plug 'romgrk/fzy-lua-native'
 
 " Misc.
-Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}       " We recommend updating the parsers on update
-Plug 'nvim-treesitter/nvim-treesitter-textobjects'
 Plug 'tpope/vim-commentary'                                       " Used for commenting and uncommenting code
 Plug 'svermeulen/vim-easyclip'
 Plug 'machakann/vim-highlightedyank'                              " Highlights most recently yanked text
@@ -145,6 +150,10 @@ call plug#end()
 "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 "             SETTINGS
 "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+" Speed up plugins using cache
+lua require('impatient')
+
 """"""""""""""""""""""""""""
 "  Airline 
 """"""""""""""""""""""""""""
@@ -462,6 +471,10 @@ require'nvim-treesitter.configs'.setup {
     },
   },
 }
+
+-- Enable treesitter-context plugin
+require'treesitter-context'.setup()
+
 EOF
 
 """""""""""""""""""""""""""""
