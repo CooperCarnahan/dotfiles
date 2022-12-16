@@ -127,6 +127,7 @@ Plug 'machakann/vim-highlightedyank'                              " Highlights m
 Plug 'jeffkreeftmeijer/vim-numbertoggle'
 Plug 'wincent/terminus'
 Plug 'mhinz/vim-sayonara', { 'on': 'Sayonara' }
+Plug 'karb94/neoscroll.nvim'
 
 " Always leave devicons for last
 Plug 'kyazdani42/nvim-web-devicons' " Recommended (for coloured icons)
@@ -265,6 +266,25 @@ require("nvim-lsp-installer").setup({
 EOF
 
 """"""""""""""""""""""""""""
+"         Neoscroll        "
+""""""""""""""""""""""""""""
+lua <<EOF
+require('neoscroll').setup({
+    -- All these keys will be mapped to their corresponding default scrolling animation
+    mappings = {'<C-u>', '<C-d>', '<C-b>', '<C-f>',
+                '<C-y>', 'zt', 'zz', 'zb'},
+    hide_cursor = true,          -- Hide cursor while scrolling
+    stop_eof = true,             -- Stop at <EOF> when scrolling downwards
+    respect_scrolloff = false,   -- Stop scrolling when the cursor reaches the scrolloff margin of the file
+    cursor_scrolls_alone = true, -- The cursor will keep on scrolling even if the window cannot scroll further
+    easing_function = nil,       -- Default easing function
+    pre_hook = nil,              -- Function to run before the scrolling animation starts
+    post_hook = nil,             -- Function to run after the scrolling animation ends
+    performance_mode = false,    -- Disable "Performance Mode" on all buffers.
+})
+EOF
+
+""""""""""""""""""""""""""""
 "         Noice            "
 """"""""""""""""""""""""""""
 " lua<<EOF
@@ -289,7 +309,6 @@ let g:nvim_tree_ignore = [ '.git', 'node_modules', '.cache' ] "empty by default
 let g:nvim_tree_follow = 1 "0 by default, this option allows the cursor to be updated when entering a buffer
 let g:nvim_tree_auto_open = 1 "0 by default, opens the tree when typing `vim $DIR` or `vim`
 let g:nvim_tree_auto_close = 1 "0 by default, closes the tree when it's the last window
-
 let g:nvim_tree_auto_ignore_ft = [ 'startify', 'dashboard' ] "empty by default, don't auto open tree on specific filetypes.
 
 lua <<EOF
