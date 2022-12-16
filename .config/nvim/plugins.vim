@@ -40,7 +40,6 @@ Plug 'plasticboy/vim-markdown', { 'for': ['markdown']}
 Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
 
 " Movement-Related
-Plug 'zhou13/vim-easyescape'
 Plug 'tpope/vim-surround'
 Plug 'justinmk/vim-sneak'
 Plug 'tpope/vim-repeat'
@@ -49,13 +48,13 @@ Plug 'tpope/vim-unimpaired'  "Adds various movements using the '[' and ']' keys
 Plug 'bkad/CamelCaseMotion'  "Allows moving via CamelCase "words" using leader prefix
 Plug 'ggandor/leap.nvim'
 
-" " NVIM-Tree
+" NVIM-Tree
 " Plug 'kyazdani42/nvim-tree.lua'
 
 " NERDTree
-Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }                    
-Plug 'xuyuanp/nerdtree-git-plugin', { 'on': 'NERDTreeToggle' }            
-Plug 'tiagofumo/vim-nerdtree-syntax-highlight', { 'on': 'NERDTreeToggle' }
+" Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }                    
+" Plug 'xuyuanp/nerdtree-git-plugin', { 'on': 'NERDTreeToggle' }            
+" Plug 'tiagofumo/vim-nerdtree-syntax-highlight', { 'on': 'NERDTreeToggle' }
 
 " Notify
 " Plug 'MunifTanjim/nui.nvim'
@@ -79,9 +78,6 @@ Plug 'mhinz/vim-startify'
 Plug 'L3MON4D3/LuaSnip'
 Plug 'saadparwaiz1/cmp_luasnip'
 Plug 'rafamadriz/friendly-snippets'
-" Plug 'SirVer/ultisnips'
-" Plug 'quangnguyen30192/cmp-nvim-ultisnips'
-" Plug 'honza/vim-snippets'
 
 " Tags
 Plug 'preservim/tagbar'
@@ -114,21 +110,13 @@ Plug 'nvim-treesitter/nvim-treesitter-textobjects'
 Plug 'nvim-treesitter/nvim-treesitter-context'
 
 " Wilder
-if has('nvim')
-  function! UpdateRemotePlugins(...)
-    " Needed to refresh runtime files
-    let &rtp=&rtp
-    UpdateRemotePlugins
-  endfunction
+function! UpdateRemotePlugins(...)
+  " Needed to refresh runtime files
+  let &rtp=&rtp
+  UpdateRemotePlugins
+endfunction
 
-  Plug 'gelguy/wilder.nvim', { 'do': function('UpdateRemotePlugins') }
-else
-  Plug 'gelguy/wilder.nvim'
-
-  " To use Python remote plugin features in Vim, can be skipped
-  Plug 'roxma/nvim-yarp'
-  Plug 'roxma/vim-hug-neovim-rpc'
-endif
+Plug 'gelguy/wilder.nvim', { 'do': function('UpdateRemotePlugins') }
 Plug 'nixprime/cpsm'
 Plug 'romgrk/fzy-lua-native'
 
@@ -138,8 +126,6 @@ Plug 'svermeulen/vim-easyclip'
 Plug 'machakann/vim-highlightedyank'                              " Highlights most recently yanked text
 Plug 'jeffkreeftmeijer/vim-numbertoggle'
 Plug 'wincent/terminus'
-Plug 'folke/twilight.nvim', { 'on': ['ZenMode', 'Twilight'] }     " Dims inactive portions of code automatically
-Plug 'folke/zen-mode.nvim'
 Plug 'mhinz/vim-sayonara', { 'on': 'Sayonara' }
 
 " Always leave devicons for last
@@ -254,16 +240,12 @@ let g:incsearch#auto_nohlsearch=1
 """"""""""""""""""""""""""""
 "       IncSearch          "
 """"""""""""""""""""""""""""
-lua <<EOF
-require('leap').add_default_mappings()
-EOF
+lua require('leap').add_default_mappings()
 
 """"""""""""""""""""""""""""
 "     LSP-Installer        "
 """"""""""""""""""""""""""""
-lua <<EOF
-require("luasnip.loaders.from_vscode").lazy_load()
-EOF
+lua require("luasnip.loaders.from_vscode").lazy_load()
 
 """"""""""""""""""""""""""""
 "     LSP-Installer        "
@@ -289,21 +271,16 @@ EOF
 " require("noice").setup()
 " EOF
 
-
 """"""""""""""""""""""""""""
 "         Nvim-CMP         "
 """"""""""""""""""""""""""""
 set completeopt=menu,menuone,noselect
-lua<<EOF
-require('nvim-cmp')
-EOF
+lua require('nvim-cmp')
 
 """"""""""""""""""""""""""""
 "      Nvim-LspConfig      "
 """"""""""""""""""""""""""""
-lua<<EOF
-require('nvim-lspconfig')
-EOF
+lua require('nvim-lspconfig')
 
 """"""""""""""""""""""""""""
 "     Nvim-TreeExplorer    "
@@ -576,16 +553,4 @@ call wilder#set_option('renderer', wilder#renderer_mux({
 """""""""""""""""""""""""""""
 let g:ycm_key_list_select_completion = ['<C-n>', '<Down>']
 let g:ycm_key_list_previous_completion = ['<C-p>', '<Up>']
-
-""""""""""""""""""""""""""""
-"         ZenMode          "
-""""""""""""""""""""""""""""
-lua << EOF
-  require("zen-mode").setup {
-    -- your configuration comes here
-    -- or leave it empty to use the default settings
-    -- refer to the configuration section below
-  }
-EOF
-hi ZenModeBg NONE
 

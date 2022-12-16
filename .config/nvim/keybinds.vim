@@ -113,8 +113,8 @@ nmap <leader>f :Neoformat<CR>
 """"""""""""""""""""""""""""
 " NERDTree Keybinds
 """"""""""""""""""""""""""""
-nnoremap <C-e> :NERDTreeToggle<CR>      
-nnoremap <leader>ntt :NERDTreeToggle<CR>
+" nnoremap <C-e> :NERDTreeToggle<CR>      
+" nnoremap <leader>ntt :NERDTreeToggle<CR>
 
 """"""""""""""""""""""""""""
 " NvimTree Keybinds
