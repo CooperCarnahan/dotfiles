@@ -27,6 +27,9 @@ augroup Markdown
   autocmd FileType markdown setlocal spell
 augroup END
 
+" Set .MD files to be interpreted as markdown
+autocmd BufNewFile,BufRead *.MD set filetype=markdown
+
 " ================ Color Configs ====================
 colorscheme onedark
 set termguicolors               "Enable true colors
