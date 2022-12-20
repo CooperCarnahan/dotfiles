@@ -278,7 +278,16 @@ require('lualine').setup({
     inactive_winbar = {
       lualine_a = {},
       lualine_b = {},
-      lualine_c = {'filename'},
+      lualine_c = {
+        {
+          'filename',
+          symbols = {
+            modified = ' ●',-- Text to show when the buffer is modified
+            alternate_file = '#', -- Text to show to identify the alternate file
+            directory =  '',     -- Text to show when the buffer is a directory
+          }
+        }
+      },
       lualine_x = {},
       lualine_y = {},
       lualine_z = {}
