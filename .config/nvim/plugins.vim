@@ -99,8 +99,7 @@ Plug 'marko-cerovac/material.nvim'
 Plug 'joshdick/onedark.vim'
 
 Plug 'akinsho/bufferline.nvim'
-Plug 'vim-airline/vim-airline' " Adds status bar at bottom of panel
-Plug 'vim-airline/vim-airline-themes'
+Plug 'nvim-lualine/lualine.nvim'
 
 " TMUX
 Plug 'christoomey/vim-tmux-navigator'
@@ -143,50 +142,44 @@ call plug#end()
 lua require('impatient')
 
 """"""""""""""""""""""""""""
-"  Airline 
-""""""""""""""""""""""""""""
-let g:airline_theme='deus'
-" let g:airline#extensions#tabline#enabled = 1
-
-""""""""""""""""""""""""""""
 "  Bufferline 
 """"""""""""""""""""""""""""
-set termguicolors
-lua <<EOF
-require('bufferline').setup {
-  options = {
-    close_command = "bdelete! %d",       -- can be a string | function, see "Mouse actions"
-    right_mouse_command = "bdelete! %d", -- can be a string | function, see "Mouse actions"
-    left_mouse_command = "buffer %d",    -- can be a string | function, see "Mouse actions"
-    middle_mouse_command = nil,          -- can be a string | function, see "Mouse actions"
-    -- NOTE: this plugin is designed with this icon in mind,
-    -- and so changing this is NOT recommended, this is intended
-    -- as an escape hatch for people who cannot bear it for whatever reason
-    indicator = '▎',
-    buffer_close_icon = '',
-    modified_icon = '●',
-    close_icon = '',
-    left_trunc_marker = '',
-    right_trunc_marker = '',
-    --- name_formatter can be used to change the buffer's label in the bufferline.
-    --- Please note some names can/will break the
-    --- bufferline so use this at your discretion knowing that it has
-    --- some limitations that will *NOT* be fixed.
-    name_formatter = function(buf)  -- buf contains a "name", "path" and "bufnr"
-      -- remove extension from markdown files for example
-      if buf.name:match('index') then
-        return vim.fn.fnamemodify(buf.name, 'git-status')
-      end
-      if buf.name:match('%.md') then
-        return vim.fn.fnamemodify(buf.name, ':t:r')
-      end
-    end,
-    offsets = {{filetype = "NvimTree", 
-    text = "File Explorer",
-    text_align = "left"}},
-  }
-}
-EOF
+"set termguicolors
+"lua <<EOF
+"require('bufferline').setup {
+"  options = {
+"    close_command = "bdelete! %d",       -- can be a string | function, see "Mouse actions"
+"    right_mouse_command = "bdelete! %d", -- can be a string | function, see "Mouse actions"
+"    left_mouse_command = "buffer %d",    -- can be a string | function, see "Mouse actions"
+"    middle_mouse_command = nil,          -- can be a string | function, see "Mouse actions"
+"    -- NOTE: this plugin is designed with this icon in mind,
+"    -- and so changing this is NOT recommended, this is intended
+"    -- as an escape hatch for people who cannot bear it for whatever reason
+"    indicator = '▎',
+"    buffer_close_icon = '',
+"    modified_icon = '●',
+"    close_icon = '',
+"    left_trunc_marker = '',
+"    right_trunc_marker = '',
+"    --- name_formatter can be used to change the buffer's label in the bufferline.
+"    --- Please note some names can/will break the
+"    --- bufferline so use this at your discretion knowing that it has
+"    --- some limitations that will *NOT* be fixed.
+"    name_formatter = function(buf)  -- buf contains a "name", "path" and "bufnr"
+"      -- remove extension from markdown files for example
+"      if buf.name:match('index') then
+"        return vim.fn.fnamemodify(buf.name, 'git-status')
+"      end
+"      if buf.name:match('%.md') then
+"        return vim.fn.fnamemodify(buf.name, ':t:r')
+"      end
+"    end,
+"    offsets = {{filetype = "NvimTree", 
+"    text = "File Explorer",
+"    text_align = "left"}},
+"  }
+"}
+"EOF
 
 """""""""""""""""""""""""""""
 "       Clang-Format        "
@@ -244,6 +237,58 @@ let g:incsearch#auto_nohlsearch=1
 lua require('leap').add_default_mappings()
 
 """"""""""""""""""""""""""""
+"       LuaLine            "
+""""""""""""""""""""""""""""
+lua <<EOF
+require('lualine').setup({
+    sections = {
+      lualine_a = {'mode'},
+      lualine_b = {'branch', 'diff', 'diagnostics'},
+      lualine_c = {},
+      lualine_x = {'encoding', 'fileformat', 'filetype'},
+      lualine_y = {'progress'},
+      lualine_z = {'location'}
+    },
+    winbar = {
+      lualine_a = {
+      },
+      lualine_b = {{'filetype',
+      colored = true,   -- Displays filetype icon in color if set to true
+      icon_only = true, -- Display only an icon for filetype
+      icon = { align = 'right' }, -- Display filetype icon on the right hand side
+      -- icon =    {'X', align='right'}
+      -- Icon string ^ in table is ignored in filetype component,
+      }
+      },
+      lualine_c = {
+        {
+          'filename', 
+          path=3,
+          symbols = {
+            modified = {icon = ' ●'},      -- Text to show when the buffer is modified
+            alternate_file = '#', -- Text to show to identify the alternate file
+            directory =  '',     -- Text to show when the buffer is a directory
+            color = { bg = 204, fg = 'color_name(red)'}
+          }
+        }
+      },
+      lualine_x = {},
+      lualine_y = {},
+      lualine_z = {}
+    },
+    inactive_winbar = {
+      lualine_a = {},
+      lualine_b = {},
+      lualine_c = {'filename'},
+      lualine_x = {},
+      lualine_y = {},
+      lualine_z = {}
+    }
+})
+
+EOF
+
+""""""""""""""""""""""""""""
 "       LuaSnip            "
 """"""""""""""""""""""""""""
 lua require("luasnip.loaders.from_vscode").lazy_load()
@@ -285,7 +330,7 @@ saga.init_lsp_saga({
   jump_key = '<CR>',
   -- auto refresh when change buffer
   auto_refresh = true,
-  }
+  },
 })
 
 -- Lsp finder find the symbol definition implement reference
