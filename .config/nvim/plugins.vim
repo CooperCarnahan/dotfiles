@@ -98,7 +98,7 @@ Plug 'shaunsingh/nord.nvim'
 Plug 'marko-cerovac/material.nvim'
 Plug 'joshdick/onedark.vim'
 
-Plug 'akinsho/bufferline.nvim'
+"Plug 'akinsho/bufferline.nvim'
 Plug 'nvim-lualine/lualine.nvim'
 
 " TMUX
@@ -252,23 +252,22 @@ require('lualine').setup({
     winbar = {
       lualine_a = {
       },
-      lualine_b = {{'filetype',
-      colored = true,   -- Displays filetype icon in color if set to true
-      icon_only = true, -- Display only an icon for filetype
-      icon = { align = 'right' }, -- Display filetype icon on the right hand side
-      -- icon =    {'X', align='right'}
-      -- Icon string ^ in table is ignored in filetype component,
-      }
+      lualine_b = {
+        {
+          'filetype',
+          colored = true,   -- Displays filetype icon in color if set to true
+          icon_only = true, -- Display only an icon for filetype
+          icon = { align = 'right' }, -- Display filetype icon on the right hand side
+        }
       },
       lualine_c = {
         {
           'filename', 
           path=3,
           symbols = {
-            modified = {icon = ' ●'},      -- Text to show when the buffer is modified
+            modified = ' ●',-- Text to show when the buffer is modified
             alternate_file = '#', -- Text to show to identify the alternate file
             directory =  '',     -- Text to show when the buffer is a directory
-            color = { bg = 204, fg = 'color_name(red)'}
           }
         }
       },
