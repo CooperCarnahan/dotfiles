@@ -25,7 +25,9 @@ Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 Plug 'sbdchd/neoformat'
 
 " LSP
-Plug 'williamboman/nvim-lsp-installer'
+Plug 'williamboman/mason.nvim'
+Plug 'williamboman/mason-lspconfig.nvim'
+
 Plug 'neovim/nvim-lspconfig'
 Plug 'onsails/lspkind-nvim'
 Plug 'hrsh7th/cmp-nvim-lsp'
@@ -117,7 +119,6 @@ Plug 'machakann/vim-highlightedyank'                              " Highlights m
 Plug 'jeffkreeftmeijer/vim-numbertoggle'
 Plug 'wincent/terminus'
 Plug 'mhinz/vim-sayonara', { 'on': 'Sayonara' }
-Plug 'karb94/neoscroll.nvim'
 
 " Always leave devicons for last
 Plug 'kyazdani42/nvim-web-devicons' " Recommended (for coloured icons)
@@ -219,62 +220,7 @@ lua require('leap').add_default_mappings()
 """"""""""""""""""""""""""""
 "       LuaLine            "
 """"""""""""""""""""""""""""
-lua <<EOF
-require('lualine').setup({
-    sections = {
-      lualine_a = {'mode'},
-      lualine_b = {'branch', 'diff', 'diagnostics'},
-      lualine_c = {},
-      lualine_x = {'encoding', 'fileformat', 'filetype'},
-      lualine_y = {'progress'},
-      lualine_z = {'location'}
-    },
-    winbar = {
-      lualine_a = {
-      },
-      lualine_b = {
-        {
-          'filetype',
-          colored = true,   -- Displays filetype icon in color if set to true
-          icon_only = true, -- Display only an icon for filetype
-          icon = { align = 'right' }, -- Display filetype icon on the right hand side
-        }
-      },
-      lualine_c = {
-        {
-          'filename', 
-          path=3,
-          symbols = {
-            modified = ' ●',-- Text to show when the buffer is modified
-            alternate_file = '#', -- Text to show to identify the alternate file
-            directory =  '',     -- Text to show when the buffer is a directory
-          }
-        }
-      },
-      lualine_x = {},
-      lualine_y = {},
-      lualine_z = {}
-    },
-    inactive_winbar = {
-      lualine_a = {},
-      lualine_b = {},
-      lualine_c = {
-        {
-          'filename',
-          symbols = {
-            modified = ' ●',-- Text to show when the buffer is modified
-            alternate_file = '#', -- Text to show to identify the alternate file
-            directory =  '',     -- Text to show when the buffer is a directory
-          }
-        }
-      },
-      lualine_x = {},
-      lualine_y = {},
-      lualine_z = {}
-    }
-})
-
-EOF
+lua require('lualine-config')
 
 """"""""""""""""""""""""""""
 "       LuaSnip            "
@@ -282,113 +228,15 @@ EOF
 lua require("luasnip.loaders.from_vscode").lazy_load()
 
 """"""""""""""""""""""""""""
-"     LSP-Installer        "
-""""""""""""""""""""""""""""
-lua <<EOF
-require("nvim-lsp-installer").setup({
-    ensure_installed = { "clangd", "rust_analyzer", "sumneko_lua" }, -- ensure these servers are always installed
-    automatic_installation = true, -- automatically detect which servers to install (based on which servers are set up via lspconfig)
-    ui = {
-        icons = {
-            server_installed = "✓",
-            server_pending = "➜",
-            server_uninstalled = "✗"
-        }
-    }
-})
-EOF
-
-""""""""""""""""""""""""""""
 "     LSP-Saga             "
 """"""""""""""""""""""""""""
-lua <<EOF
-local keymap = vim.keymap.set
-local saga = require('lspsaga')
-
-saga.init_lsp_saga({
-  show_outline = {
-  win_position = 'right',
-  --set special filetype win that outline window split.like NvimTree neotree
-  -- defx, db_ui
-  win_with = ' ',
-  win_width = 50,
-  auto_enter = true,
-  auto_preview = true,
-  virt_text = '┃',
-  jump_key = '<CR>',
-  -- auto refresh when change buffer
-  auto_refresh = true,
-  },
-})
-
--- Lsp finder find the symbol definition implement reference
--- if there is no implement it will hide
--- when you use action in finder like open vsplit then you can
--- use <C-t> to jump back
-keymap("n", "gh", "<cmd>Lspsaga lsp_finder<CR>", { silent = true })
-
--- Code action
-keymap({"n","v"}, "<leader>ca", "<cmd>Lspsaga code_action<CR>", { silent = true })
-
--- Rename
-keymap("n", "gr", "<cmd>Lspsaga rename<CR>", { silent = true })
-
--- Peek Definition
--- you can edit the definition file in this flaotwindow
--- also support open/vsplit/etc operation check definition_action_keys
--- support tagstack C-t jump back
-keymap("n", "gd", "<cmd>Lspsaga peek_definition<CR>", { silent = true })
-
--- Show line diagnostics
-keymap("n", "<leader>cd", "<cmd>Lspsaga show_line_diagnostics<CR>", { silent = true })
-
--- Show cursor diagnostics
-keymap("n", "<leader>cd", "<cmd>Lspsaga show_cursor_diagnostics<CR>", { silent = true })
-
--- Diagnostic jump can use `<c-o>` to jump back
-keymap("n", "[e", "<cmd>Lspsaga diagnostic_jump_prev<CR>", { silent = true })
-keymap("n", "]e", "<cmd>Lspsaga diagnostic_jump_next<CR>", { silent = true })
-
--- Only jump to error
-keymap("n", "[E", function()
-  require("lspsaga.diagnostic").goto_prev({ severity = vim.diagnostic.severity.ERROR })
-end, { silent = true })
-keymap("n", "]E", function()
-  require("lspsaga.diagnostic").goto_next({ severity = vim.diagnostic.severity.ERROR })
-end, { silent = true })
-
--- Outline
-keymap("n","<leader>o", "<cmd>Lspsaga outline<CR>",{ silent = true })
-
--- Hover Doc
-keymap("n", "K", "<cmd>Lspsaga hover_doc<CR>", { silent = true })
-
--- if you want to pass some cli command into a terminal you can do it like this
--- open lazygit in lspsaga float terminal
-keymap("n", "<A-d>", "<cmd>Lspsaga open_floaterm lazygit<CR>", { silent = true })
--- close floaterm
-keymap("t", "<A-d>", [[<C-\><C-n><cmd>Lspsaga close_floaterm<CR>]], { silent = true })
-
-EOF
+lua require('lsp/lsp-saga')
 
 """"""""""""""""""""""""""""
-"         Neoscroll        "
+"         Mason            "
 """"""""""""""""""""""""""""
-"lua <<EOF
-"require('neoscroll').setup({
-"    -- All these keys will be mapped to their corresponding default scrolling animation
-"    mappings = {'<C-u>', '<C-d>', '<C-b>',
-"                '<C-y>', 'zt', 'zz', 'zb'},
-"    hide_cursor = true,          -- Hide cursor while scrolling
-"    stop_eof = true,             -- Stop at <EOF> when scrolling downwards
-"    respect_scrolloff = false,   -- Stop scrolling when the cursor reaches the scrolloff margin of the file
-"    cursor_scrolls_alone = true, -- The cursor will keep on scrolling even if the window cannot scroll further
-"    easing_function = nil,       -- Default easing function
-"    pre_hook = nil,              -- Function to run before the scrolling animation starts
-"    post_hook = nil,             -- Function to run after the scrolling animation ends
-"    performance_mode = false,    -- Disable "Performance Mode" on all buffers.
-"})
-"EOF
+lua require("mason").setup()
+lua require("mason-lspconfig").setup()
 
 """"""""""""""""""""""""""""
 "         Noice            "
