@@ -101,9 +101,6 @@ Plug 'joshdick/onedark.vim'
 "Plug 'akinsho/bufferline.nvim'
 Plug 'nvim-lualine/lualine.nvim'
 
-" TMUX
-Plug 'christoomey/vim-tmux-navigator'
-
 " TreeSitter
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}       " We recommend updating the parsers on update
 Plug 'nvim-treesitter/nvim-treesitter-textobjects'
@@ -192,6 +189,7 @@ lua require('lualine-config')
 "       LuaSnip            "
 """"""""""""""""""""""""""""
 lua require("luasnip.loaders.from_vscode").lazy_load()
+lua require("luasnip-config")
 
 """"""""""""""""""""""""""""
 "     LSP-Saga             "
