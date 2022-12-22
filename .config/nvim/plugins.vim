@@ -185,8 +185,6 @@ let g:EasyClipUseCutDefaults=0
 """"""""""""""""""""""""""""
 "       FloatTerm          "
 """"""""""""""""""""""""""""
-" let g:floaterm_width=0.8
-" let g:floaterm_height=0.8
 lua<<EOF
 vim.api.nvim_set_var("floaterm_width", .8)
 vim.api.nvim_set_var("floaterm_height", .8)
@@ -507,6 +505,15 @@ require'nvim-treesitter.configs'.setup {
     -- Using this option may slow down your editor, and you may see some duplicate highlights.
     -- Instead of true it can also be a list of languages
     additional_vim_regex_highlighting = false,
+  },
+   incremental_selection = {
+    enable = true,
+    keymaps = {
+      init_selection = "gnn", -- set to `false` to disable one of the mappings
+      node_incremental = "grn",
+      scope_incremental = "grc",
+      node_decremental = "grm",
+    },
   },
   textobjects = {
     select = {
