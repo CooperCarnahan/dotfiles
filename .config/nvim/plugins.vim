@@ -69,7 +69,6 @@ Plug 'simrat39/rust-tools.nvim'
 " Search-related
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
-Plug 'haya14busa/incsearch.vim'
 Plug 'tpope/vim-abolish'
 
 " Sessions
@@ -109,14 +108,6 @@ Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}       " We recommend
 Plug 'nvim-treesitter/nvim-treesitter-textobjects'
 Plug 'nvim-treesitter/nvim-treesitter-context'
 
-" Wilder
-function! UpdateRemotePlugins(...)
-  " Needed to refresh runtime files
-  let &rtp=&rtp
-  UpdateRemotePlugins
-endfunction
-
-Plug 'gelguy/wilder.nvim', { 'do': function('UpdateRemotePlugins') }
 Plug 'nixprime/cpsm'
 Plug 'romgrk/fzy-lua-native'
 
@@ -201,8 +192,8 @@ let g:EasyClipUseCutDefaults=0
 " let g:floaterm_width=0.8
 " let g:floaterm_height=0.8
 lua<<EOF
-vim.api.nvim_set_var("floaterm_width",.8)
-vim.api.nvim_set_var("floaterm_height",.8)
+vim.api.nvim_set_var("floaterm_width", .8)
+vim.api.nvim_set_var("floaterm_height", .8)
 EOF
 
 """"""""""""""""""""""""""""
@@ -227,12 +218,7 @@ set statusline+=%{gutentags#statusline()}
 set signcolumn=yes
 
 """"""""""""""""""""""""""""
-"       IncSearch          "
-""""""""""""""""""""""""""""
-let g:incsearch#auto_nohlsearch=1
-
-""""""""""""""""""""""""""""
-"       IncSearch          "
+"       Leap               "
 """"""""""""""""""""""""""""
 lua require('leap').add_default_mappings()
 
@@ -382,9 +368,6 @@ keymap("n","<leader>o", "<cmd>Lspsaga outline<CR>",{ silent = true })
 
 -- Hover Doc
 keymap("n", "K", "<cmd>Lspsaga hover_doc<CR>", { silent = true })
-
--- Float terminal
-keymap("n", "<A-d>", "<cmd>Lspsaga open_floaterm<CR>", { silent = true })
 
 -- if you want to pass some cli command into a terminal you can do it like this
 -- open lazygit in lspsaga float terminal
@@ -616,85 +599,6 @@ let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
 "         Vim-Sneak         "
 """""""""""""""""""""""""""""
 highlight Sneak guifg=white guibg=orange ctermfg=black ctermbg=red
-
-"""""""""""""""""""""""""""""
-"         Wilder            "
-"""""""""""""""""""""""""""""
-call wilder#setup({'modes': [':', '/', '?']})
-
-call wilder#set_option('pipeline', [
-      \   wilder#branch(
-      \     wilder#python_file_finder_pipeline({
-      \       'file_command': {_, arg -> stridx(arg, '.') != -1 ? ['fd', '-tf', '-H'] : ['fd', '-tf']},
-      \       'dir_command': ['fd', '-td'],
-      \       'filters': ['cpsm_filter'],
-      \     }),
-      \     wilder#substitute_pipeline({
-      \       'pipeline': wilder#python_search_pipeline({
-      \         'skip_cmdtype_check': 1,
-      \         'pattern': wilder#python_fuzzy_pattern({
-      \           'start_at_boundary': 0,
-      \         }),
-      \       }),
-      \     }),
-      \     wilder#cmdline_pipeline({
-      \       'fuzzy': 2,
-      \       'fuzzy_filter': has('nvim') ? wilder#lua_fzy_filter() : wilder#vim_fuzzy_filter(),
-      \     }),
-      \     [
-      \       wilder#check({_, x -> empty(x)}),
-      \       wilder#history(),
-      \     ],
-      \     wilder#python_search_pipeline({
-      \       'pattern': wilder#python_fuzzy_pattern({
-      \         'start_at_boundary': 0,
-      \       }),
-      \     }),
-      \   ),
-      \ ])
-
-call wilder#set_option('renderer', wilder#wildmenu_renderer(
-      \ wilder#wildmenu_airline_theme({
-      \   'highlights': {},
-      \   'highlighter': wilder#basic_highlighter(),
-      \   'separator': ' · ',
-      \ })))
-
-let s:highlighters = [
-      \ wilder#pcre2_highlighter(),
-      \ has('nvim') ? wilder#lua_fzy_highlighter() : wilder#cpsm_highlighter(),
-      \ ]
-
-let s:popupmenu_renderer = wilder#popupmenu_renderer(wilder#popupmenu_border_theme({
-      \ 'border': 'rounded',
-      \ 'empty_message': wilder#popupmenu_empty_message_with_spinner(),
-      \ 'highlighter': s:highlighters,
-      \ 'left': [
-      \   ' ',
-      \   wilder#popupmenu_devicons(),
-      \   wilder#popupmenu_buffer_flags({
-      \     'flags': ' a + ',
-      \     'icons': {'+': '???', 'a': '???', 'h': '???'},
-      \   }),
-      \ ],
-      \ 'right': [
-      \   ' ',
-      \   wilder#popupmenu_scrollbar(),
-      \ ],
-      \ }))
-
-let s:wildmenu_renderer = wilder#wildmenu_renderer({
-      \ 'highlighter': s:highlighters,
-      \ 'separator': ' ?? ',
-      \ 'left': [' ', wilder#wildmenu_spinner(), ' '],
-      \ 'right': [' ', wilder#wildmenu_index()],
-      \ })
-
-call wilder#set_option('renderer', wilder#renderer_mux({
-      \ ':': s:popupmenu_renderer,
-      \ '/': s:wildmenu_renderer,
-      \ 'substitute': s:wildmenu_renderer,
-      \ }))
 
 """""""""""""""""""""""""""""
 "       YouCompleteMe       "

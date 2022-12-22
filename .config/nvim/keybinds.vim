@@ -97,15 +97,6 @@ tmap <ESC> <C-\><C-n>
 """"""""""""""""""""""""""""
 
 """"""""""""""""""""""""""""
-" Incsearch Keybinds
-""""""""""""""""""""""""""""
-map /  <Plug>(incsearch-forward)
-map ?  <Plug>(incsearch-backward)
-map g/ <Plug>(incsearch-stay)
-map n  <Plug>(incsearch-nohl-n)zz
-map N  <Plug>(incsearch-nohl-N)zz
-
-""""""""""""""""""""""""""""
 " Neoformat Keybinds
 """"""""""""""""""""""""""""
 nmap <leader>f :Neoformat<CR>
