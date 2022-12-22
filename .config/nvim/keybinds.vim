@@ -152,16 +152,6 @@ nnoremap <leader>fm <cmd>lua require('telescope.builtin').marks()<cr>
 tnoremap <Esc> <C-\><C-n>
 
 """"""""""""""""""""""""""""
-" Vim-Commentary Keybinds
-""""""""""""""""""""""""""""
-" Actual maps Ctrl + / to comment out lines
-nnoremap <C-_> :Commentary<cr>
-nnoremap <C-/> :Commentary<cr>
-" Toggle comment in visual mode and reopen highlight
-vnoremap <C-_> :Commentary<cr>gv
-vnoremap <C-/> :Commentary<cr>gv
-
-""""""""""""""""""""""""""""
 " Vim-Signature Keybinds
 """"""""""""""""""""""""""""
 let g:SignatureMap = {

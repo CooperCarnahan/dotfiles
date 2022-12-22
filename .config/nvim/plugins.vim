@@ -22,7 +22,6 @@ Plug 'APZelos/blamer.nvim'
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 
 " Formatting
-Plug 'rhysd/vim-clang-format'
 Plug 'sbdchd/neoformat'
 
 " LSP
@@ -112,7 +111,7 @@ Plug 'nixprime/cpsm'
 Plug 'romgrk/fzy-lua-native'
 
 " Misc.
-Plug 'tpope/vim-commentary'                                       " Used for commenting and uncommenting code
+Plug 'numToStr/comment.nvim'
 Plug 'svermeulen/vim-easyclip'
 Plug 'machakann/vim-highlightedyank'                              " Highlights most recently yanked text
 Plug 'jeffkreeftmeijer/vim-numbertoggle'
@@ -172,13 +171,10 @@ lua require('impatient')
 "}
 "EOF
 
-"""""""""""""""""""""""""""""
-"       Clang-Format        "
-"""""""""""""""""""""""""""""
-let g:clang_format##detect_style_file=1
-let g:clang_format#code_style="llvm"
-let g:clang_format#enable_fallback_style=1
-" autocmd FileType c ClangFormatAutoEnable
+""""""""""""""""""""""""""""
+"       Commentary         "
+""""""""""""""""""""""""""""
+lua require('Comment').setup()
 
 """"""""""""""""""""""""""""
 "       EasyClip           "
