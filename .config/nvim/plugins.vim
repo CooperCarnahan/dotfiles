@@ -136,41 +136,7 @@ lua require('impatient')
 "  Bufferline 
 """"""""""""""""""""""""""""
 "set termguicolors
-"lua <<EOF
-"require('bufferline').setup {
-"  options = {
-"    close_command = "bdelete! %d",       -- can be a string | function, see "Mouse actions"
-"    right_mouse_command = "bdelete! %d", -- can be a string | function, see "Mouse actions"
-"    left_mouse_command = "buffer %d",    -- can be a string | function, see "Mouse actions"
-"    middle_mouse_command = nil,          -- can be a string | function, see "Mouse actions"
-"    -- NOTE: this plugin is designed with this icon in mind,
-"    -- and so changing this is NOT recommended, this is intended
-"    -- as an escape hatch for people who cannot bear it for whatever reason
-"    indicator = '▎',
-"    buffer_close_icon = '',
-"    modified_icon = '●',
-"    close_icon = '',
-"    left_trunc_marker = '',
-"    right_trunc_marker = '',
-"    --- name_formatter can be used to change the buffer's label in the bufferline.
-"    --- Please note some names can/will break the
-"    --- bufferline so use this at your discretion knowing that it has
-"    --- some limitations that will *NOT* be fixed.
-"    name_formatter = function(buf)  -- buf contains a "name", "path" and "bufnr"
-"      -- remove extension from markdown files for example
-"      if buf.name:match('index') then
-"        return vim.fn.fnamemodify(buf.name, 'git-status')
-"      end
-"      if buf.name:match('%.md') then
-"        return vim.fn.fnamemodify(buf.name, ':t:r')
-"      end
-"    end,
-"    offsets = {{filetype = "NvimTree", 
-"    text = "File Explorer",
-"    text_align = "left"}},
-"  }
-"}
-"EOF
+"lua require('bufferline-config')
 
 """"""""""""""""""""""""""""
 "       Commentary         "
@@ -306,154 +272,16 @@ let g:startify_bookmarks = [
 "       Telescope          "
 """"""""""""""""""""""""""""
 " Telescope Plugin settings
-lua <<EOF
-require("telescope").setup {
-  defaults = {
-    file_ignore_patterns = { 'Release/.*', 'Debug/.*', 'build/.*'},
-  },
-  pickers = {
-    -- Your special builtin config goes in here
-    buffers = {
-      sort_lastused = true,
-      theme = "dropdown",
-      previewer = false,
-      mappings = {
-        i = {
-          ["<c-d>"] = require("telescope.actions").delete_buffer,
-          -- Right hand side can also be the name of the action as a string
-          ["<c-d>"] = "delete_buffer",
-        },
-        n = {
-          ["<c-d>"] = require("telescope.actions").delete_buffer,
-        }
-      }
-    },
-  },
-  extensions = {
-    fzf_writer = {
-        use_highlighter = true
-    }
-  }
-}
-EOF
+lua require("telescope/telescope-config")
 
 """"""""""""""""""""""""""""
 "        TreeSitter        "
 """"""""""""""""""""""""""""
 " Enable Treesitter highlighting
-lua <<EOF
-require'nvim-treesitter.configs'.setup {
-  ensure_installed = {"rust", "c", "cpp", "go", "markdown", "toml", "yaml", "bash", "python", "html", "javascript"}, -- one of "all", "maintained" (parsers with maintainers), or a list of languages
-  ignore_install = { "javascript" }, -- List of parsers to ignore installing
-  highlight = {
-    enable = true,              -- false will disable the whole extension
-    disable = {  },  -- list of language that will be disabled
-    -- Setting this to true will run `:h syntax` and tree-sitter at the same time.
-    -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
-    -- Using this option may slow down your editor, and you may see some duplicate highlights.
-    -- Instead of true it can also be a list of languages
-    additional_vim_regex_highlighting = false,
-  },
-   incremental_selection = {
-    enable = true,
-    keymaps = {
-      init_selection = "gnn", -- set to `false` to disable one of the mappings
-      node_incremental = "grn",
-      scope_incremental = "grc",
-      node_decremental = "grm",
-    },
-  },
-  textobjects = {
-    select = {
-      enable = true,
-
-      -- Automatically jump forward to textobj, similar to targets.vim
-      lookahead = true,
-
-      keymaps = {
-        -- You can use the capture groups defined in textobjects.scm
-        ["af"] = "@function.outer",
-        ["if"] = "@function.inner",
-        ["aa"] = "@parameter.outer",
-        ["ia"] = "@parameter.outer",
-        ["ac"] = "@class.outer",
-        -- You can optionally set descriptions to the mappings (used in the desc parameter of
-        -- nvim_buf_set_keymap) which plugins like which-key display
-        ["ic"] = { query = "@class.inner", desc = "Select inner part of a class region" },
-      },
-      -- You can choose the select mode (default is charwise 'v')
-      --
-      -- Can also be a function which gets passed a table with the keys
-      -- * query_string: eg '@function.inner'
-      -- * method: eg 'v' or 'o'
-      -- and should return the mode ('v', 'V', or '<c-v>') or a table
-      -- mapping query_strings to modes.
-      selection_modes = {
-        ['@parameter.outer'] = 'v', -- charwise
-        ['@function.outer'] = 'V', -- linewise
-        ['@class.outer'] = '<c-v>', -- blockwise
-      },
-      -- If you set this to `true` (default is `false`) then any textobject is
-      -- extended to include preceding or succeeding whitespace. Succeeding
-      -- whitespace has priority in order to act similarly to eg the built-in
-      -- `ap`.
-      --
-      -- Can also be a function which gets passed a table with the keys
-      -- * query_string: eg '@function.inner'
-      -- * selection_mode: eg 'v'
-      -- and should return true of false
-      include_surrounding_whitespace = true,
-    },
-    move = {
-      enable = true,
-      set_jumps = true, -- whether to set jumps in the jumplist
-      goto_next_start = {
-        ["]f"] = "@function.outer",
-        ["]]"] = { query = "@class.outer", desc = "Next class start" },
-        ["]a"] = "@parameter.outer",
-      },
-      goto_next_end = {
-        ["]F"] = "@function.outer",
-        ["]["] = "@class.outer",
-        ["]A"] = "@parameter.outer",
-      },
-      goto_previous_start = {
-        ["[f"] = "@function.outer",
-        ["[["] = "@class.outer",
-        ["[a"] = "@parameter.outer",
-      },
-      goto_previous_end = {
-        ["[F"] = "@function.outer",
-        ["[]"] = "@class.outer",
-        ["[A"] = "@parameter.outer",
-      },
-    },
-  },
-}
-
--- Enable treesitter-context plugin
-require'treesitter-context'.setup()
-
-EOF
-
-"""""""""""""""""""""""""""""
-"       UltiSnips           "
-"""""""""""""""""""""""""""""
-" Trigger configuration. You need to change this to something other than <tab> if you use one of the following:
-" - https://github.com/Valloric/YouCompleteMe
-" - https://github.com/nvim-lua/completion-nvim
-let g:UltiSnipsExpandTrigger="<tab>"
-let g:UltiSnipsJumpForwardTrigger="<tab>"
-let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
+lua require("treesitter/ts-config")
 
 """""""""""""""""""""""""""""
 "         Vim-Sneak         "
 """""""""""""""""""""""""""""
 highlight Sneak guifg=white guibg=orange ctermfg=black ctermbg=red
-
-"""""""""""""""""""""""""""""
-"       YouCompleteMe       "
-"""""""""""""""""""""""""""""
-let g:ycm_key_list_select_completion = ['<C-n>', '<Down>']
-let g:ycm_key_list_previous_completion = ['<C-p>', '<Up>']
 
