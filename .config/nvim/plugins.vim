@@ -8,10 +8,6 @@ Plug 'lewis6991/impatient.nvim'
 " C/C++
 Plug 'cdelledonne/vim-cmake'
 
-" CoC
-" Plug 'neoclide/coc.nvim', {'branch': 'release', 'do': ':CocInstall coc-snippets'}
-" Plug 'jackguo380/vim-lsp-cxx-highlight'
-
 " Git-Related
 Plug 'airblade/vim-gitgutter'
 Plug 'antoinemadec/FixCursorHold.nvim' " Used to fix an issue with updatetime in gitgutter
@@ -49,14 +45,6 @@ Plug 'kshenoy/vim-signature' "Enhanced marking + gutter symbols for each mark
 Plug 'tpope/vim-unimpaired'  "Adds various movements using the '[' and ']' keys
 Plug 'bkad/CamelCaseMotion'  "Allows moving via CamelCase "words" using leader prefix
 Plug 'ggandor/leap.nvim'
-
-" NVIM-Tree
-" Plug 'kyazdani42/nvim-tree.lua'
-
-" NERDTree
-" Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }                    
-" Plug 'xuyuanp/nerdtree-git-plugin', { 'on': 'NERDTreeToggle' }            
-" Plug 'tiagofumo/vim-nerdtree-syntax-highlight', { 'on': 'NERDTreeToggle' }
 
 " Notify
 " Plug 'MunifTanjim/nui.nvim'
