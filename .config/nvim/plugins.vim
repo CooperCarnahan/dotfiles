@@ -102,6 +102,8 @@ Plug 'machakann/vim-highlightedyank'                              " Highlights m
 Plug 'jeffkreeftmeijer/vim-numbertoggle'
 Plug 'wincent/terminus'
 Plug 'mhinz/vim-sayonara', { 'on': 'Sayonara' }
+Plug 'folke/trouble.nvim'
+Plug 'folke/which-key.nvim'
 
 " Always leave devicons for last
 Plug 'kyazdani42/nvim-web-devicons' " Recommended (for coloured icons)
@@ -262,3 +264,43 @@ lua require("telescope/telescope-config")
 " Enable Treesitter highlighting
 lua require("treesitter/ts-config")
 
+""""""""""""""""""""""""""""
+"        Trouble           "
+""""""""""""""""""""""""""""
+lua << EOF
+  require("trouble").setup {
+    -- your configuration comes here
+    -- or leave it empty to use the default settings
+    -- refer to the configuration section below
+  }
+-- Lua
+vim.keymap.set("n", "<leader>xx", "<cmd>TroubleToggle<cr>",
+  {silent = true, noremap = true}
+)
+vim.keymap.set("n", "<leader>xw", "<cmd>TroubleToggle workspace_diagnostics<cr>",
+  {silent = true, noremap = true}
+)
+vim.keymap.set("n", "<leader>xd", "<cmd>TroubleToggle document_diagnostics<cr>",
+  {silent = true, noremap = true}
+)
+vim.keymap.set("n", "<leader>xl", "<cmd>TroubleToggle loclist<cr>",
+  {silent = true, noremap = true}
+)
+vim.keymap.set("n", "<leader>xq", "<cmd>TroubleToggle quickfix<cr>",
+  {silent = true, noremap = true}
+)
+vim.keymap.set("n", "gr", "<cmd>TroubleToggle lsp_references<cr>",
+  {silent = true, noremap = true}
+)
+EOF
+
+""""""""""""""""""""""""""""
+"        Which Key         "
+""""""""""""""""""""""""""""
+lua << EOF
+  require("which-key").setup {
+    -- your configuration comes here
+    -- or leave it empty to use the default settings
+    -- refer to the configuration section below
+  }
+EOF
