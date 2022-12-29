@@ -33,20 +33,17 @@ autocmd BufNewFile,BufRead *.MD set filetype=markdown
 " ================ Color Configs ====================
 colorscheme onedark
 set termguicolors               "Enable true colors
+set cursorline   "Enable different coloring of current line #
 " hi  Normal guibg=NONE           "Disable background colors for transparency (in gui programs)
 " hi  Normal ctermbg=NONE         "Disable background colors for transparency (in terminal programs)
 " hi  SignColumn guibg=NONE       "Set sign column to nothing for opacity reasons
 " hi  SignColumn ctermbg=NONE     "Set sign column to nothing for opacity reasons
 " hi  CursorLineNr guifg=white    "Set current line number color (in gui programs)
 " hi  CursorLineNr ctermfg=white  "Set current line number color (in terminal programs)
-" hi  LineNr guifg=grey           "Set other line number color (in gui programs)
-" hi  LineNr ctermfg=grey         "Set other line number color (in terminal programs)
-
-" ================ Plugin Color Configs ====================
-hi  Sneak ctermbg=172           "
-hi  Sneak guibg=orange          "
-hi  Sneak ctermfg=white         "
-hi  Sneak guifg=white           "
+" hi  LineNrAbove guifg=red           "Set other line number color (in gui programs)
+" hi  LineNrAbove ctermfg=red         "Set other line number color (in terminal programs)
+" hi  LineNrBelow guifg=green           "Set other line number color (in gui programs)
+" hi  LineNrBelow ctermfg=green         "Set other line number color (in terminal programs)
 
 " ================ Autoreload init.vim ==================
 " Automatically reload vimrc
