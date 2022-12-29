@@ -93,24 +93,9 @@ tmap <ESC> <C-\><C-n>
 " nmap <leader>glog :Commits<cr>
 
 """"""""""""""""""""""""""""
-" FZF Keybinds
-""""""""""""""""""""""""""""
-
-""""""""""""""""""""""""""""
 " Neoformat Keybinds
 """"""""""""""""""""""""""""
 nmap <leader>f :Neoformat<CR>
-
-""""""""""""""""""""""""""""
-" NERDTree Keybinds
-""""""""""""""""""""""""""""
-" nnoremap <C-e> :NERDTreeToggle<CR>      
-" nnoremap <leader>ntt :NERDTreeToggle<CR>
-
-""""""""""""""""""""""""""""
-" NvimTree Keybinds
-""""""""""""""""""""""""""""
-" nnoremap <C-e> :NvimTreeToggle<CR>
 
 """"""""""""""""""""""""""""
 " Tagbar
