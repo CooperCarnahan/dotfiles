@@ -23,7 +23,7 @@ endif
 " Wrap lines when working with a markdown file
 augroup Markdown
   autocmd!
-  autocmd FileType markdown set wrap
+  " autocmd FileType markdown set wrap
   autocmd FileType markdown setlocal spell
 augroup END
 
