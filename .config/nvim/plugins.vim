@@ -83,6 +83,7 @@ Plug 'sainnhe/edge'
 Plug 'shaunsingh/nord.nvim'
 Plug 'marko-cerovac/material.nvim'
 Plug 'navarasu/onedark.nvim'
+Plug 'folke/tokyonight.nvim'
 
 "Plug 'akinsho/bufferline.nvim'
 Plug 'nvim-lualine/lualine.nvim'
