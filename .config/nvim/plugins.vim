@@ -41,14 +41,13 @@ Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': 
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-repeat'
 Plug 'kshenoy/vim-signature' "Enhanced marking + gutter symbols for each mark
-Plug 'tpope/vim-unimpaired'  "Adds various movements using the '[' and ']' keys
 Plug 'bkad/CamelCaseMotion'  "Allows moving via CamelCase "words" using leader prefix
 Plug 'ggandor/leap.nvim'
 
 " Notify
-" Plug 'MunifTanjim/nui.nvim'
-" Plug 'rcarriga/nvim-notify'
-" Plug 'folke/noice.nvim'
+Plug 'MunifTanjim/nui.nvim'
+Plug 'rcarriga/nvim-notify'
+Plug 'folke/noice.nvim'
 
 " Rust
 Plug 'rust-lang/rust.vim'
@@ -83,7 +82,7 @@ Plug 'voldikss/vim-floaterm'
 Plug 'sainnhe/edge'
 Plug 'shaunsingh/nord.nvim'
 Plug 'marko-cerovac/material.nvim'
-Plug 'joshdick/onedark.vim'
+Plug 'navarasu/onedark.nvim'
 
 "Plug 'akinsho/bufferline.nvim'
 Plug 'nvim-lualine/lualine.nvim'
@@ -192,9 +191,7 @@ lua require("mason-lspconfig").setup()
 """"""""""""""""""""""""""""
 "         Noice            "
 """"""""""""""""""""""""""""
-" lua<<EOF
-" require("noice").setup()
-" EOF
+lua require("noice").setup()
 
 """"""""""""""""""""""""""""
 "         Nvim-CMP         "
