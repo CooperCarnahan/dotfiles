@@ -70,9 +70,9 @@ nnoremap <leader>w :Sayonara!<CR>
 """"""""""""""""""""""""""""
 " EasyClip Keybinds
 """"""""""""""""""""""""""""
-nmap x <Plug>MoveMotionPlug
-xmap x <Plug>MoveMotionXPlug
-nmap xx <Plug>MoveMotionLinePlug
+nmap m <Plug>MoveMotionPlug
+xmap m <Plug>MoveMotionXPlug
+nmap mm <Plug>MoveMotionLinePlug
 
 """"""""""""""""""""""""""""
 " FloatTerm
