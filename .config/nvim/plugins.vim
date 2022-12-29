@@ -39,7 +39,6 @@ Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': 
 
 " Movement-Related
 Plug 'tpope/vim-surround'
-Plug 'justinmk/vim-sneak'
 Plug 'tpope/vim-repeat'
 Plug 'kshenoy/vim-signature' "Enhanced marking + gutter symbols for each mark
 Plug 'tpope/vim-unimpaired'  "Adds various movements using the '[' and ']' keys
@@ -265,9 +264,4 @@ lua require("telescope/telescope-config")
 """"""""""""""""""""""""""""
 " Enable Treesitter highlighting
 lua require("treesitter/ts-config")
-
-"""""""""""""""""""""""""""""
-"         Vim-Sneak         "
-"""""""""""""""""""""""""""""
-highlight Sneak guifg=white guibg=orange ctermfg=black ctermbg=red
 

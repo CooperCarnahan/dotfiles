@@ -148,9 +148,3 @@ let g:SignatureMap = {
   \ 'GotoPrevMarkerAny'  :  "[=",
   \ 'ListBufferMarkers'  :  "m?"
   \ }
-
-""""""""""""""""""""""""""""
-" Vim-Sneak Keybinds
-""""""""""""""""""""""""""""
-nmap f <Plug>Sneak_s
-nmap F <Plug>Sneak_S
