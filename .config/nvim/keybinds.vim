@@ -40,7 +40,7 @@ if exists('g:vscode')
 else
   " nmap gd <Plug>(coc-definition)
   nmap gr <Plug>(coc-references)
-  vmap ]f <Plug>(coc-format-selected)
+  " vmap ]f <Plug>(coc-format-selected)
 endif
 
 " Jump to previous jump location and center
@@ -116,34 +116,6 @@ nmap <leader>f :Neoformat<CR>
 " Tagbar
 """"""""""""""""""""""""""""
 nnoremap <leader>t :Tagbar<CR>
-
-""""""""""""""""""""""""""""
-" Telescope Keybinds
-""""""""""""""""""""""""""""
-nmap <C-f> :<cmd>Telescope current_buffer_fuzzy_find<cr>
-nmap <C-b> :<cmd>Telescope buffers<cr>
-nmap <C-p> :<cmd>Telescope find_files<cr>
-nmap <C-c> :<cmd>Telescope git_commits<cr>
-nmap <C-t> :<cmd>Telescope current_buffer_tags<cr> 
-nmap <C-g> :<cmd>Telescope live_grep<cr>
-nmap <leader>g :<cmd>Telescope grep_string<cr>
-"Like Ctrl+p command in VSCode
-" nnoremap <C-p> <cmd>lua require('telescope.builtin').find_files()<cr>
-" nnoremap <leader>ff <cmd>lua require('telescope.builtin').find_files()<cr>
-"Like Ctrl+Shift+F command in VSCode
-" nnoremap <C-f> <cmd>lua require('telescope.builtin').live_grep()<cr>
-" nnoremap <leader>fg <cmd>lua require('telescope.builtin').live_grep()<cr>
-" Shows only files that have been opened thus far
-" nnoremap <C-b> <cmd>lua require('telescope.builtin').buffers()<cr>
-" nnoremap <leader>fb <cmd>lua require('telescope.builtin').buffers()<cr>
-" Shows files in order of how recently they were opened
-nnoremap <leader>fr <cmd>lua require('telescope.builtin').oldfiles()<cr>
-" Shows all marks
-nnoremap m/ <cmd>lua require('telescope.builtin').marks()<cr>
-nnoremap <leader>fm <cmd>lua require('telescope.builtin').marks()<cr>
-" Shows all tags
-" nnoremap <C-t> <cmd>lua require('telescope.builtin').tags()<cr>
-" nnoremap <leader>ft <cmd>lua require('telescope.builtin').tags()<cr>
 
 """"""""""""""""""""""""""""
 " Terminal
