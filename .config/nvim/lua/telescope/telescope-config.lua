@@ -42,7 +42,8 @@ set_keybinds("<C-c>", "git_commits", "Search git commits of current repo.")
 set_keybinds("<C-s>", "lsp_dynamic_workspace_symbols", "Find LSP symbols in current workspace.")
 set_keybinds("<C-t>", "current_buffer_tags", "Find tags in current buffer.")
 set_keybinds("<C-g>", "live_grep", "Run interactive ripgrep session.")
-set_keybinds("m/", "marks", "Fuzzy find in current buffer.")
+set_keybinds("<C-m>", "marks", "Fuzzy find in current buffer.")
+set_keybinds("<leader>km", "keymaps", "Show keymaps.")
 set_keybinds("<leader>g", "grep_string", "Ripgrep search for word under cursor.")
 
 local M = {}
