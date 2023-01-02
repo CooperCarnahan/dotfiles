@@ -36,12 +36,12 @@ vim.keymap.set("n", "<C-L>", "<C-W><C-L>")
 vim.keymap.set("n", "<C-H>", "<C-W><C-H>")
 
 --"""""""""""""""""""""""""""
--- EasyClip Keybinds
+-- Cutlass Keybinds
 --"""""""""""""""""""""""""""
-vim.keymap.set("n", "m", "<Plug>MoveMotionPlug")
-vim.keymap.set("x", "m", "<Plug>MoveMotionPlug")
-vim.keymap.set("x", "m", "<Plug>MoveMotionPlug")
-vim.keymap.set("n", "mm", "<Plug>MoveMotionLinePlug")
+vim.keymap.set("n", "m", "d")
+vim.keymap.set("x", "m", "d")
+vim.keymap.set("n", "mm", "dd")
+vim.keymap.set("n", "M", "D")
 
 --"""""""""""""""""""""""""""
 -- FloatTerm

@@ -25,7 +25,7 @@ return {
     event = "VeryLazy" },
   { "jeffkreeftmeijer/vim-numbertoggle",
     event = "VeryLazy" },
-  { "svermeulen/vim-easyclip",
+  { "svermeulen/vim-cutlass",
     event = "VeryLazy" },
   { "rmagatti/auto-session",
     config = function()
