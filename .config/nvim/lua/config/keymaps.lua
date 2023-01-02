@@ -1,8 +1,4 @@
--- !!!MUST BE BEFORE ANY KEYBINDS THAT USE LEADER
---local map = function(mode, input, output) 
---  vim.keymap.set(mode, input, output)
---end
-local wk= require("which-key")
+local wk = require("which-key")
 
 vim.o.timeoutlen = 300
 
@@ -24,9 +20,8 @@ vim.keymap.set("n", "Y", "y$")
 
 -- Searching
 -- n always searches forwards"
--- vim.cmd [[ norevim.keymap.set <expr> <SID>(search-forward) 'Nn'[v:searchforward] ]]
-vim.keymap.set("n", "n", "(v:searchforward ? 'n' : 'N')", {expr = true})
-vim.keymap.set("n", "N", "(v:searchforward ? 'N' : 'n')", {expr = true})
+vim.keymap.set("n", "n", "(v:searchforward ? 'n' : 'N')", { expr = true })
+vim.keymap.set("n", "N", "(v:searchforward ? 'N' : 'n')", { expr = true })
 
 -- Jump to previous jump location and center
 vim.keymap.set("n", "<C-o>", "<C-o>zz")
@@ -40,13 +35,11 @@ vim.keymap.set("n", "<C-K>", "<C-W><C-K>")
 vim.keymap.set("n", "<C-L>", "<C-W><C-L>")
 vim.keymap.set("n", "<C-H>", "<C-W><C-H>")
 
---" Delete buffer
-vim.keymap.set("n", "<leader>w", ":Sayonara!<cr>")
-
 --"""""""""""""""""""""""""""
 -- EasyClip Keybinds
 --"""""""""""""""""""""""""""
 vim.keymap.set("n", "m", "<Plug>MoveMotionPlug")
+vim.keymap.set("x", "m", "<Plug>MoveMotionPlug")
 vim.keymap.set("x", "m", "<Plug>MoveMotionPlug")
 vim.keymap.set("n", "mm", "<Plug>MoveMotionLinePlug")
 

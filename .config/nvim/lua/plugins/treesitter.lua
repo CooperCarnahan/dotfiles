@@ -9,6 +9,7 @@ return {
       "nvim-treesitter/nvim-treesitter-context",
     },
     config = function()
+      require('treesitter-context').setup()
       require("nvim-treesitter.configs").setup({
         ensure_installed = {
           "bash",
