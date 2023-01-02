@@ -31,4 +31,8 @@ return {
     event = "BufReadPre",
     config = { options = { "buffers", "curdir", "tabpages", "winsize", "help" } },
   },
+  { "folke/twilight.nvim",
+    cmd = "Twilight",
+    config = true
+  }
 }
