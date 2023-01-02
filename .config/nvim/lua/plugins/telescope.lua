@@ -5,18 +5,11 @@ local M = {
     'nvim-lua/popup.nvim',
     'nvim-lua/plenary.nvim',
     { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
+    'nvim-telescope/telescope-file-browser.nvim',
   },
   pin = true, -- Leave out of updates for now
   version = '*', -- Latest stable has bug right now
 }
-
-local function project_files(opts)
-  opts = opts or {} -- define here if you want to define something
-  local ok = pcall(require("telescope.builtin").git_files, opts)
-  if not ok then
-    require("telescope.builtin").find_files(opts)
-  end
-end
 
 -- Keybinds
 -- local function set_keybinds(keybind, cmd, desc)
@@ -47,9 +40,15 @@ function M.config()
         },
       },
     },
+    extensions = {
+      file_browser = {
+        hijack_netrw = true,
+      }
+    },
   })
 
   require("telescope").load_extension("fzf")
+  require("telescope").load_extension("file_browser")
 end
 
 return M

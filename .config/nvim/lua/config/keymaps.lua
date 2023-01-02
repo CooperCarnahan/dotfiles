@@ -85,4 +85,3 @@ local leader = {
 }
 
 wk.register(leader, { prefix = "<leader>" })
-wk.register(ctrl, { prefix = "<C->" })

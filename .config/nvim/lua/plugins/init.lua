@@ -27,18 +27,20 @@ return {
     event = "VeryLazy" },
   { "svermeulen/vim-easyclip",
     event = "VeryLazy" },
-  { "folke/persistence.nvim",
-    event = "BufReadPre",
-    config = { options = { "buffers", "curdir", "tabpages", "winsize", "help" } },
-  },
+  { "rmagatti/auto-session",
+    config = function()
+      require("auto-session").setup {
+        log_level = "error",
+        auto_session_suppress_dirs = { "~/", "~/Projects", "~/Downloads", "/" },
+        auto_save_enabled = true,
+        auto_session_create_enabled = false
+      }
+    end,
+    lazy = false, },
   { "folke/twilight.nvim",
     cmd = "Twilight",
-    config = true
-  },
-  {
-    "smjonas/inc-rename.nvim",
+    config = true },
+  { "smjonas/inc-rename.nvim",
     cmd = "IncRename",
-    config = true,
-  },
-
+    config = true, },
 }
