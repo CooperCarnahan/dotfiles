@@ -34,5 +34,11 @@ return {
   { "folke/twilight.nvim",
     cmd = "Twilight",
     config = true
-  }
+  },
+  {
+    "smjonas/inc-rename.nvim",
+    cmd = "IncRename",
+    config = true,
+  },
+
 }
