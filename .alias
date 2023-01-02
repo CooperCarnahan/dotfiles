@@ -90,6 +90,7 @@ alias yp='yadm push'
 alias yl='yadm pull'
 alias yco='yadm checkout'
 alias yd='yadm diff'
+alias ylg='lazygit -w ~ -g ~/.local/share/yadm/repo.git'
 
 ###########################
 #      Git Alias'         #
