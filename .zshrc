@@ -241,6 +241,10 @@ if [[ -d $HOME/.scripts ]]; then
   export PATH=$PATH:$HOME/.scripts
 fi
 
+if [[ -d $HOME/.local/bin ]]; then
+  export PATH=$PATH:$HOME/.local/bin
+fi
+
 ###################################
 #          broot                  #
 ###################################
