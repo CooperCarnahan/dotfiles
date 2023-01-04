@@ -2,7 +2,7 @@ keybinds clear-defaults=true {
     normal {
         bind "Ctrl x" { SwitchToMode "locked"; }
         bind "Ctrl a" { SwitchToMode "pane"; }
-        bind "Ctrl n" { SwitchToMode "resize"; }
+        bind "Ctrl r" { SwitchToMode "resize"; }
         bind "Ctrl t" { SwitchToMode "tab"; }
         bind "Ctrl s" { SwitchToMode "scroll"; }
         bind "Ctrl b" { SwitchToMode "session"; }
@@ -27,7 +27,7 @@ keybinds clear-defaults=true {
     }
     pane {
         bind "Ctrl x" { SwitchToMode "locked"; }
-        bind "Ctrl n" { SwitchToMode "resize"; }
+        bind "Ctrl r" { SwitchToMode "resize"; }
         bind "Ctrl t" { SwitchToMode "tab"; }
         bind "Ctrl a" "Enter" "Space" "Esc" { SwitchToMode "normal"; }
         bind "Ctrl s" { SwitchToMode "scroll"; }
@@ -60,7 +60,7 @@ keybinds clear-defaults=true {
     tab {
         bind "Ctrl x" { SwitchToMode "locked"; }
         bind "Ctrl a" { SwitchToMode "pane"; }
-        bind "Ctrl n" { SwitchToMode "resize"; }
+        bind "Ctrl r" { SwitchToMode "resize"; }
         bind "Ctrl t" "Enter" "Space" "Esc" { SwitchToMode "normal"; }
         bind "Ctrl s" { SwitchToMode "scroll"; }
         bind "Ctrl h" { SwitchToMode "move"; }
@@ -95,7 +95,7 @@ keybinds clear-defaults=true {
         bind "Ctrl x" { SwitchToMode "locked"; }
         bind "Ctrl a" { SwitchToMode "pane"; }
         bind "Ctrl t" { SwitchToMode "tab"; }
-        bind "Ctrl n" "Enter" "Space" "Esc" { SwitchToMode "normal"; }
+        bind "Ctrl r" "Enter" "Space" "Esc" { SwitchToMode "normal"; }
         bind "Ctrl s" { SwitchToMode "scroll"; }
         bind "Ctrl o" { SwitchToMode "session"; }
         bind "Ctrl q" { Quit; }
@@ -119,7 +119,7 @@ keybinds clear-defaults=true {
         bind "Ctrl x" { SwitchToMode "locked"; }
         bind "Ctrl a" { SwitchToMode "pane"; }
         bind "Ctrl t" { SwitchToMode "tab"; }
-        bind "Ctrl n" { SwitchToMode "resize"; }
+        bind "Ctrl r" { SwitchToMode "resize"; }
         bind "Ctrl h" "Enter" "Space" "Esc" { SwitchToMode "normal"; }
         bind "Ctrl s" { SwitchToMode "scroll"; }
         bind "Ctrl b" { SwitchToMode "session"; }
@@ -146,7 +146,7 @@ keybinds clear-defaults=true {
         bind "Ctrl a" { SwitchToMode "pane"; }
         bind "Ctrl h" { SwitchToMode "move"; }
         bind "Ctrl b" { SwitchToMode "session"; }
-        bind "Ctrl n" { SwitchToMode "resize"; }
+        bind "Ctrl r" { SwitchToMode "resize"; }
         bind "Ctrl c" { ScrollToBottom; SwitchToMode "normal"; }
         bind "Ctrl q" { Quit; }
         bind "j" "Down" { ScrollDown; }
@@ -167,7 +167,7 @@ keybinds clear-defaults=true {
     }
     session {
         bind "Ctrl x" { SwitchToMode "locked"; }
-        bind "Ctrl n" { SwitchToMode "resize"; }
+        bind "Ctrl r" { SwitchToMode "resize"; }
         bind "Ctrl a" { SwitchToMode "pane"; }
         bind "Ctrl h" { SwitchToMode "move"; }
         bind "Ctrl t" { SwitchToMode "tab"; }
@@ -191,7 +191,7 @@ keybinds clear-defaults=true {
         bind "Ctrl a" { SwitchToMode "pane"; }
         bind "Ctrl h" { SwitchToMode "move"; }
         bind "Ctrl b" { SwitchToMode "session"; }
-        bind "Ctrl n" { SwitchToMode "resize"; }
+        bind "Ctrl r" { SwitchToMode "resize"; }
         bind "Ctrl c" { ScrollToBottom; SwitchToMode "normal"; }
         bind "Ctrl q" { Quit; }
         bind "j" "Down" { ScrollDown; }
@@ -253,7 +253,7 @@ keybinds clear-defaults=true {
     }
     tmux {
         bind "Ctrl x" { SwitchToMode "locked"; }
-        bind "Ctrl n" { SwitchToMode "resize"; }
+        bind "Ctrl r" { SwitchToMode "resize"; }
         bind "Ctrl p" { SwitchToMode "pane"; }
         bind "Ctrl h" { SwitchToMode "move"; }
         bind "Ctrl t" { SwitchToMode "tab"; }
