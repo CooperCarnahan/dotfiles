@@ -61,6 +61,10 @@ vim.keymap.set("t", "<ESC>", "<C-\\><C-n>")
 -- nvim.keymap.set <leader>ga :Neoformat <bar> Gwrite<cr>
 -- nvim.keymap.set <C-g>      :Git<cr>
 -- nvim.keymap.set <leader>glog :Commits<cr>
+
+-----------------------------
+-- Telescope --
+-----------------------------
 vim.keymap.set("n", "<C-f>", "<cmd>Telescope current_buffer_fuzzy_find<cr>", { desc = "Fuzzy find in buffer" })
 vim.keymap.set("n", "<C-b>", "<cmd>Telescope buffers<cr>", { desc = "Buffers" })
 vim.keymap.set("n", "<C-p>", "<cmd>Telescope find_files<cr>", { desc = "Recursively fuzzy find files in cwd" })
@@ -70,6 +74,7 @@ vim.keymap.set("n", "<C-g>", "<cmd>Telescope live_grep<cr>", { desc = "Live grep
 vim.keymap.set("n", "<leader>km", "<cmd>Telescope keymaps<cr>", { desc = "Keymaps" })
 vim.keymap.set("n", "<leader>g", "<cmd>Telescope grep_string<cr>", { desc = "Search word under cursor" })
 vim.keymap.set("n", "<leader>of", "<cmd>Telescope oldfiles<cr>", { desc = "Recent files" })
+vim.keymap.set("n", "<leader>fb", "<cmd>Telescope file_browser<cr>", { desc = "File browser" })
 
 local leader = {
   t = {
