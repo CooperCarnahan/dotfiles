@@ -6,7 +6,7 @@ local M = {}
 --   print(vim.inspect(result))
 -- end
 
-M.autoformat = true
+M.autoformat = false
 
 function M.toggle()
   M.autoformat = not M.autoformat
