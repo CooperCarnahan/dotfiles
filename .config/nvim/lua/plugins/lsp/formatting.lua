@@ -27,6 +27,14 @@ function M.format()
   end
 end
 
+function M.format_range()
+  if vim.lsp.buf.format then
+    vim.lsp.buf.format()
+  else
+    vim.lsp.buf.formatting_sync()
+  end
+end
+
 function M.setup(client, buf)
   local ft = vim.api.nvim_buf_get_option(buf, "filetype")
   local nls = require("plugins.null-ls")
