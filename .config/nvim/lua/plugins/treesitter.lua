@@ -10,6 +10,7 @@ return {
     },
     config = function()
       require('treesitter-context').setup()
+
       require("nvim-treesitter.configs").setup({
         ensure_installed = {
           "bash",
@@ -66,10 +67,10 @@ return {
         incremental_selection = {
           enable = true,
           keymaps = {
-            init_selection = "<C-space>",
-            node_incremental = "<C-space>",
+            init_selection = "<cr>",
+            node_incremental = "<cr>",
             scope_incremental = "<C-s>",
-            node_decremental = "<C-bs>",
+            node_decremental = "<bs>",
           },
         },
         query_linter = {
@@ -104,8 +105,17 @@ return {
             goto_previous_start = { ["[f"] = "@function.outer", ["[c"] = "@class.outer" },
             goto_previous_end = { ["[F"] = "@function.outer", ["[C"] = "@class.outer" },
           },
+          swap = {
+            enable = true,
+            swap_next = {
+              ["<leader>a"] = "@parameter.inner",
+            },
+            swap_previous = {
+              ["<leader>A"] = "@parameter.inner",
+            },
+          },
           lsp_interop = {
-            enable = false,
+            enable = true,
             peek_definition_code = {
               ["gD"] = "@function.outer",
             },
