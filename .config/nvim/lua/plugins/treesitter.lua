@@ -3,7 +3,7 @@ return {
   {
     "nvim-treesitter/nvim-treesitter",
     build = ":TSUpdate",
-    event = "BufReadPost",
+    event = "BufReadPre",
     dependencies = {
       "nvim-treesitter/nvim-treesitter-textobjects",
       "nvim-treesitter/nvim-treesitter-context",
@@ -86,7 +86,7 @@ return {
         },
         textobjects = {
           select = {
-            enable = false,
+            enable = true,
             lookahead = true,
             keymaps = {
               -- You can use the capture groups defined in textobjects.scm
