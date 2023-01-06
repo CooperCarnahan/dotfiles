@@ -28,8 +28,6 @@ vim.keymap.set("n", "<C-o>", "<C-o>zz")
 vim.keymap.set("n", "<C-i>", "<C-i>zz")
 
 -- Navigate splits using <Ctrl + j,k,l,h>
-vim.keymap.set("n", "<leader>s", ":split<cr>")
-vim.keymap.set("n", "<leader>v", ":vsplit<cr>")
 vim.keymap.set("n", "<C-J>", "<C-W><C-J>")
 vim.keymap.set("n", "<C-K>", "<C-W><C-K>")
 vim.keymap.set("n", "<C-L>", "<C-W><C-L>")
@@ -48,19 +46,6 @@ vim.keymap.set("n", "M", "D")
 --"""""""""""""""""""""""""""
 vim.keymap.set("n", "<leader>lg", ":FloatermNew --cwd=<buffer> lazygit<cr>")
 vim.keymap.set("t", "<ESC>", "<C-\\><C-n>")
---tvim.keymap.set <ESC> <C-\><C-n>
-
---"""""""""""""""""""""""""""
--- Fugitive
---"""""""""""""""""""""""""""
--- nvim.keymap.set <leader>gs :Git<cr>
--- nvim.keymap.set <leader>gh :diffget //2<cr>
--- nvim.keymap.set <leader>gl :diffget //3<cr>
--- nvim.keymap.set <leader>gd :Gdiffsplit!<cr>
--- nvim.keymap.set <leader>gc :G commit<cr>
--- nvim.keymap.set <leader>ga :Neoformat <bar> Gwrite<cr>
--- nvim.keymap.set <C-g>      :Git<cr>
--- nvim.keymap.set <leader>glog :Commits<cr>
 
 -----------------------------
 -- Telescope --
@@ -77,7 +62,7 @@ vim.keymap.set("n", "<leader>of", "<cmd>Telescope oldfiles<cr>", { desc = "Recen
 vim.keymap.set("n", "<leader>fb", "<cmd>Telescope file_browser<cr>", { desc = "File browser" })
 
 local leader = {
-  t = {
+  ["t"] = {
     name = "toggle",
     f = {
       require("plugins.lsp.formatting").toggle,
@@ -87,6 +72,18 @@ local leader = {
       [[<cmd>Twilight<cr>]], "Twilight"
     }
   },
+  ["w"] = {
+    name = "window",
+    s = {
+      [[<cmd>split<cr>]], "Split Horizontal"
+    },
+    v = {
+      [[<cmd>vsplit<cr>]], "Split Vertical"
+    }
+  },
+  ["s"] = {
+    name = "swap",
+  }
 }
 
 wk.register(leader, { prefix = "<leader>" })
