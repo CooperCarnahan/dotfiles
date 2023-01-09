@@ -28,24 +28,23 @@ function M.config()
     snoremap <silent> <S-Tab> <cmd>lua require('luasnip').jump(-1)<Cr>
   ]])
 
-vim.keymap.set({ "i", "s" }, "<c-k>", function()
-	if ls.expand_or_jumpable() then
-		ls.expand_or_jump()
-	end
-end, { silent = true })
+  vim.keymap.set({ "i", "s" }, "<c-k>", function()
+    if luasnip.expand_or_jumpable() then
+      luasnip.expand_or_jump()
+    end
+  end, { silent = true })
 
-vim.keymap.set({ "i", "s" }, "<c-j>", function()
-	if ls.jumpable(-1) then
-		ls.jump(-1)
-	end
-end, { silent = true })
+  vim.keymap.set({ "i", "s" }, "<c-j>", function()
+    if luasnip.jumpable(-1) then
+      luasnip.jump(-1)
+    end
+  end, { desc = "Jump to prev", silent = true })
 
-vim.keymap.set({ "i", "s" }, "<c-l>", function()
-	if ls.choice_active() then
-		ls.change_choice(1)
-	end
-end, { silent = true })
+  vim.keymap.set({ "i", "s" }, "<c-l>", function()
+    if luasnip.choice_active() then
+      luasnip.change_choice(1)
+    end
+  end, { desc = "Jump to next", silent = true })
 end
 
 return M
-
