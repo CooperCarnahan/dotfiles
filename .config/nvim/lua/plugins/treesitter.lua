@@ -11,6 +11,7 @@ return {
     config = function()
       require('treesitter-context').setup()
 
+
       require("nvim-treesitter.configs").setup({
         ensure_installed = {
           "bash",
@@ -91,31 +92,43 @@ return {
             lookahead = true,
             keymaps = {
               -- You can use the capture groups defined in textobjects.scm
-              ["af"] = "@function.outer",
-              ["if"] = "@function.inner",
-              ["aa"] = "@parameter.outer",
-              ["ia"] = "@parameter.inner",
               ["ac"] = "@class.outer",
               ["ic"] = "@class.inner",
+
+              ["ab"] = "@block.outer",
+              ["ib"] = "@block.inner",
+
+              ["af"] = "@function.outer",
+              ["if"] = "@function.inner",
+
+              ["aa"] = "@parameter.outer",
+              ["ia"] = "@parameter.inner",
+
+              ["al"] = "@loop.outer",
+              ["il"] = "@loop.inner",
             },
           },
           move = {
             enable = true,
             set_jumps = true, -- whether to set jumps in the jumplist
-            goto_next_start = { ["]f"] = "@function.outer", ["]c"] = "@class.outer", ["]a"] = "@parameter.outer" },
-            goto_next_end = { ["]F"] = "@function.outer", ["]C"] = "@class.outer", ["]A"] = "@parameter.outer" },
-            goto_previous_start = { ["[f"] = "@function.outer", ["[c"] = "@class.outer", ["[a"] = "@parameter.outer" },
-            goto_previous_end = { ["[F"] = "@function.outer", ["[C"] = "@class.outer", ["[A"] = "@parameter.outer" },
+            goto_next_start = { ["]f"] = "@function.outer", ["]c"] = "@class.outer", ["]a"] = "@parameter.inner",
+              ["]b"] = "@block.outer", ["]l"] = "@loop.inner" },
+            goto_next_end = { ["]F"] = "@function.outer", ["]C"] = "@class.outer", ["]A"] = "@parameter.inner",
+              ["]B"] = "@block.outer", ["]L"] = "@loop.inner" },
+            goto_previous_start = { ["[f"] = "@function.outer", ["[c"] = "@class.outer", ["[a"] = "@parameter.inner",
+              ["[b"] = "@block.outer", ["[l"] = "@loop.outer" },
+            goto_previous_end = { ["[F"] = "@function.outer", ["[C"] = "@class.outer", ["[A"] = "@parameter.inner",
+              ["[B"] = "@block.outer", ["[L"] = "@loop.outer" },
           },
           swap = {
             enable = true,
             swap_next = {
-              ["<leader>sp"] = "@parameter.inner",
+              ["<leader>sa"] = "@parameter.inner",
               ["<leader>sf"] = "@function.outer",
               ["<leader>sb"] = "@block.outer",
             },
             swap_previous = {
-              ["<leader>sP"] = "@parameter.inner",
+              ["<leader>sA"] = "@parameter.inner",
               ["<leader>sF"] = "@function.outer",
               ["<leader>sB"] = "@block.outer",
             },
