@@ -6,7 +6,7 @@ local M = {}
 --   print(vim.inspect(result))
 -- end
 
-M.autoformat = false
+M.autoformat = true
 
 function M.toggle()
   M.autoformat = not M.autoformat
@@ -17,7 +17,7 @@ function M.toggle()
   end
 end
 
-function M.format()
+function M.auto_format()
   if M.autoformat then
     if vim.lsp.buf.format then
       vim.lsp.buf.format()
@@ -27,7 +27,7 @@ function M.format()
   end
 end
 
-function M.format_range()
+function M.format()
   if vim.lsp.buf.format then
     vim.lsp.buf.format()
   else
@@ -52,7 +52,7 @@ function M.setup(client, buf)
     vim.cmd([[
       augroup LspFormat
         autocmd! * <buffer>
-        autocmd BufWritePre <buffer> lua require("plugins.lsp.formatting").format()
+        autocmd BufWritePre <buffer> lua require("plugins.lsp.formatting").auto_format()
       augroup END
     ]])
   end
