@@ -44,7 +44,7 @@ vim.keymap.set("n", "M", "D")
 --"""""""""""""""""""""""""""
 -- FloatTerm
 --"""""""""""""""""""""""""""
-vim.keymap.set("n", "<leader>lg", ":FloatermNew --cwd=<buffer> lazygit<cr>")
+vim.keymap.set("n", "<leader>lg", ":FloatermNew --cwd=<buffer> lazygit<cr>", { desc = "LazyGit" })
 vim.keymap.set("t", "<ESC>", "<C-\\><C-n>")
 
 -----------------------------
@@ -59,9 +59,30 @@ vim.keymap.set("n", "<C-g>", "<cmd>Telescope live_grep<cr>", { desc = "Live grep
 vim.keymap.set("n", "<leader>km", "<cmd>Telescope keymaps<cr>", { desc = "Keymaps" })
 vim.keymap.set("n", "<leader>g", "<cmd>Telescope grep_string<cr>", { desc = "Search word under cursor" })
 vim.keymap.set("n", "<leader>of", "<cmd>Telescope oldfiles<cr>", { desc = "Recent files" })
-vim.keymap.set("n", "<leader>fb", "<cmd>Telescope file_browser<cr>", { desc = "File browser" })
 
 local leader = {
+  ["f"] = {
+    name = "find",
+    b = {
+      "<cmd>Telescope file_browser<cr>",
+      "File browser"
+    },
+    j = {
+      "<cmd>Telescope jumplist<cr>",
+      "Jumplist"
+    },
+    s = {
+      "<cmd>Telescope lsp_document_symbols<cr>",
+      "LSP Document Symbols",
+    },
+    t = {
+      "<cmd>Telescope tagstack<cr>",
+      "Tagstack",
+    },
+  },
+  ["s"] = {
+    name = "swap",
+  },
   ["t"] = {
     name = "toggle",
     f = {
@@ -81,9 +102,6 @@ local leader = {
       [[<cmd>vsplit<cr>]], "Split Vertical"
     }
   },
-  ["s"] = {
-    name = "swap",
-  }
 }
 
 wk.register(leader, { prefix = "<leader>" })
