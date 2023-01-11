@@ -53,4 +53,18 @@ return {
   { "folke/twilight.nvim",
     cmd = "Twilight",
     config = true },
+  { "vim-test/vim-test",
+    branch = "master",
+    commit = "ca25025",
+    event = "VeryLazy",
+    config = function()
+      vim.g['test#cpp#catch2#relToProject_build_dir'] = "Debug/bin"
+      -- vim.g['test#cpp#catch2#bin_dir'] = './bin/'
+    end,
+    dependencies = {
+      'skywind3000/asyncrun.vim',
+      'cdelledonne/vim-cmake',
+      -- 'neomake/neomake',
+      'tpope/vim-dispatch',
+    } },
 }
