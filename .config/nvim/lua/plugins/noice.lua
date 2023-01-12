@@ -5,8 +5,18 @@ local M = {
     'MunifTanjim/nui.nvim',
     'rcarriga/nvim-notify',
   },
-  config = true,
 }
 
+function M.config()
+  local noice = require("noice")
+  noice.setup({
+    routes = {
+      {
+        view = "notify",
+        filter = { event = "msg_showmode" },
+      },
+    },
+  })
+end
 
 return M
