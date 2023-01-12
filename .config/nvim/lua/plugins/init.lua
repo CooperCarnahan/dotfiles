@@ -68,7 +68,7 @@ return {
       'tpope/vim-dispatch',
     }
   },
-  { "chrisgrieser/nvim-recorder",
-    event = "VeryLazy",
-    config = true }
+  -- { "chrisgrieser/nvim-recorder",
+  --   event = "VeryLazy",
+  --   config = true, }
 }
