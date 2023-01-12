@@ -16,6 +16,7 @@ vim.o.hidden = true --Allows switching buffers without saving
 vim.o.foldlevel = 99
 vim.o.scrolloff = 999 --Jumps are centered if possible
 vim.opt.grepprg = "rg --vimgrep"
+vim.o.background = "dark"
 
 --================ Color Configs ====================
 vim.o.termguicolors = true --Enable true colors

@@ -1,9 +1,8 @@
 return {
 
-  -- tokyonight
   {
     "folke/tokyonight.nvim",
-    lazy = false,
+    lazy = true,
     priority = 1000,
     config = function()
       local tokyonight = require("tokyonight")
@@ -11,22 +10,29 @@ return {
       tokyonight.load()
     end,
   },
-
   {
-'sainnhe/edge',
-lazy = true
-},
-{
-'shaunsingh/nord.nvim',
-lazy = true
-},
-{
-'marko-cerovac/material.nvim',
-lazy = true
-},
-{
-'navarasu/onedark.nvim',
-lazy = true,
-},
+    'sainnhe/gruvbox-material',
+    priority = 100,
+    lazy = false,
+    config = function()
+      vim.g.gruvbox_material_background = 'hard'
+      vim.cmd([[colorscheme gruvbox-material]])
+    end
+  },
+  {
+    'sainnhe/edge',
+    lazy = true
+  },
+  {
+    'shaunsingh/nord.nvim',
+    lazy = true
+  },
+  {
+    'marko-cerovac/material.nvim',
+    lazy = true
+  },
+  {
+    'navarasu/onedark.nvim',
+    lazy = true,
+  },
 }
-
