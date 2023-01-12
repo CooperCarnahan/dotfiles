@@ -4,12 +4,9 @@ local M = {
   dependencies = {
     'MunifTanjim/nui.nvim',
     'rcarriga/nvim-notify',
-  }
-
+  },
+  config = true,
 }
 
-function M.config()
-  require("noice").setup()
-end
 
 return M
