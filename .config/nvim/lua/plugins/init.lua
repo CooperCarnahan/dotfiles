@@ -66,5 +66,9 @@ return {
       'cdelledonne/vim-cmake',
       -- 'neomake/neomake',
       'tpope/vim-dispatch',
-    } },
+    }
+  },
+  { "chrisgrieser/nvim-recorder",
+    event = "VeryLazy",
+    config = true }
 }
