@@ -27,7 +27,7 @@ function M.config()
     pickers = {
       -- Your special builtin config goes in here
       buffers = {
-        sort_lastused = true,
+        sort_lastused = false,
         theme = "dropdown",
         previewer = false,
         mappings = {
