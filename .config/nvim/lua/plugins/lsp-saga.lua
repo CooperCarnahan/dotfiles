@@ -1,12 +1,12 @@
 local M = {
   'glepnir/lspsaga.nvim',
-  event = 'VeryLazy'
+  event = 'BufRead'
 }
 
 function M.config()
   local keymap = vim.keymap.set
   local saga = require("lspsaga")
-  saga.init_lsp_saga({
+  saga.setup({
     show_outline = {
       win_position = "right",
       --set special filetype win that outline window split.like NvimTree neotree
