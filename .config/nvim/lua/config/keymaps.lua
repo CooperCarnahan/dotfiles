@@ -52,9 +52,9 @@ vim.keymap.set("t", "<ESC>", "<C-\\><C-n>")
 -----------------------------
 vim.keymap.set("n", "<C-f>", "<cmd>Telescope current_buffer_fuzzy_find<cr>", { desc = "Fuzzy find in buffer" })
 vim.keymap.set("n", "<C-b>", "<cmd>Telescope buffers<cr>", { desc = "Buffers" })
-vim.keymap.set("n", "<C-p>", "<cmd>Telescope find_files<cr>", { desc = "Recursively fuzzy find files in cwd" })
-vim.keymap.set("n", "<C-c>", "<cmd>Telescope git_commits<cr>", { desc = "Git commits" })
-vim.keymap.set("n", "<C-s>", "<cmd>Telescope lsp_workspace_symbols<cr>", { desc = "LSP workspace symbols" })
+vim.keymap.set("n", "<C-p>", "<cmd>Telescope find_files<cr>", { desc = "Find files" })
+vim.keymap.set("n", "<C-c>", "<cmd>Telescope git_bcommits<cr>", { desc = "Git buffer commits" })
+vim.keymap.set("n", "<C-s>", "<cmd>Telescope lsp_document_symbols<cr>", { desc = "LSP document symbols" })
 vim.keymap.set("n", "<C-g>", "<cmd>Telescope live_grep<cr>", { desc = "Live grep" })
 vim.keymap.set("n", "<leader>km", "<cmd>Telescope keymaps<cr>", { desc = "Keymaps" })
 vim.keymap.set("n", "<leader>g", "<cmd>Telescope grep_string<cr>", { desc = "Search word under cursor" })
@@ -72,8 +72,8 @@ local leader = {
       "Jumplist"
     },
     s = {
-      "<cmd>Telescope lsp_document_symbols<cr>",
-      "LSP Document Symbols",
+      "<cmd>Telescope lsp_workspace_symbols<cr>",
+      "LSP workspace symbols",
     },
     t = {
       "<cmd>Telescope tagstack<cr>",
@@ -91,6 +91,9 @@ local leader = {
     },
     t = {
       [[<cmd>Twilight<cr>]], "Twilight"
+    },
+    b = {
+      [[<cmd>BlamerToggle<cr>]], "GitBlamer"
     }
   },
   ["w"] = {
