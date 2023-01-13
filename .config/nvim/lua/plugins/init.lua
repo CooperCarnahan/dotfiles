@@ -70,6 +70,9 @@ return {
       'tpope/vim-dispatch',
     }
   },
+  { "APZelos/blamer.nvim",
+    cmd = "BlamerToggle",
+  },
   -- { "chrisgrieser/nvim-recorder",
   --   event = "VeryLazy",
   --   config = true, }
