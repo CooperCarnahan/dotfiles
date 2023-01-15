@@ -109,7 +109,7 @@ bindkey "^E" autosuggest-accept
  #bindkey -M vicmd "j" down-line-or-beginning-search
 
 # #Set jj to send 'escape' key during insert mode 
- bindkey -M viins 'jj' vi-cmd-mode
+ bindkey -M viins 'jk' vi-cmd-mode
 
 # Remove alt-h,j,k,l keybinds so tmux can use them
  bindkey -s "^[h" ""
