@@ -1,6 +1,7 @@
 local M = {
   'glepnir/lspsaga.nvim',
-  event = 'BufRead'
+  event = 'BufRead',
+  cond = false,
 }
 
 function M.config()
@@ -35,9 +36,6 @@ function M.config()
     "<cmd>Lspsaga code_action<CR>",
     { silent = true, desc = "[LspSaga] Run code action" }
   )
-
-  -- Rename
-  keymap("n", "<leader>rn", "<cmd>Lspsaga rename<CR>", { silent = true, desc = "[LspSaga] Interactive rename" })
 
   -- Peek Definition
   -- you can edit the definition file in this floatwindow
