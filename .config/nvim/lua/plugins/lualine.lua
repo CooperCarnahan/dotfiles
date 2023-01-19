@@ -35,6 +35,14 @@ function M.config()
       lualine_y = { "progress" },
       lualine_z = { "location" },
     },
+    inactive_sections = {
+      lualine_a = {},
+      lualine_b = {},
+      lualine_c = {},
+      lualine_x = {},
+      lualine_y = { "progress" },
+      lualine_z = { "location" },
+    },
     winbar = {
       lualine_a = {},
       lualine_b = {
