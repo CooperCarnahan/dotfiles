@@ -69,8 +69,8 @@ source $HOME/.keychain/$(uname -n)-sh
 export EDITOR='nvim'
 # fi
 
-export PAGER='less -r'
-export BAT_PAGER='less -r'
+export PAGER='less -R'
+export BAT_PAGER='less -R'
 
 #export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"
@@ -130,9 +130,6 @@ if ! command -v bat &> /dev/null; then
     echo "'bat' not installed. Using default 'cat'"
 else
     export BAT_THEME=TwoDark
-    if command -v delta &> /dev/null; then
-      export DELTA_PAGER=bat
-    fi
 fi
 
 ###################################
