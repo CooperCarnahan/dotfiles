@@ -51,7 +51,7 @@ vim.keymap.set("t", "<ESC>", "<C-\\><C-n>")
 -- Telescope --
 -----------------------------
 vim.keymap.set("n", "<C-f>", "<cmd>Telescope current_buffer_fuzzy_find<cr>", { desc = "Fuzzy find in buffer" })
-vim.keymap.set("n", "<C-b>", "<cmd>Telescope buffers<cr>", { desc = "Buffers" })
+vim.keymap.set("n", "<C-b>", "<cmd>Telescope frecency<cr>", { desc = "Buffers" })
 vim.keymap.set("n", "<C-p>", "<cmd>Telescope find_files<cr>", { desc = "Find files" })
 vim.keymap.set("n", "<C-c>", "<cmd>Telescope git_bcommits<cr>", { desc = "Git buffer commits" })
 vim.keymap.set("n", "<C-s>", "<cmd>Telescope lsp_document_symbols<cr>", { desc = "LSP document symbols" })
@@ -66,6 +66,10 @@ local leader = {
     b = {
       "<cmd>Telescope file_browser<cr>",
       "File browser"
+    },
+    f = {
+      "<cmd>Telescope frecency<cr>",
+      "Frecent files"
     },
     j = {
       "<cmd>Telescope jumplist<cr>",
