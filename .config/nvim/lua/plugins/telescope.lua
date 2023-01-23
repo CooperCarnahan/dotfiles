@@ -47,7 +47,7 @@ function M.config()
         hijack_netrw = true,
       },
       frecency = {
-        show_unindexed = true,
+        show_unindexed = false,
         default_workspace = "CWD",
         ignore_patterns = { "*.git/*", "*/tmp/*" },
         disable_devicons = false,
