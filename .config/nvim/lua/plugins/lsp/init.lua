@@ -21,6 +21,7 @@ function M.config()
     ansiblels = {},
     bashls = {},
     clangd = {},
+    cmake = {},
     cssls = {},
     dockerls = {},
     tsserver = {},
@@ -78,12 +79,10 @@ function M.config()
 
   for server, opts in pairs(servers) do
     opts = vim.tbl_deep_extend("force", {}, options, opts or {})
-      require("lspconfig")[server].setup(opts)
+    require("lspconfig")[server].setup(opts)
   end
 
   -- require("plugins.null-ls").setup(options)
 end
 
 return M
-
-
