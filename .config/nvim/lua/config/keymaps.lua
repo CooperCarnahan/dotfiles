@@ -75,6 +75,10 @@ local leader = {
       "<cmd>Telescope tagstack<cr>",
       "Tagstack",
     },
+    y = {
+      "<cmd>Telescope yank_history<cr>",
+      "Yank History",
+    },
   },
   ["s"] = {
     name = "swap",

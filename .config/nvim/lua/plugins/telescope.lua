@@ -58,6 +58,7 @@ function M.config()
   require "telescope".load_extension("frecency")
   require("telescope").load_extension("fzf")
   require("telescope").load_extension("file_browser")
+  require("telescope").load_extension("yank_history")
 end
 
 return M
