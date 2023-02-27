@@ -7,12 +7,16 @@ local M = {
     { 'theHamsta/nvim-dap-virtual-text',
       config = true
     },
+    { 'mfussenegger/nvim-dap-python',
+      config = true
+    },
   }
 }
 
 -- setup DAP
 function M.config()
   local dap = require('dap')
+  require('dap-python').setup('~/.virtualenvs/debugpy/bin/python')
   dap.adapters.cppdbg = {
     id = 'cppdbg',
     type = 'executable',
