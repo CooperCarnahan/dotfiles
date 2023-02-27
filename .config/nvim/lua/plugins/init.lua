@@ -31,13 +31,13 @@ return {
     event = "VeryLazy" },
   { "jeffkreeftmeijer/vim-numbertoggle",
     event = "VeryLazy" },
-  { "gbprod/cutlass.nvim",
-    event = "VeryLazy",
-    config = function()
-      require("cutlass").setup({ exclude = { "ns", "nS" }, })
-    end,
-    commit = "e607a",
-    pin = true },
+  -- { "gbprod/cutlass.nvim",
+  --   event = "VeryLazy",
+  --   config = function()
+  --     require("cutlass").setup({ exclude = { "ns", "nS" }, })
+  --   end,
+  --   commit = "e607a",
+  --   pin = true },
   { "rmagatti/auto-session",
     config = function()
       require("auto-session").setup {

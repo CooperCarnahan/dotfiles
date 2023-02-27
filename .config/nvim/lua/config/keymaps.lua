@@ -34,14 +34,6 @@ vim.keymap.set("n", "<C-L>", "<C-W><C-L>")
 vim.keymap.set("n", "<C-H>", "<C-W><C-H>")
 
 --"""""""""""""""""""""""""""
--- Cutlass Keybinds
---"""""""""""""""""""""""""""
-vim.keymap.set("n", "m", "d")
-vim.keymap.set("x", "m", "d")
-vim.keymap.set("n", "mm", "dd")
-vim.keymap.set("n", "M", "D")
-
---"""""""""""""""""""""""""""
 -- FloatTerm
 --"""""""""""""""""""""""""""
 vim.keymap.set("n", "<leader>lg", ":FloatermNew --cwd=<buffer> lazygit<cr>", { desc = "LazyGit" })
