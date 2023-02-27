@@ -70,7 +70,6 @@ return {
     end,
     dependencies = {
       'skywind3000/asyncrun.vim',
-      'cdelledonne/vim-cmake',
       -- 'neomake/neomake',
       'tpope/vim-dispatch',
     }
