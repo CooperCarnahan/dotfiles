@@ -115,7 +115,13 @@ cargo_install() {
   curl https://sh.rustup.rs -sSf | sh
 }
 
+#install tea
+tea_install() {
+  sh <(curl tea.xyz) --yes
+}
+
 setup_shell
 cargo_install
+tea_install
 
 
