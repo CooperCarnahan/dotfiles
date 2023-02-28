@@ -8,9 +8,9 @@ local M = {
       config = true
     },
     { 'mfussenegger/nvim-dap-python',
-      config = true
     },
-  }
+  },
+  event = "VeryLazy"
 }
 
 -- setup DAP
