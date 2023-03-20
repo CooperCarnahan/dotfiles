@@ -77,6 +77,16 @@ return {
   { "APZelos/blamer.nvim",
     cmd = "BlamerToggle",
   },
+  { "m4xshen/autoclose.nvim",
+    event = "VeryLazy",
+    config = function()
+      require("autoclose").setup({
+        options = {
+          disable_when_touch = true,
+        },
+      })
+    end
+  },
   -- { "chrisgrieser/nvim-recorder",
   --   event = "VeryLazy",
   --   config = true, }
