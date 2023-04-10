@@ -3,8 +3,8 @@
 return {
   "MunifTanjim/nui.nvim",
   "folke/which-key.nvim",
-  { "nvim-tree/nvim-web-devicons",
-    config = { default = true }, },
+  -- { "nvim-tree/nvim-web-devicons",
+  --   config = { default = true }, },
   { "SmiteshP/nvim-navic",
     config = function()
       vim.g.navic_silence = true
@@ -94,6 +94,12 @@ return {
       })
     end
   },
+  { "mbbill/undotree",
+    event = "VeryLazy",
+    config = function()
+      vim.keymap.set('n', '<leader>ut', vim.cmd.UndotreeToggle)
+    end
+  }
   -- { "m4xshen/autoclose.nvim",
   --   event = "VeryLazy",
   --   config = function()
