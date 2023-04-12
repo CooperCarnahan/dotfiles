@@ -38,16 +38,6 @@ return {
   --   end,
   --   commit = "e607a",
   --   pin = true },
-  { "rmagatti/auto-session",
-    config = function()
-      require("auto-session").setup {
-        log_level = "error",
-        auto_session_suppress_dirs = { "~/", "~/Projects", "~/Downloads", "/" },
-        auto_save_enabled = true,
-        auto_session_create_enabled = false
-      }
-    end,
-    lazy = false, },
   { "smjonas/inc-rename.nvim",
     cmd = "IncRename",
     config = true, },
