@@ -89,6 +89,10 @@ return {
     config = function()
       vim.keymap.set('n', '<leader>ut', vim.cmd.UndotreeToggle)
     end
+  },
+  {
+    "christoomey/vim-tmux-navigator",
+    event = "VeryLazy"
   }
   -- { "m4xshen/autoclose.nvim",
   --   event = "VeryLazy",
