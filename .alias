@@ -80,6 +80,11 @@ alias tmuxa='tmux attach-session -t'
 alias tmn='tmux new-session -s'
 alias tmuxn='tmux new-session -s'
 
+# tmuxp
+if command -v tmuxp &> /dev/null; then
+  alias tl='tmuxp load'
+fi
+
 ###########################
 #       YADM Alias'       #
 ###########################
