@@ -15,10 +15,8 @@ function M.config()
       },
       { text = { builtin.lnumfunc }, click = "v:lua.ScLa", },
       {
-        sign = { name = { ".*" }, maxwidth = 2, colwidth = 2, auto = false },
+        sign = { name = { ".*" }, maxwidth = 2, colwidth = 1, auto = false },
       },
-      -- just extra padding
-      { text = { " " }, click = "v:lua.ScLa", },
     }
   })
 end
