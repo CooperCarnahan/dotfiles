@@ -67,6 +67,9 @@ function M.config()
   dap.listeners.before.event_exited["dapui_config"] = function()
     dapui.close()
   end
+
+  -- misc. configs
+  vim.api.nvim_command('sign define DapBreakpoint text= texthl=RedSign')
 end
 
 return M
