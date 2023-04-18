@@ -59,8 +59,12 @@ unsetopt BEEP
 
 # Starts ssh-keychain which clobbers all agents into single entity
 # Clear all existing keys so hackers will have to reenter password
-keychain --clear --quiet
-source $HOME/.keychain/$(uname -n)-sh
+if command -v keychain &> /dev/null; then
+  keychain --clear --quiet id_ed25519 id_ed25519_paladin
+   [ -z "$HOSTNAME" ] && HOSTNAME=`uname -n`
+   [ -f $HOME/.keychain/$HOSTNAME-sh ] && \
+   . $HOME/.keychain/$HOSTNAME-sh
+fi
 
 # Preferred editor for local and remote sessions
 # if [[ -n $SSH_CONNECTION ]]; then
