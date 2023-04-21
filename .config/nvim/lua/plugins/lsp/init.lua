@@ -1,23 +1,32 @@
+function OnAttach(client, bufnr)
+  require("nvim-navic").attach(client, bufnr)
+  require("plugins.lsp.formatting").setup(client, bufnr)
+  require("plugins.lsp.keys").setup(client, bufnr)
+end
+
 local M = {
   "neovim/nvim-lspconfig",
   event = "BufReadPre",
   dependencies = {
     "hrsh7th/cmp-nvim-lsp",
-    { "simrat39/rust-tools.nvim", config = function()
-      local rt = require("rust-tools")
+    {
+      "simrat39/rust-tools.nvim",
+      config = function()
+        local rt = require("rust-tools")
 
-      rt.setup({
-        server = {
-          on_attach = function(_, bufnr)
-            -- Hover actions
-            vim.keymap.set("n", "<C-space>", rt.hover_actions.hover_actions, { buffer = bufnr })
-            -- Code action groups
-            vim.keymap.set("n", "<Leader>ca", rt.code_action_group.code_action_group, { buffer = bufnr })
-            require("plugins.lsp.keys").setup(_, bufnr)
-          end,
-        },
-      })
-    end }
+        rt.setup({
+          server = {
+            on_attach = function(client, bufnr)
+              -- Hover actions
+              vim.keymap.set("n", "<C-space>", rt.hover_actions.hover_actions, { buffer = bufnr })
+              -- Code action groups
+              vim.keymap.set("n", "<Leader>ca", rt.code_action_group.code_action_group, { buffer = bufnr })
+              OnAttach(client, bufnr)
+            end,
+          },
+        })
+      end
+    }
   },
 }
 
@@ -25,11 +34,6 @@ function M.config()
   require("mason")
   require("plugins.lsp.diagnostics").setup()
 
-  local function on_attach(client, bufnr)
-    require("nvim-navic").attach(client, bufnr)
-    require("plugins.lsp.formatting").setup(client, bufnr)
-    require("plugins.lsp.keys").setup(client, bufnr)
-  end
 
   ---@type lspconfig.options
   local servers = {
@@ -74,7 +78,7 @@ function M.config()
 
   ---@type _.lspconfig.options
   local options = {
-    on_attach = on_attach,
+    on_attach = OnAttach,
     capabilities = capabilities,
     flags = {
       debounce_text_changes = 150,
