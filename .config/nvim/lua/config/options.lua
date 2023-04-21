@@ -6,14 +6,16 @@ vim.o.number = true --Line numbers are good
 vim.o.relativenumber = true
 vim.o.signcolumn = "yes"
 vim.o.backspace = "indent,eol,start" --Allow backspace in insert mode
-vim.o.history = 1000 --Store lots of :cmdline history
-vim.o.showcmd = true --Show incomplete cmds down the bottom
-vim.o.visualbell = true --No sounds
-vim.o.autoread = true --Reload files changed outside vim
-vim.o.updatetime = 100 --Various plugins will update quicker (gitgutter, etc.).
+vim.o.history = 1000                 --Store lots of :cmdline history
+vim.o.showcmd = true                 --Show incomplete cmds down the bottom
+vim.o.visualbell = true              --No sounds
+vim.o.autoread = true                --Reload files changed outside vim
+vim.o.updatetime = 100               --Various plugins will update quicker (gitgutter, etc.).
 vim.o.splitright = true
-vim.o.hidden = true --Allows switching buffers without saving
+vim.o.hidden = true                  --Allows switching buffers without saving
 vim.o.foldlevel = 99
+vim.wo.foldmethod = 'expr'
+vim.wo.foldexpr = 'nvim_treesitter#foldexpr'
 vim.o.scrolloff = 999 --Jumps are centered if possible
 vim.opt.grepprg = "rg --vimgrep"
 vim.o.background = "dark"
@@ -21,7 +23,7 @@ vim.cmd([[ set diffopt+=linematch:50 ]])
 
 --================ Color Configs ====================
 vim.o.termguicolors = true --Enable true colors
-vim.o.cursorline = true --Enable different coloring of current line #
+vim.o.cursorline = true    --Enable different coloring of current line #
 
 --================ Persistent Undo ==================
 --Keep undo history across sessions, by storing in file.
@@ -55,14 +57,14 @@ vim.o.softtabstop = 2
 vim.o.tabstop = 2
 vim.o.expandtab = true
 
-vim.o.nowrap = true --Don't wrap lines
+vim.o.nowrap = true    --Don't wrap lines
 vim.o.linebreak = true --Wrap lines at convenient points
 
 --================ Search ===========================
-vim.o.incsearch = true -- Find the next match as we type the search
-vim.o.hlsearch = true -- Highlight searches by default
+vim.o.incsearch = true  -- Find the next match as we type the search
+vim.o.hlsearch = true   -- Highlight searches by default
 vim.o.ignorecase = true -- Ignore case when searching...
-vim.o.smartcase = true -- ...unless we type a capital
+vim.o.smartcase = true  -- ...unless we type a capital
 
 vim.cmd([[filetype plugin on]])
 vim.cmd([[filetype indent on]])
