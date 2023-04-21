@@ -215,17 +215,21 @@ zinit ice depth=1; zinit light romkatv/powerlevel10k
 ###################################
 #          ALIAS                  #
 ###################################
-source ~/.alias
+if [[ -f $HOME/.alias ]]; then
+  source $HOME/.alias
+fi
 
 ###################################
 #          FUNCTIONS              #
 ###################################
-source ~/.functions
+if [[ -f $HOME/.functions ]]; then
+  source $HOME/.functions
+fi
 
 ###################################
 #          LOCAL ZSHRC            #
 ###################################
-if [[ -f ~/.zshrc.local ]]; then
+if [[ -f $HOME/.zshrc.local ]]; then
   source ~/.zshrc.local
 fi
 
