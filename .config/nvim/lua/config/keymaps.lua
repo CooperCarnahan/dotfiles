@@ -75,6 +75,10 @@ local leader = {
       "<cmd>Telescope tagstack<cr>",
       "Tagstack",
     },
+    w = {
+      "<cmd>Telescope grep_string<cr>",
+      "Find word under cursor",
+    },
     y = {
       "<cmd>Telescope yank_history<cr>",
       "Yank History",
