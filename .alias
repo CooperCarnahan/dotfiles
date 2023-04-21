@@ -16,7 +16,7 @@ fi
 ###########################
 alias grep='grep --color=auto'
 # Fix tmux color issue in VIM
-alias tmux="TERM=screen-256color-bce tmux"
+# alias tmux="TERM=screen-256color-bce tmux"
 alias python=python3
 
 # Paste using ctrl-v instead of middle-click
