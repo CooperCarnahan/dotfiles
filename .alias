@@ -82,7 +82,15 @@ alias tmuxn='tmux new-session -s'
 
 # tmuxp
 if command -v tmuxp &> /dev/null; then
-  alias tl='tmuxp load'
+  tl() {
+    local session
+    if [[ -z $1 ]]; then
+      session=$(tmuxp ls | fzf --layout=reverse --info=inline --height=40%)
+    else
+      session=$1
+    fi
+    tmuxp load $session
+  }
 fi
 
 ###########################
