@@ -202,15 +202,21 @@ zinit wait lucid for \
 #           THEME                 #
 ###################################
 
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+# use p10k prompt
+# # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+# [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+#
+# # Include zsh package install suggestions
+# if [ -z /etc/zsh_command_not_found ]; then 
+#     source /etc/zsh_command_not_found
+# fi
+# zinit ice depth=1; zinit light romkatv/powerlevel10k
 
-# Include zsh package install suggestions
-if [ -z /etc/zsh_command_not_found ]; then 
-    source /etc/zsh_command_not_found
-fi
-
-zinit ice depth=1; zinit light romkatv/powerlevel10k
+# use starship prompt
+zinit ice as"command" from"gh-r" \
+          atclone"./starship init zsh > init.zsh; ./starship completions zsh > _starship" \
+          atpull"%atclone" src"init.zsh"
+eval "$(starship init zsh)"
 
 ###################################
 #          ALIAS                  #
