@@ -19,13 +19,27 @@
 [user]
 	email = coopcarn@gmail.com
 	name = CooperCarnahan
+
 [pull]
 	rebase = true
+
 [rebase]
 	autoStash = true
 	autoSquash = true
+
 [credential "https://github.com"]
 	helper = 
 	helper = !/usr/bin/gh auth git-credential
- [alias]
+
+[alias]
   brt = "!git for-each-ref refs/heads --color=always --sort -committerdate --format='%(HEAD)%(color:reset);%(color:yellow)%(refname:short)%(color:reset);%(contents:subject);%(color:green)(%(committerdate:relative))%(color:blue);<%(authorname)>' | column -t -s ';'"
+
+# 1password stuff
+[gpg]
+	format = ssh
+[gpg "ssh"]
+	program = /opt/1Password/op-ssh-sign
+[commit]
+	gpgsign = true
+[user]
+	signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMYPV24Q0MK0k2PzTxvSGmJvYLT8JA5RnhwzHpro154o
