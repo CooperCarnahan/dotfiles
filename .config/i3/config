@@ -126,7 +126,7 @@ bindsym $mod+a focus parent
 set $ws1 "1:terminal"
 set $ws2 "2"
 set $ws3 "3:spotify"
-set $ws4 "4"
+set $ws4 "4:portrait"
 set $ws5 "5:slack"
 set $ws6 "6:browser"
 set $ws7 "7"
@@ -137,13 +137,19 @@ set $ws10 "10"
 # switch to workspace
 bindsym $mod+1 workspace number $ws1
 bindsym $mod+c workspace number $ws1
+
 bindsym $mod+2 workspace number $ws2
 bindsym $mod+3 workspace number $ws3
+
 bindsym $mod+4 workspace number $ws4
+bindsym $mod+p workspace number $ws4
+
 bindsym $mod+5 workspace number $ws5
 bindsym $mod+s workspace number $ws5
+
 bindsym $mod+6 workspace number $ws6
 bindsym $mod+b workspace number $ws6
+
 bindsym $mod+7 workspace number $ws7
 bindsym $mod+8 workspace number $ws8
 bindsym $mod+9 workspace number $ws9
@@ -199,8 +205,16 @@ bindsym $mod+r mode "resize"
 #     Startup
 #####################
 
+## workspace stuff
 workspace $ws1 output primary
 exec --no-startup-id kitty
+
+workspace $ws4 output left
+
+workspace $ws3 output DP-0
+assign [class="Spotify"] workspace number $ws3
+for_window [class="Spotify"] focus
+exec --no-startup-id spotify
 
 workspace $ws5 output primary
 assign [class="Slack"] workspace number $ws5
@@ -219,4 +233,10 @@ exec_always --no-startup-id picom
 
 # remove title bars
 for_window [class="^.*"] border pixel 5
+
+# wallpaper
+exec_always --no-startup-id feh --randomize --bg-fill ~/Pictures/*   
+
+# focus workspace 1 on startup wip
+exec i3-msg workspace $ws1
 
