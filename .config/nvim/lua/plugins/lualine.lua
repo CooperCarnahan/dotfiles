@@ -20,11 +20,12 @@ function M.config()
     },
     sections = {
       lualine_a = { "mode" },
-      lualine_b = { "branch", "diff", "diagnostics" },
+      lualine_b = { "branch", "diff" },
       lualine_c = {
         { "diagnostics", sources = { "nvim_diagnostic" } },
+        "searchcount"
       },
-      lualine_x = { "encoding", "fileformat", "filetype" },
+      lualine_x = { "encoding", "fileformat" },
       lualine_y = { "progress" },
       lualine_z = { "location" },
     },
@@ -37,16 +38,15 @@ function M.config()
       lualine_z = { "location" },
     },
     winbar = {
-      lualine_a = {},
-      lualine_b = {
+      lualine_a = {
         {
           "filetype",
-          colored = true,             -- Displays filetype icon in color if set to true
+          colored = false,            -- Displays filetype icon in color if set to true
           icon_only = true,           -- Display only an icon for filetype
           icon = { align = "right" }, -- Display filetype icon on the right hand side
         },
       },
-      lualine_c = {
+      lualine_b = {
         {
           "filename",
           path = 3,
@@ -56,6 +56,8 @@ function M.config()
             directory = "",    -- Text to show when the buffer is a directory
           },
         },
+      },
+      lualine_c = {
         {
           function()
             local navic = require("nvim-navic")
@@ -81,6 +83,7 @@ function M.config()
       lualine_c = {
         {
           "filename",
+          path = 3,
           symbols = {
             modified = " ●",    -- Text to show when the buffer is modified
             alternate_file = "#", -- Text to show to identify the alternate file
