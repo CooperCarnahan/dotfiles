@@ -5,6 +5,9 @@ symbol = "  "
 symbol = ""
 format = '[[$symbol ($version) ](fg:#769ff0)]($style)'
 
+[cmd_duration] 
+style = "bold green"
+
 [cmake]
 disabled = true
 
@@ -17,6 +20,8 @@ symbol = " "
 [directory]
 truncation_length=8
 truncate_to_repo=false
+# style = 'bold green'
+# format = '[$path]($style)[$read_only]($read_only_style) '
 
 [directory.substitutions]
 "Documents" = " "
@@ -35,12 +40,13 @@ symbol = " "
 
 [git_branch]
 symbol = " "
+format = "on [$symbol$branch(:$remote_branch) ](fg:yellow)"
 
 [git_status]
-diverged = '[⇡$ahead_count ⇣$behind_count]'
+diverged = "[⇡$ahead_count ⇣$behind_count]"
 ahead="⇡$count"
 behind="⇣$count"
-format = '[$all_status$ahead_behind ]($style)'
+format = "[$all_status$ahead_behind ]($style)"
 stashed = ''
 
 [golang]
