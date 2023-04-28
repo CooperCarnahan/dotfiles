@@ -338,3 +338,5 @@ source ~/.zoxide.nu
 #initialize starship prompt
 starship init nu | save ~/.cache/starship/init.nu
 source ~/.cache/starship/init.nu
+
+source /home/cooper/.config/broot/launcher/nushell/br
