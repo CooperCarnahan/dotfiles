@@ -34,7 +34,6 @@ function M.config()
   require("mason")
   require("plugins.lsp.diagnostics").setup()
 
-
   ---@type lspconfig.options
   local servers = {
     ansiblels = {},
@@ -90,7 +89,6 @@ function M.config()
     require("lspconfig")[server].setup(opts)
   end
 
-  -- require("plugins.null-ls").setup(options)
 end
 
 return M
