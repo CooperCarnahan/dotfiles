@@ -1,127 +1,83 @@
-#!/bin/sh
+#!/bin/bash
 
-system_type=$(uname -s)
+# Save this file as ~/.config/yadm/bootstrap and make it executable. It will
+# execute all executable files (excluding templates and editor backups) in the
+# ~/.config/yadm/bootstrap.d directory when run.
 
-cd "$HOME"
+set -eu
+
+# Because Git submodule commands cannot operate without a work tree, they must
+# be run from within $HOME (assuming this is the root of your dotfiles)
+cd "$HOME" || exit
 
 echo "Init submodules"
 yadm submodule update --recursive --init
-echo "Install zsh + Oh-my-zsh"
 
-download_brew(){
-  if [ "$system_type" = "Darwin" ]; then
-
-    # install homebrew if it's missing
-    if ! command -v brew >/dev/null 2>&1; then
-      echo "Installing homebrew"
-      /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-    fi
-
-    if [ -f "$HOME/.Brewfile" ]; then
-      echo "Updating homebrew bundle"
-      brew bundle --global
-    fi
-
-  fi
-  }
-
-# determine system package manager
-if [ "$system_type" = "Darwin" ]; then
-  package_manager="brew"
-else
-  package_manager="sudo apt"
-
-# Running install Scripts
-setup_shell() {
-  # Skip setup if the user wants or stdin is closed (not running interactively).
-  if [ $CHSH = no ]; then
-    return
-  fi
-
-  # If this user's login shell is already "zsh", do not attempt to switch.
-  if [ "$(basename -- "$SHELL")" = "zsh" ]; then
-    return
-  fi
-
-  # If this platform doesn't provide a "chsh" command, bail out.
-  if ! command_exists chsh; then
-    cat <<EOF
-I can't change your shell automatically because this system does not have chsh.
-${BLUE}Please manually change your default shell to zsh${RESET}
-EOF
-    return
-  fi
-
-  echo "${BLUE}Time to change your default shell to zsh:${RESET}"
-
-  # Prompt for user choice on changing the default login shell
-  printf "${YELLOW}Do you want to change your default shell to zsh? [Y/n]${RESET} "
-  read opt
-  case $opt in
-    y*|Y*|"") echo "Changing the shell..." ;;
-    n*|N*) echo "Shell change skipped."; return ;;
-    *) echo "Invalid choice. Shell change skipped."; return ;;
-  esac
-
-  # Check if we're running on Termux
-  case "$PREFIX" in
-    *com.termux*) termux=true; zsh=zsh ;;
-    *) termux=false ;;
-  esac
-
-  if [ "$termux" != true ]; then
-    # Test for the right location of the "shells" file
-    if [ -f /etc/shells ]; then
-      shells_file=/etc/shells
-    elif [ -f /usr/share/defaults/etc/shells ]; then # Solus OS
-      shells_file=/usr/share/defaults/etc/shells
-    else
-      fmt_error "could not find /etc/shells file. Change your default shell manually."
-      return
-    fi
-
-    # Get the path to the right zsh binary
-    # 1. Use the most preceding one based on $PATH, then check that it's in the shells file
-    # 2. If that fails, get a zsh path from the shells file, then check it actually exists
-    if ! zsh=$(which zsh) || ! grep -qx "$zsh" "$shells_file"; then
-      if ! zsh=$(grep '^/.*/zsh$' "$shells_file" | tail -1) || [ ! -f "$zsh" ]; then
-        fmt_error "no zsh binary found or not present in '$shells_file'"
-        fmt_error "change your default shell manually."
-        return
-      fi
-    fi
-  fi
-
-  # We're going to change the default shell, so back up the current one
-  if [ -n "$SHELL" ]; then
-    echo $SHELL > ~/.shell.pre-oh-my-zsh
-  else
-    grep "^$USER:" /etc/passwd | awk -F: '{print $7}' > ~/.shell.pre-oh-my-zsh
-  fi
-
-  # Actually change the default shell to zsh
-  if ! chsh -s "$zsh"; then
-    fmt_error "chsh command unsuccessful. Change your default shell manually."
-  else
-    export SHELL="$zsh"
-    echo "${GREEN}Shell successfully changed to '$zsh'.${RESET}"
-  fi
-
-  echo
+yes_no() {
+	read -r -p "$1 [y/N] " response
+	case "$response" in
+	[yY][eE][sS] | [yY])
+		return 0
+		;;
+	*)
+		return 1
+		;;
+	esac
 }
 
 # install rust
-cargo_install() {
-  curl https://sh.rustup.rs -sSf | sh
+install_cargo() {
+	if ! yes_no "Install cargo/rustup?"; then
+		return
+	fi
+
+	curl https://sh.rustup.rs -sSf | sh
+	crates=(zoxide git-delta bat)
+	for crate in "${crates[@]}"; do
+		if yes_no "Install '${crate}'?"; then
+			cargo install "${crate}"
+		fi
+	done
 }
 
 #install tea
-tea_install() {
-  sh <(curl tea.xyz) --yes
+install_tea() {
+	if ! yes_no "Install tea?"; then
+		return
+	fi
+
+	echo "installing tea"
+	sh <(curl tea.xyz) --yes
+	# packages=(lazygit nvim nushell cmake fd-find)
+
+	# for package in "${packages[@]}"; do
+	# 	tea "${package}"
+	# done
+
+	# TODO:
+	# tea zoxide -- symlink/hardlink this bad boy
+	# tea cmake -- symlink/hardlink this bad boy
 }
 
-setup_shell
-cargo_install
-tea_install
+run_platform_specific_boostrap() {
+	# Directory to look for bootstrap executables in
+	BOOTSTRAP_D="${BASH_SOURCE[0]}.d"
 
+	if [[ ! -d "$BOOTSTRAP_D" ]]; then
+		echo "Error: bootstrap directory '$BOOTSTRAP_D' not found" >&2
+		exit 1
+	fi
 
+	find -L "$BOOTSTRAP_D" -type f | sort | while IFS= read -r bootstrap; do
+		if [[ -x "$bootstrap" && ! "$bootstrap" =~ "##" && ! "$bootstrap" =~ "~$" ]]; then
+			if ! "$bootstrap"; then
+				echo "Error: bootstrap '$bootstrap' failed" >&2
+				exit 1
+			fi
+		fi
+	done
+}
+
+install_cargo
+install_tea
+run_platform_specific_boostrap
