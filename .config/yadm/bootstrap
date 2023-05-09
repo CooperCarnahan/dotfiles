@@ -32,7 +32,7 @@ install_cargo() {
 	fi
 
 	curl https://sh.rustup.rs -sSf | sh
-	crates=(zoxide git-delta bat)
+	crates=(zoxide git-delta bat exa starship)
 	for crate in "${crates[@]}"; do
 		if yes_no "Install '${crate}'?"; then
 			cargo install "${crate}"
