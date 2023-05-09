@@ -24,7 +24,7 @@ alias xclip="xclip -sel clip"
 
 # Colorls is slow as heck on WSL1
 if command -v exa &> /dev/null; then
-    alias ls='exa -l -s extension --icons --no-time --no-user --no-permissions'
+    alias ls='exa -s extension --icons --no-time --no-user --no-permissions --group-directories-first'
 fi
 
 alias la='ls -a'
