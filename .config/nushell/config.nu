@@ -566,3 +566,5 @@ alias ce = config env
 
 source ~/.zoxide.nu
 source ~/.cache/starship/init.nu
+
+source /home/cooper/.config/broot/launcher/nushell/br
