@@ -546,6 +546,7 @@ let-env config = {
 alias v = nvim
 
 # git
+alias ga = git add
 alias gst = git status
 alias gl = git pull
 alias gp = git push
@@ -554,7 +555,10 @@ alias gco = git checkout
 alias lg = lazygit
 
 # yadm
+alias y = yadm
+alias ya = yadm add
 alias yl = yadm pull
+alias ylg = lazygit -w ~ -g ~/.local/share/yadm/repo.git
 
 # nu
 alias cn = config nu
