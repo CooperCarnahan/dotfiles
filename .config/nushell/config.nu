@@ -564,7 +564,7 @@ alias ylg = lazygit -w ~ -g ~/.local/share/yadm/repo.git
 alias cn = config nu
 alias ce = config env
 
+# startup programs
 source ~/.zoxide.nu
 source ~/.cache/starship/init.nu
-
 source /home/cooper/.config/broot/launcher/nushell/br
