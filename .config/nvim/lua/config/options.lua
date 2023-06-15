@@ -90,8 +90,8 @@ vim.cmd([[autocmd FileType markdown setlocal spell]])
 vim.cmd([[autocmd BufNewFile,BufRead *.MD set filetype=markdown]])
 
 --Set justfile files to be interpreted as makefiles
-vim.cmd([[
-augroup filetypedetect
-  au BufNewFile,BufRead justfile setf make
-augroup END
-]])
+-- vim.cmd([[
+-- augroup filetypedetect
+--   au BufNewFile,BufRead justfile setf make
+-- augroup END
+-- ]])
