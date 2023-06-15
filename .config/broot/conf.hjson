@@ -243,6 +243,14 @@
          key: ctrl-d
          execution: ":page_down"
      }
+     {
+         key: ctrl-c
+         execution: ":input_clear"
+     }
+     {
+         key: ctrl-w
+         execution: ":input_del_word_left"
+     }
 
     # If you develop using git, you might like to often switch
     # to the git status filter:
