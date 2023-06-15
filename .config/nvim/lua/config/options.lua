@@ -14,8 +14,8 @@ vim.o.updatetime = 100               --Various plugins will update quicker (gitg
 vim.o.splitright = true
 vim.o.hidden = true                  --Allows switching buffers without saving
 vim.o.foldlevel = 99
-vim.wo.foldmethod = 'expr'
-vim.wo.foldexpr = 'nvim_treesitter#foldexpr'
+vim.wo.foldmethod = "expr"
+vim.wo.foldexpr = "nvim_treesitter#foldexpr"
 vim.o.scrolloff = 999 --Jumps are centered if possible
 vim.opt.grepprg = "rg --vimgrep"
 vim.o.background = "dark"
@@ -79,7 +79,7 @@ vim.api.nvim_create_autocmd("BufReadPost", {
 -- Highlight on yank
 vim.api.nvim_create_autocmd("TextYankPost", {
   callback = function()
-    vim.highlight.on_yank { higroup = 'IncSearch', timeout = 1000 }
+    vim.highlight.on_yank({ higroup = "IncSearch", timeout = 1000 })
   end,
 })
 
