@@ -41,9 +41,6 @@ setopt SHARE_HISTORY
 # Disable beeping sound on in terminal
 unsetopt BEEP
 
-if command -v tmux &> /dev/null && [ -z "$TMUX" ]; then
-    tmux attach -t default || tmux new -s default
-fi
 # Uncomment the following line to display red dots whilst waiting for completion.
 # COMPLETION_WAITING_DOTS="true"
 
