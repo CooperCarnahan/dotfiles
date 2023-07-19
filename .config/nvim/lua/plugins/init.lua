@@ -120,17 +120,15 @@ return {
 		"christoomey/vim-tmux-navigator",
 		event = "VeryLazy",
 	},
-	-- { "m4xshen/autoclose.nvim",
-	--   event = "VeryLazy",
-	--   config = function()
-	--     require("autoclose").setup({
-	--       options = {
-	--         disable_when_touch = true,
-	--       },
-	--     })
-	--   end
-	-- },
-	-- { "chrisgrieser/nvim-recorder",
-	--   event = "VeryLazy",
-	--   config = true, }
+	{
+		"stevearc/oil.nvim",
+		opts = {},
+		-- Optional dependencies
+		dependencies = { "nvim-tree/nvim-web-devicons" },
+		event = "VeryLazy",
+		config = function()
+			require("oil").setup()
+			vim.keymap.set("n", "-", require("oil").open, { desc = "Open parent directory" })
+		end,
+	},
 }
