@@ -296,3 +296,6 @@ if [[ -d $HOME/.vcpkg/ ]]; then
 fi
 
 test -d "$HOME/.tea" && source <("$HOME/.tea/tea.xyz/v*/bin/tea" --magic=zsh --silent)
+
+eval "$(ntfy shell-integration)"
+export AUTO_NTFY_DONE_IGNORE="nvim vim tmux zellij cat bat v lg ylg lazygit ssh"
