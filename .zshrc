@@ -60,7 +60,7 @@ unsetopt BEEP
 # Starts ssh-keychain which clobbers all agents into single entity
 # Clear all existing keys so hackers will have to reenter password
 if command -v keychain &> /dev/null; then
-  keychain --clear --quiet id_ed25519 id_ed25519_paladin
+  keychain --clear --quiet
    [ -z "$HOSTNAME" ] && HOSTNAME=`uname -n`
    [ -f $HOME/.keychain/$HOSTNAME-sh ] && \
    . $HOME/.keychain/$HOSTNAME-sh
@@ -112,7 +112,7 @@ bindkey "^E" autosuggest-accept
  #bindkey -M vicmd "k" up-line-or-beginning-search
  #bindkey -M vicmd "j" down-line-or-beginning-search
 
-# #Set jj to send 'escape' key during insert mode 
+# #Set jk to send 'escape' key during insert mode 
  bindkey -M viins 'jk' vi-cmd-mode
 
 # Remove alt-h,j,k,l keybinds so tmux can use them
