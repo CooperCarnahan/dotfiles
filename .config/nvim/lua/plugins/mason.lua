@@ -11,7 +11,7 @@ local M = {
 function M.config()
 	require("mason").setup()
 	require("mason-null-ls").setup({
-		ensure_installed = { "stylua", "shfmt", "black" },
+		ensure_installed = { "stylua", "shfmt", "black", "hadolint" },
 		automatic_setup = true,
 		handlers = {
 			function() end,

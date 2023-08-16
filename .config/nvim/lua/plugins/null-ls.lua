@@ -14,6 +14,7 @@ function M.config()
 			nls.builtins.formatting.shfmt,
 			nls.builtins.diagnostics.markdownlint,
 			nls.builtins.diagnostics.luacheck,
+			nls.builtins.diagnostics.hadolint, -- dockerfiles
 			nls.builtins.formatting.prettierd.with({
 				filetypes = { "markdown" }, -- only runs `deno fmt` for markdown
 			}),
