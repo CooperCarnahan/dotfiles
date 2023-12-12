@@ -43,3 +43,5 @@
 ; 	gpgsign = true
 ; [user]
 ; 	signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMYPV24Q0MK0k2PzTxvSGmJvYLT8JA5RnhwzHpro154o
+[init]
+	defaultBranch = main
