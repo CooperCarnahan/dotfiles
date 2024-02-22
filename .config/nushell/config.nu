@@ -758,6 +758,26 @@ $env.config = {
             mode: emacs
             event: {edit: capitalizechar}
         }
+        {
+            name: change_dir_with_fzf
+            modifier: control
+            keycode: char_f
+            mode: emacs
+            event: {
+              send: executehostcommand,
+              cmd: "cd (fd --type directory | fzf --height=40% --reverse | str trim)"
+            }
+        }
+        {
+            name: fzf_paste
+            modifier: control
+            keycode: char_t
+            mode: emacs
+            event: {
+              send: executehostcommand,
+              cmd: "commandline --insert (fd | fzf --height=40% --reverse --preview 'bat -n --color=always {}'| str trim)"
+            }
+        }
     ]
 }
 
