@@ -107,13 +107,29 @@ def --env yz [...args] {
 	rm -fp $tmp
 }
 
+def --env zv [...rest:string] {
+  let arg0 = ($rest | append '~').0
+  let path = if (($rest | length) <= 1) and ($arg0 == '-' or ($arg0 | path expand | path type) == dir) {
+    $arg0
+  } else {
+    (zoxide query --exclude $env.PWD -- ...$rest | str trim -r -c "\n")
+  }
+  cd $path
+  nvim
+}
+
+def --env zvi [...rest:string] {
+  cd $'(zoxide query --interactive -- ...$rest | str trim -r -c "\n")'
+  nvim
+}
+
 # To add entries to PATH (on Windows you might use Path), you can use the following pattern:
 # $env.PATH = ($env.PATH | split row (char esep) | prepend '/some/path')
+$env.EDITOR = nvim
 
 mkdir ~/.cache/starship
-starship init nu | save -f ~/.cache/starship/init.nu
+starship init nu | save --force ~/.cache/starship/init.nu
 
 mkdir ~/.cache/carapace
 carapace _carapace nushell | save --force ~/.cache/carapace/init.nu
-
-zoxide init nushell | str replace "def-env" "def --env" --all | save -f ~/.config/nushell/.zoxide.nu
+zoxide init nushell | save --force ~/.config/nushell/.zoxide.nu
