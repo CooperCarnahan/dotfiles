@@ -33,6 +33,7 @@
 
 [alias]
   brt = "!git for-each-ref refs/heads --color=always --sort -committerdate --format='%(HEAD)%(color:reset);%(color:yellow)%(refname:short)%(color:reset);%(contents:subject);%(color:green)(%(committerdate:relative))%(color:blue);<%(authorname)>' | column -t -s ';'"
+	fpush = push
 
 # 1password signing stuff
 ; [gpg]
@@ -45,3 +46,8 @@
 ; 	signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMYPV24Q0MK0k2PzTxvSGmJvYLT8JA5RnhwzHpro154o
 [init]
 	defaultBranch = main
+[rerere]
+	enabled = true
+	autoUpdate = true
+[branch]
+	sort = -committerdate
