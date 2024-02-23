@@ -119,8 +119,12 @@ def --env zv [...rest:string] {
 }
 
 def --env zvi [...rest:string] {
+  let cwd = (pwd)
   cd $'(zoxide query --interactive -- ...$rest | str trim -r -c "\n")'
-  nvim
+
+  if $cwd != (pwd) {
+    nvim
+  }
 }
 
 # To add entries to PATH (on Windows you might use Path), you can use the following pattern:
