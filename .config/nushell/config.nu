@@ -778,8 +778,31 @@ $env.config = {
               cmd: "commandline --insert (fd | fzf --height=40% --reverse --preview 'bat -n --color=always {}'| str trim)"
             }
         }
+        {
+            name: yz
+            modifier: control
+            keycode: char_y
+            mode: emacs
+            event: {
+              send: executehostcommand,
+              cmd: "yz"
+            }
+        }
+        {
+            name: zvi
+            modifier: control
+            keycode: char_v
+            mode: emacs
+            event: {
+              send: executehostcommand,
+              cmd: "zvi"
+            }
+        }
     ]
 }
+
+alias z = nvim
+alias cat = bat
 
 alias y  =  yadm
 alias yst  =  yadm status
