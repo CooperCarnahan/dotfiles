@@ -801,7 +801,7 @@ $env.config = {
     ]
 }
 
-alias z = nvim
+alias v = nvim
 alias cat = bat
 
 alias y  =  yadm
