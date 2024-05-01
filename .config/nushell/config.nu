@@ -803,6 +803,7 @@ $env.config = {
 
 alias v = nvim
 alias cat = bat
+alias zj = zellij
 
 alias y  =  yadm
 alias yst  =  yadm status
@@ -826,22 +827,10 @@ alias gbsc = git branch --show-current
 alias grh = git reset --hard
 alias grho = git reset --hard origin/$(git branch --show-current)
 alias gc = git commit
-alias ga = forgit::add
-alias gbd = forgit::branch::delete
-alias gcb = forgit::checkout::branch
-alias gcf = forgit::checkout::file
-alias gclean = forgit::clean
-alias gco = forgit::checkout::commit
-alias gcp = forgit::cherry::pick
-alias gct = forgit::checkout::tag
-alias gd = forgit::diff
-alias gfu = forgit::fixup
-alias gi = forgit::ignore
-alias glo = forgit::log
-alias grb = forgit::rebase
-alias grc = forgit::revert::commit
-alias grh = forgit::reset::head
-alias gss = forgit::stash::show
+alias gcm = git commit -m
+alias gl = git pull
+alias gp = git push
+alias gst = git status
 
 use ~/.cache/starship/init.nu
 source ~/.cache/carapace/init.nu
