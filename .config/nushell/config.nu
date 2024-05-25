@@ -805,8 +805,8 @@ alias v = nvim
 alias cat = bat
 alias zj = zellij
 
-alias y  =  yadm
-alias yst  =  yadm status
+alias y =  yadm
+alias yst =  yadm status
 alias ya = yadm add
 alias yc = yadm commit
 alias yp = yadm push
@@ -831,6 +831,14 @@ alias gcm = git commit -m
 alias gl = git pull
 alias gp = git push
 alias gst = git status
+alias gl = git pull
+alias ga = git add
+alias gbd = git branch delete
+alias gco = git checkout
+alias gd = git diff
+alias grb = git rebase
+
+alias zj = zellij
 
 use ~/.cache/starship/init.nu
 source ~/.cache/carapace/init.nu

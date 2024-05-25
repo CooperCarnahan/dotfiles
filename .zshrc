@@ -1,5 +1,3 @@
-# Fig pre block. Keep at the top of this file.
-[[ -f "$HOME/.fig/shell/zshrc.pre.zsh" ]] && builtin source "$HOME/.fig/shell/zshrc.pre.zsh"
 ###################################
 #           CONFIGS               #
 ###################################
@@ -80,9 +78,6 @@ export BAT_PAGER='less -R'
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"
  # Placed elsewhere on different systems
 [[ -s "/usr/share/rvm/scripts/rvm" ]] && source "/usr/share/rvm/scripts/rvm"
-
-# enable zoxide
-eval "$(zoxide init zsh)"
 
 ###################################
 #       ZSH VIM MODE KEYBINDS     #
@@ -172,10 +167,10 @@ zinit light Aloxaf/fzf-tab
 zinit lucid for \
     light-mode  zsh-users/zsh-history-substring-search \
     light-mode  zsh-users/zsh-autosuggestions \
-    light-mode  zsh-users/zsh-completions
+    # light-mode  zsh-users/zsh-completions
     
 # Case-insensitive auto-suggestions
-zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
+# zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
 
 bindkey '^[OA' history-search-backward
 bindkey '^[OB' history-search-forward
@@ -197,16 +192,6 @@ zinit wait lucid for \
 ###################################
 #           THEME                 #
 ###################################
-
-# use p10k prompt
-# # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-# [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-#
-# # Include zsh package install suggestions
-# if [ -z /etc/zsh_command_not_found ]; then 
-#     source /etc/zsh_command_not_found
-# fi
-# zinit ice depth=1; zinit light romkatv/powerlevel10k
 
 # use starship prompt
 zinit ice as"command" from"gh-r" \
@@ -256,17 +241,8 @@ if [[ -d $HOME/.local/bin ]]; then
 fi
 
 ###################################
-#          broot                  #
-###################################
-#
-if command -v broot &> /dev/null; then
-  source $HOME/.config/broot/launcher/bash/br
-fi
-
-###################################
 #          mcfly                  #
 ###################################
-
 if command -v mcfly &> /dev/null; then
   eval "$(mcfly init zsh)"
 fi
@@ -274,14 +250,19 @@ fi
 ###################################
 #          rpick                  #
 ###################################
-
 export RPICK_CONFIG=~/.config/rpick.yml
 
 export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+ export NVM_DIR="$HOME/.nvm"
+  [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
+  [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+###################################
+#          zoxide                 #
+###################################
+eval "$(zoxide init zsh)"
 
 ###################################
 #          vcpkg                  #
@@ -292,10 +273,9 @@ if [[ -d $HOME/.vcpkg/ ]]; then
   export CMAKE_TOOLCHAIN_FILE="$HOME/vcpkg/scripts/buildsystems/vcpkg.cmake"
 fi
 
-test -d "$HOME/.tea" && source <("$HOME/.tea/tea.xyz/v*/bin/tea" --magic=zsh --silent)
-
 eval "$(ntfy shell-integration)"
 export AUTO_NTFY_DONE_IGNORE="nvim vim tmux zellij cat bat v lg ylg lazygit ssh"
 
-# Fig post block. Keep at the bottom of this file.
-[[ -f "$HOME/.fig/shell/zshrc.post.zsh" ]] && builtin source "$HOME/.fig/shell/zshrc.post.zsh"
+export CARAPACE_BRIDGES='zsh,fish,bash,inshellisense' # optional
+zstyle ':completion:*' format $'\e[3;37mCompleting %d\e[m'
+source <(carapace _carapace)
