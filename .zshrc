@@ -39,6 +39,8 @@ setopt SHARE_HISTORY
 # Disable beeping sound on in terminal
 unsetopt BEEP
 
+source $HOME/.nix-profile/etc/profile.d/hm-session-vars.sh
+
 # Uncomment the following line to display red dots whilst waiting for completion.
 # COMPLETION_WAITING_DOTS="true"
 
@@ -178,8 +180,6 @@ bindkey '^[OB' history-search-forward
 # fzf stuff
 zinit ice from"gh-r" as"program"
 zinit ice wait lucid 0
-# set list-colors to enable filename colorizing
-# zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
 
 # git stuff
 zinit load wfxr/forgit
@@ -200,29 +200,20 @@ zinit ice as"command" from"gh-r" \
 eval "$(starship init zsh)"
 
 ###################################
-#          ALIAS                  #
+#          PATH                   #
 ###################################
+
 if [[ -f $HOME/.alias ]]; then
   source $HOME/.alias
 fi
 
-###################################
-#          FUNCTIONS              #
-###################################
 if [[ -f $HOME/.functions ]]; then
   source $HOME/.functions
 fi
 
-###################################
-#          LOCAL ZSHRC            #
-###################################
 if [[ -f $HOME/.zshrc.local ]]; then
   source ~/.zshrc.local
 fi
-
-###################################
-#          PATH                   #
-###################################
 
 if [[ -d /usr/local/go ]]; then
   export PATH=$PATH:/usr/local/go/bin
@@ -241,21 +232,11 @@ if [[ -d $HOME/.local/bin ]]; then
 fi
 
 ###################################
-#          mcfly                  #
+#              nvm                #
 ###################################
-if command -v mcfly &> /dev/null; then
-  eval "$(mcfly init zsh)"
-fi
+export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm 
 
-###################################
-#          rpick                  #
-###################################
-export RPICK_CONFIG=~/.config/rpick.yml
-
-export NVM_DIR="$HOME/.nvm"
- export NVM_DIR="$HOME/.nvm"
-  [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
-  [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
@@ -265,17 +246,8 @@ export NVM_DIR="$HOME/.nvm"
 eval "$(zoxide init zsh)"
 
 ###################################
-#          vcpkg                  #
+#          carapace               #
 ###################################
-if [[ -d $HOME/.vcpkg/ ]]; then
-  export CMAKE_TOOLCHAIN_FILE="$HOME/.vcpkg/scripts/buildsystems/vcpkg.cmake"
-  elif [[ -d $HOME/vcpkg/ ]]; then
-  export CMAKE_TOOLCHAIN_FILE="$HOME/vcpkg/scripts/buildsystems/vcpkg.cmake"
-fi
-
-eval "$(ntfy shell-integration)"
-export AUTO_NTFY_DONE_IGNORE="nvim vim tmux zellij cat bat v lg ylg lazygit ssh"
-
 export CARAPACE_BRIDGES='zsh,fish,bash,inshellisense' # optional
 zstyle ':completion:*' format $'\e[3;37mCompleting %d\e[m'
 source <(carapace _carapace)
