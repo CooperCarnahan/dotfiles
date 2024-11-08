@@ -2,3 +2,4 @@ scripts/clang_update
 oh-my-zsh/
 .vim-bookmarks
 tags
+.aider*

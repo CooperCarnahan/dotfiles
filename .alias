@@ -44,6 +44,8 @@ if command -v bat &> /dev/null; then
     alias cat='bat'
 fi
 
+alias fdi='fd -IH'
+
 ###########################
 # Directory navigation    #
 ###########################
@@ -98,7 +100,7 @@ fi
 ###########################
 alias y='yadm'
 alias yst='yadm status'
-alias ya='yadm add'
+#alias ya='yadm add'
 alias yc='yadm commit'
 alias yp='yadm push'
 alias yl='yadm pull'
@@ -131,6 +133,18 @@ alias grb='forgit::rebase'
 alias grc='forgit::revert::commit'
 alias grh='forgit::reset::head'
 alias gss='forgit::stash::show'
+
+###########################
+#          Yazi           @
+###########################
+function yy() {
+	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")"
+	yazi "$@" --cwd-file="$tmp"
+	if cwd="$(cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
+		cd -- "$cwd"
+	fi
+	rm -f -- "$tmp"
+}
 
 ###########################
 #      Local Alias'       #
