@@ -1,144 +1,101 @@
 ###################################
-#           CONFIGS               #
+#           CORE CONFIG           #
 ###################################
 
-# Uncomment the following line to use case-sensitive completion.
-# CASE_SENSITIVE="true"
-
-# Uncomment the following line to use hyphen-insensitive completion.
-# Case-sensitive completion must be off. _ and - will be interchangeable.
- HYPHEN_INSENSITIVE="true"
-
-# Uncomment the following line to disable bi-weekly auto-update checks.
- DISABLE_AUTO_UPDATE="true"
-
-# Uncomment the following line to automatically update without prompting.
- DISABLE_UPDATE_PROMPT="true"
-
-# Uncomment the following line to change how often to auto-update (in days).
-# export UPDATE_ZSH_DAYS=13
-
-# Uncomment the following line if pasting URLs and other text is messed up.
- DISABLE_MAGIC_FUNCTIONS=true
-
-# Uncomment the following line to enable command auto-correction.
- ENABLE_CORRECTION="true"
-
-# Automatically do a pushd of each directory you change to
-setopt AUTO_PUSHD
-
-# Save command history
+# Initialize completion system
+autoload -Uz compinit
+# Only update completion dump once per day
+if [ $(date +'%j') != $(stat -f '%Sm' -t '%j' ${ZDOTDIR:-$HOME}/.zcompdump 2>/dev/null) ]; then
+  compinit
+else
+  compinit -C
+fi
+# History Configuration
+export HISTFILE=~/.zsh_history
 export HISTSIZE=1000000
 export SAVEHIST=1000000
-export HISTFILE=~/.zsh_history
-
 setopt HIST_FIND_NO_DUPS
-# Shares history between terminals instantlye
-setopt SHARE_HISTORY
+setopt SHARE_HISTORY  # Share history between terminals instantly
 
-# Disable beeping sound on in terminal
-unsetopt BEEP
+# Directory Navigation
+setopt AUTO_PUSHD    # Automatically pushd on directory change
 
-source $HOME/.nix-profile/etc/profile.d/hm-session-vars.sh
-
-# Uncomment the following line to display red dots whilst waiting for completion.
-# COMPLETION_WAITING_DOTS="true"
-
-# Uncomment the following line if you want to disable marking untracked files
-# under VCS as dirty. This makes repository status check for large repositories
-# much, much faster.
-# DISABLE_UNTRACKED_FILES_DIRTY="true"
-
-# Uncomment the following line if you want to change the command execution time
-# stamp shown in the history command output.
-# You can set one of the optional three formats:
-# "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
-# or set a custom format using the strftime function format specifications,
-# see 'man strftime' for details.
-# HIST_STAMPS="mm/dd/yyyy"
-
-# Starts ssh-keychain which clobbers all agents into single entity
-# Clear all existing keys so hackers will have to reenter password
-if command -v keychain &> /dev/null; then
-  keychain --clear --quiet
-   [ -z "$HOSTNAME" ] && HOSTNAME=`uname -n`
-   [ -f $HOME/.keychain/$HOSTNAME-sh ] && \
-   . $HOME/.keychain/$HOSTNAME-sh
-fi
-
-# Preferred editor for local and remote sessions
-# if [[ -n $SSH_CONNECTION ]]; then
-#   export EDITOR='vim'
-#  else
+# Terminal Behavior
+unsetopt BEEP        # Disable terminal beeping
 export EDITOR='nvim'
-# fi
-
 export PAGER='less -R'
 export BAT_PAGER='less -R'
 
-#export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
-[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"
- # Placed elsewhere on different systems
-[[ -s "/usr/share/rvm/scripts/rvm" ]] && source "/usr/share/rvm/scripts/rvm"
+# Case and Hyphen Sensitivity
+# CASE_SENSITIVE="true"      # Uncomment for case-sensitive completion
+HYPHEN_INSENSITIVE="true"   # Treat hyphens and underscores as equivalent
+
+# Update Configuration
+DISABLE_AUTO_UPDATE="true"
+DISABLE_UPDATE_PROMPT="true"
+DISABLE_MAGIC_FUNCTIONS=true  # Fix URL pasting issues
+ENABLE_CORRECTION="true"      # Enable command auto-correction
 
 ###################################
-#       ZSH VIM MODE KEYBINDS     #
+#           KEY BINDINGS          #
 ###################################
 
-# # Set VIM keybindings for terminal
-# set -o vi
-
+# Navigation
 bindkey "^N" down-line-or-search
 bindkey "^P" up-line-or-search
-
 bindkey '^R' history-incremental-search-backward
-
-# # Add Old E-Macs-style commands
-# bindkey -v 
-# bindkey "^[[1;5C" forward-word
-# bindkey "^[[1;5D" backward-word
 bindkey "^E" autosuggest-accept
 
-# # Better searching in command mode
- bindkey -M vicmd '?' history-substring-search-up
- bindkey -M vicmd '/' history-substring-search-down
+# Vim Mode Configuration
+bindkey -M vicmd '?' history-substring-search-up
+bindkey -M vicmd '/' history-substring-search-down
+bindkey -M viins 'jk' vi-cmd-mode
 
-# # Beginning search with arrow keys
- #bindkey "^[OA" up-line-or-beginning-search
- #bindkey "^[OB" down-line-or-beginning-search
- #bindkey -M vicmd "k" up-line-or-beginning-search
- #bindkey -M vicmd "j" down-line-or-beginning-search
+# Remove conflicting tmux bindings
+bindkey -s "^[h" ""
+bindkey -s "^[j" ""
+bindkey -s "^[k" ""
+bindkey -s "^[l" ""
 
-# #Set jk to send 'escape' key during insert mode 
- bindkey -M viins 'jk' vi-cmd-mode
+# Search bindings
+bindkey '^[OA' history-search-backward
+bindkey '^[OB' history-search-forward
 
-# Remove alt-h,j,k,l keybinds so tmux can use them
- bindkey -s "^[h" ""
- bindkey -s "^[j" ""
- bindkey -s "^[k" ""
- bindkey -s "^[l" ""
+# Vim insert mode cursor style
+MODE_CURSOR_VIINS="#eceff1 blinking underline"
 
-# Set cursor to underline in insert mode
- MODE_CURSOR_VIINS="#eceff1 blinking underline"
+###################################
+#           TOOL SETUP            #
+###################################
 
-# Use ripgrep for fzf searches
+# FZF Configuration
 if type rg &> /dev/null; then
   export FZF_DEFAULT_COMMAND='rg --files'
   export FZF_DEFAULT_OPTS='-m --height 50% --border'
 fi
 
+# Bat Configuration
 if ! command -v bat &> /dev/null; then
     echo "'bat' not installed. Using default 'cat'"
 else
     export BAT_THEME=TwoDark
 fi
 
+# SSH Keychain Setup
+if command -v keychain &> /dev/null; then
+  keychain --clear --quiet
+  [ -z "$HOSTNAME" ] && HOSTNAME=`uname -n`
+  [ -f $HOME/.keychain/$HOSTNAME-sh ] && \
+    . $HOME/.keychain/$HOSTNAME-sh
+fi
+
 ###################################
-#           ZINIT                 #
+#           PLUGIN MANAGER        #
 ###################################
-### Added by Zinit's installer
+
+# Zinit Installation
 if [[ ! -f $HOME/.zinit/bin/zinit.zsh ]]; then
-    print -P "%F{33}▓▒░ %F{220}Installing %F{33}DHARMA%F{220} Initiative Plugin Manager (%F{33}zdharma/zinit%F{220})…%f"
+    print -P "%F{33}▓▒░ %F{220}Installing Zinit...%f"
     command mkdir -p "$HOME/.zinit" && command chmod g-rwX "$HOME/.zinit"
     command git clone https://github.com/zdharma-continuum/zinit "$HOME/.zinit/bin" && \
         print -P "%F{33}▓▒░ %F{34}Installation successful.%f%b" || \
@@ -149,105 +106,76 @@ source "$HOME/.zinit/bin/zinit.zsh"
 autoload -Uz _zinit
 (( ${+_comps} )) && _comps[zinit]=_zinit
 
-# Load a few important annexes, without Turbo
-# (this is currently required for annexes)
+# Load Zinit Annexes
 zinit light-mode for \
     zdharma-continuum/zinit-annex-as-monitor \
     zdharma-continuum/zinit-annex-bin-gem-node \
     zdharma-continuum/zinit-annex-patch-dl \
     zdharma-continuum/zinit-annex-rust
 
-### End of Zinit's installer chunk
-
+# Plugin Loading
 zinit ice wait lucid
 zinit snippet OMZP::git
-zinit ice wait lucid
-# zinit snippet OMZP::colorize
 
 zinit light Aloxaf/fzf-tab
-# Autosuggestion stuff
+
+# Auto-suggestions and History
 zinit lucid for \
     light-mode  zsh-users/zsh-history-substring-search \
-    light-mode  zsh-users/zsh-autosuggestions \
-    # light-mode  zsh-users/zsh-completions
-    
-# Case-insensitive auto-suggestions
-# zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
+    light-mode  zsh-users/zsh-autosuggestions
 
-bindkey '^[OA' history-search-backward
-bindkey '^[OB' history-search-forward
-
-# fzf stuff
-zinit ice from"gh-r" as"program"
-zinit ice wait lucid 0
-
-# git stuff
+# Git Utilities
 zinit load wfxr/forgit
 
-# Syntax highlighting
+# Syntax Highlighting (load last)
 zinit wait lucid for \
-    atinit"zicompinit; zicdreplay"   \
-    zdharma-continuum/fast-syntax-highlighting \
+    atinit"zicompinit; zicdreplay" \
+    zdharma-continuum/fast-syntax-highlighting
 
 ###################################
-#           THEME                 #
+#           PATH & ENV            #
 ###################################
 
-# use starship prompt
-zinit ice as"command" from"gh-r" \
-          atclone"./starship init zsh > init.zsh; ./starship completions zsh > _starship" \
-          atpull"%atclone" src"init.zsh"
-eval "$(starship init zsh)"
+# Load Additional Configuration Files
+for config_file in ~/.{alias,functions,zshrc.local}; do
+    [[ -f "$config_file" ]] && source "$config_file"
+done
 
-###################################
-#          PATH                   #
-###################################
+# Path Configuration
+path_dirs=(
+    "/usr/local/go/bin"
+    "$HOME/go/bin"
+    "$HOME/.scripts"
+    "$HOME/.local/bin"
+)
 
-if [[ -f $HOME/.alias ]]; then
-  source $HOME/.alias
-fi
+for dir in "${path_dirs[@]}"; do
+    [[ -d "$dir" ]] && export PATH="$PATH:$dir"
+done
 
-if [[ -f $HOME/.functions ]]; then
-  source $HOME/.functions
-fi
+# NVM Configuration
+export NVM_DIR="${XDG_CONFIG_HOME:-$HOME/.nvm}"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 
-if [[ -f $HOME/.zshrc.local ]]; then
-  source ~/.zshrc.local
-fi
-
-if [[ -d /usr/local/go ]]; then
-  export PATH=$PATH:/usr/local/go/bin
-fi
-
-if [[ -d $HOME/go ]]; then
-  export PATH=$PATH:$HOME/go/bin
-fi
-
-if [[ -d $HOME/.scripts ]]; then
-  export PATH=$PATH:$HOME/.scripts
-fi
-
-if [[ -d $HOME/.local/bin ]]; then
-  export PATH=$PATH:$HOME/.local/bin
-fi
-
-###################################
-#              nvm                #
-###################################
-export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm 
-
-
+# Additional Tools
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-
-###################################
-#          zoxide                 #
-###################################
 eval "$(zoxide init zsh)"
 
 ###################################
-#          carapace               #
+#         COMPLETIONS             #
 ###################################
-export CARAPACE_BRIDGES='zsh,fish,bash,inshellisense' # optional
-zstyle ':completion:*' format $'\e[3;37mCompleting %d\e[m'
-source <(carapace _carapace)
+
+# Load completions before configuring them
+autoload -U +X bashcompinit && bashcompinit
+
+# Carapace Completion Setup (only if command exists)
+if command -v carapace > /dev/null; then
+    export CARAPACE_BRIDGES='zsh,fish,bash,inshellisense'
+    zstyle ':completion:*' format $'\e[3;37mCompleting %d\e[m'
+    source <(carapace _carapace)
+fi
+
+# Starship Prompt (only if command exists)
+if command -v starship > /dev/null; then
+    eval "$(starship init zsh)"
+fi
