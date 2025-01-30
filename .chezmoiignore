@@ -1,0 +1,14 @@
+README.md
+
+{{ if ne .chezmoi.os "linux" -}} 
+{{ else if ne .chezmoi.os "darwin" -}}
+{{ else if ne .chezmoi.os "windows" -}}
+AppData/*
+scripts/run_once_install-windows-tools.ps1
+{{ else }}
+{{ end -}}
+
+{{ if eq .chezmoi.os "windows" -}}
+.config/nushell
+.*
+{{ end -}}
