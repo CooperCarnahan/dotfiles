@@ -13,6 +13,6 @@ README.md
 .tmux.conf
 !.git*
 {{ else }}
-AppData/*
+AppData/
 scripts/*.ps1
 {{ end }}
