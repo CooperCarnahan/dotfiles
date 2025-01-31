@@ -4,7 +4,7 @@ README.md
 {{ else if ne .chezmoi.os "darwin" -}}
 {{ else if ne .chezmoi.os "windows" -}}
 AppData/*
-scripts/run_once_install-windows-tools.ps1
+scripts/*.ps1
 {{ else }}
 {{ end -}}
 
