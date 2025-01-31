@@ -17,10 +17,21 @@
 # You can remove these comments if you want or leave
 # them for future reference.
 
+def --env y [...args] {
+	let tmp = (mktemp -t "yazi-cwd.XXXXXX")
+	yazi ...$args --cwd-file $tmp
+	let cwd = (open $tmp)
+	if $cwd != "" and $cwd != $env.PWD {
+		cd $cwd
+	}
+	rm -fp $tmp
+}
+
 alias v = nvim
 alias cat = bat
 
 # git stuff
+alias gs = git switch
 alias gco = git checkout
 alias gc = git commit
 alias gl = git pull
