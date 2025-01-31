@@ -26,6 +26,32 @@ function Invoke-AsAdmin {
     }
 }
 
+# Function to install WSL
+function Install-WSL {
+    Write-Step "Installing Windows Subsystem for Linux (WSL)"
+    
+    # Check if WSL is already installed
+    $wslCheck = wsl --status 2>$null
+    if ($LASTEXITCODE -eq 0) {
+        Write-Host "WSL is already installed." -ForegroundColor Yellow
+        return
+    }
+
+    # Install WSL with admin privileges
+    $wslCommand = @"
+    dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
+    dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
+    wsl --update
+    wsl --set-default-version 2
+"@
+
+    Invoke-AsAdmin -Command $wslCommand -Message "Installing WSL"
+
+    # Optionally install a default Linux distribution
+    Write-Host "Installing Ubuntu as the default WSL distribution..." -ForegroundColor Green
+    Invoke-AsAdmin -Command "wsl --install -d Ubuntu" -Message "Installing Ubuntu WSL"
+}
+
 # Error handling
 $ErrorActionPreference = 'Stop'
 
@@ -123,6 +149,9 @@ $PackageGroups = @{
 foreach ($Group in $PackageGroups.GetEnumerator()) {
     Install-ScoopPackages -Category $Group.Key -Packages $Group.Value.Packages -RequiresAdmin $Group.Value.RequiresAdmin
 }
+
+# Install WSL
+Install-WSL
 
 # Clone Neovim configuration (no admin required)
 Write-Step "Setting up Neovim configuration"
