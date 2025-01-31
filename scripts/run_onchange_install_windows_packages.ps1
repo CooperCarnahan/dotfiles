@@ -71,6 +71,43 @@ foreach ($Dir in $Directories) {
     }
 }
 
+# Function to install Winget packages
+function Install-WingetPackages {
+    param(
+        [string]$Category,
+        [string[]]$Packages,
+        [bool]$RequiresAdmin = $false
+    )
+    Write-Step "Installing $Category via Winget"
+    foreach ($Package in $Packages) {
+        Write-Host "Installing $Package..." -ForegroundColor Green
+        $wingetCmd = "winget install --exact --silent $Package"
+        
+        if ($RequiresAdmin) {
+            Invoke-AsAdmin -Command $wingetCmd -Message "Installing $Package with Winget"
+        } else {
+            Invoke-Expression $wingetCmd
+        }
+        
+        if ($LASTEXITCODE -ne 0) {
+            Write-Warning "Failed to install $Package"
+        }
+    }
+}
+
+# Define Winget package groups
+$WingetPackageGroups = @{
+    'Productivity and Development Tools' = @{
+        Packages = @('1password-cli', 'AgileBits.1Password')
+        RequiresAdmin = $false
+    }
+}
+
+# Install Winget packages
+foreach ($Group in $WingetPackageGroups.GetEnumerator()) {
+    Install-WingetPackages -Category $Group.Key -Packages $Group.Value.Packages -RequiresAdmin $Group.Value.RequiresAdmin
+}
+
 # Install Scoop if not present (no admin required by design)
 Write-Step "Checking Scoop installation"
 if (-not (Get-Command scoop -ErrorAction SilentlyContinue)) {
