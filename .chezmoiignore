@@ -1,8 +1,17 @@
 README.md
 
-{{ if eq .chezmoi.os "windows" }}
+{{- if eq .chezmoi.os "windows" -}}
 .config/nushell
-.*
+.config/helix
+.config/wezterm
+.config/kitty
+.config/zellij
+.alias
+.bashrc
+.functions
+.zshrc
+.tmux.conf
+!.git*
 {{ else }}
 AppData/*
 scripts/*.ps1
