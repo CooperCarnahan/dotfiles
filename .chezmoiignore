@@ -1,14 +1,9 @@
 README.md
 
-{{ if ne .chezmoi.os "linux" -}} 
-{{ else if ne .chezmoi.os "darwin" -}}
-{{ else if ne .chezmoi.os "windows" -}}
-AppData/*
-scripts/*.ps1
-{{ else }}
-{{ end -}}
-
-{{ if eq .chezmoi.os "windows" -}}
+{{ if eq .chezmoi.os "windows" }}
 .config/nushell
 .*
-{{ end -}}
+{{ else }}
+AppData/*
+scripts/*.ps1
+{{ end }}
