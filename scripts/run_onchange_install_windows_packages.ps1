@@ -41,6 +41,7 @@ function Install-WSL {
     $wslCommand = @"
     dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
     dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
+    wsl --install
     wsl --update
     wsl --set-default-version 2
 "@
@@ -98,7 +99,7 @@ function Install-WingetPackages {
 # Define Winget package groups
 $WingetPackageGroups = @{
     'Productivity and Development Tools' = @{
-        Packages = @('1password-cli', 'AgileBits.1Password')
+        Packages = @('1password-cli', 'AgileBits.1Password', 'Nushell.Nushell')
         RequiresAdmin = $false
     }
 }
@@ -153,7 +154,7 @@ function Install-ScoopPackages {
 # Define package groups with admin requirements
 $PackageGroups = @{
     'Core Development Tools' = @{
-        Packages = @('aria2', 'git', 'gzip', 'unzip')
+        Packages = @('aria2', 'git', 'gzip', 'unzip', 'vscode')
         RequiresAdmin = $false
     }
     'Build Tools' = @{
@@ -161,7 +162,7 @@ $PackageGroups = @{
         RequiresAdmin = $false
     }
     'Shell and Navigation Tools' = @{
-        Packages = @('fzf', 'starship', 'zoxide', 'bat', 'ripgrep', 'fd', 'clipboard', 'delta')
+        Packages = @('fzf', 'starship', 'zoxide', 'bat', 'ripgrep', 'fd', 'clipboard', 'delta', 'ctags', 'gh')
         RequiresAdmin = $false
     }
     'Terminal Applications' = @{
@@ -169,15 +170,15 @@ $PackageGroups = @{
         RequiresAdmin = $false
     }
     'Programming Languages' = @{
-        Packages = @('go', 'nvm', 'zig')
+        Packages = @('go', 'nodejs-lts', 'zig', 'python')
         RequiresAdmin = $false
     }
     'System Tools' = @{
-        Packages = @('extras/powertoys', 'extras/carapace-bin')
-        RequiresAdmin = $true
+        Packages = @('extras/powertoys', 'extras/carapace-bin', 'extras/glazewm')
+        RequiresAdmin = $false
     }
     'Fonts' = @{
-        Packages = @('nerd-fonts/CascadiaCode-NF')
+        Packages = @('nerd-fonts/CascadiaCode-NF', 'nerd-fonts/Maple-Mono-NF')
         RequiresAdmin = $false
     }
 }
