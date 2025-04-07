@@ -201,3 +201,6 @@ if (-not (Test-Path $NvimConfigPath)) {
 }
 
 Write-Host "`nSetup completed successfully!" -ForegroundColor Green
+
+# install uv
+Invoke-Expression "powershell -ExecutionPolicy ByPass -c 'irm https://astral.sh/uv/install.ps1 | iex'"
