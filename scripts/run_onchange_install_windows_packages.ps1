@@ -99,7 +99,7 @@ function Install-WingetPackages {
 # Define Winget package groups
 $WingetPackageGroups = @{
     'Productivity and Development Tools' = @{
-        Packages = @('1password-cli', 'AgileBits.1Password', 'Nushell.Nushell')
+        Packages = @('1password-cli', 'AgileBits.1Password', 'Nushell.Nushell', 'glazewm')
         RequiresAdmin = $false
     }
 }
@@ -174,7 +174,7 @@ $PackageGroups = @{
         RequiresAdmin = $false
     }
     'System Tools' = @{
-        Packages = @('extras/powertoys', 'extras/carapace-bin', 'extras/glazewm')
+        Packages = @('extras/powertoys', 'extras/carapace-bin')
         RequiresAdmin = $false
     }
     'Fonts' = @{
@@ -200,7 +200,7 @@ if (-not (Test-Path $NvimConfigPath)) {
     Write-Host "Neovim configuration already exists" -ForegroundColor Yellow
 }
 
-Write-Host "`nSetup completed successfully!" -ForegroundColor Green
-
 # install uv
+Write-Step "Setting up UV Python package + project manager"
 Invoke-Expression "powershell -ExecutionPolicy ByPass -c 'irm https://astral.sh/uv/install.ps1 | iex'"
+Write-Host "`nSetup completed successfully!" -ForegroundColor Green
