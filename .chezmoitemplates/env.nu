@@ -1,7 +1,7 @@
 # env.nu
 #
 # Installed by:
-# version = "0.101.0"
+# version = "0.103.0"
 #
 # Previously, environment variables were typically configured in `env.nu`.
 # In general, most configuration can and should be performed in `config.nu`
@@ -22,3 +22,10 @@ $env.EDITOR = "nvim"
 $env.CARAPACE_BRIDGES = 'zsh,fish,bash,inshellisense' # optional
 mkdir ~/.cache/carapace
 carapace _carapace nushell | save --force ~/.cache/carapace/init.nu
+
+# starship
+mkdir ~/.cache/starship
+starship init nu | save -f ~/.cache/starship/init.nu
+
+# zoxide
+zoxide init nushell | save -f ~/.zoxide.nu

@@ -1,7 +1,7 @@
 # config.nu
 #
 # Installed by:
-# version = "0.101.0"
+# version = "0.103.0"
 #
 # This file is used to override default Nushell settings, define
 # (or import) custom commands, or run any other startup tasks.
@@ -17,7 +17,7 @@
 # You can remove these comments if you want or leave
 # them for future reference.
 
-def --env y [...args] {
+def --env yz [...args] {
 	let tmp = (mktemp -t "yazi-cwd.XXXXXX")
 	yazi ...$args --cwd-file $tmp
 	let cwd = (open $tmp)
@@ -29,22 +29,36 @@ def --env y [...args] {
 
 alias v = nvim
 alias cat = bat
+alias nv = neovide
+alias y  =  yadm
+alias yst  =  yadm status
+alias ya = yadm add
+alias yc = yadm commit
+alias yp = yadm push
+alias yl = yadm pull
+alias yco = yadm checkout
+alias yd = yadm diff
+alias ylg = lazygit -w ~ -g ~/.local/share/yadm/repo.git
 
-# git stuff
-alias gs = git switch
-alias gco = git checkout
+alias .. = cd ..
+alias ... = cd ../..
+alias .... = cd ../../..
+alias ..... = cd ../../../..
+alias ...... = cd ../../../../..
+
+alias lg = lazygit
+alias gsur = git submodule update --init --recursive -j 12
+alias gbsc = git branch --show-current
+alias grh = git reset --hard
+alias grb = git rebase
+alias grho = git reset --hard origin/(git branch --show-current)
 alias gc = git commit
 alias gl = git pull
 alias gp = git push
+alias gco = git checkout
 alias gst = git status
-alias grb = git rebase
-alias grbi = git rebase -i
-
-alias lg = lazygit
-
-source ~/.zoxide.nu
-
-mkdir ($nu.data-dir | path join "vendor/autoload")
-starship init nu | save -f ($nu.data-dir | path join "vendor/autoload/starship.nu")
+alias fdi = fd -IH
 
 source ~/.cache/carapace/init.nu
+use ~/.cache/starship/init.nu
+source ~/.zoxide.nu
