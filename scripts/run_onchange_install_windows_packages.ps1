@@ -162,7 +162,7 @@ $PackageGroups = @{
         RequiresAdmin = $false
     }
     'Shell and Navigation Tools' = @{
-        Packages = @('fzf', 'starship', 'zoxide', 'bat', 'ripgrep', 'fd', 'clipboard', 'delta', 'ctags', 'gh')
+        Packages = @('fzf', 'starship', 'zoxide', 'bat', 'ripgrep', 'fd', 'clipboard', 'delta', 'ctags', 'gh', 'difftastic')
         RequiresAdmin = $false
     }
     'Terminal Applications' = @{

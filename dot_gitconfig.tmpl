@@ -27,6 +27,19 @@
   brt = "!git for-each-ref refs/heads --color=always --sort -committerdate --format='%(HEAD)%(color:reset);%(color:yellow)%(refname:short)%(color:reset);%(contents:subject);%(color:green)(%(committerdate:relative))%(color:blue);<%(authorname)>' | column -t -s ';'"
 	fpush = push
 
+  # Difftastic aliases, so `git dlog` is `git log` with difftastic and so on.
+  dlog = -c diff.external=difft log --ext-diff
+  dshow = -c diff.external=difft show --ext-diff
+  ddiff = -c diff.external=difft diff
+  # `git log` with patches shown with difftastic.
+  dl = -c diff.external=difft log -p --ext-diff
+
+  # Show the most recent commit with difftastic.
+  ds = -c diff.external=difft show --ext-diff
+
+  # `git diff` with difftastic.
+  dft = -c diff.external=difft diff
+
 # 1password signing stuff
 [gpg]
 	format = ssh
