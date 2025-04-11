@@ -27,6 +27,39 @@ def --env yz [...args] {
 	rm -fp $tmp
 }
 
+def push [
+    message: string
+] {
+    let app_token = $env.PUSHOVER_APP_TOKEN?
+    let user_key = $env.PUSHOVER_USER_KEY?
+
+    if ($app_token == null) {
+        print "Error: PUSHOVER_APP_TOKEN missing"
+        return {status: "failed", error: "missing_app_token"}
+    }
+
+    if ($user_key == null) {
+        print "Error: PUSHOVER_USER_KEY missing"
+        return {status: "failed", error: "missing_user_key"}
+    }
+
+    try {
+        let response = (http post https://api.pushover.net/1/messages.json --content-type multipart/form-data {
+            token: $app_token
+            user: $user_key
+            message: $message
+        })
+
+        if $response.status == "failed" {
+            print $"API Error: ($response.errors.0)"
+            return $response
+        }
+
+    } catch {|e|
+        return $"HTTP Error: ($e.debug)"
+    }
+}
+
 alias v = nvim
 alias cat = bat
 alias nv = neovide
