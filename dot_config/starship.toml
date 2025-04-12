@@ -98,5 +98,8 @@ symbol = " "
 [shlvl]
 symbol = " "
 
+[shell]
+disabled = false
+
 [swift]
 symbol = "ﯣ "
