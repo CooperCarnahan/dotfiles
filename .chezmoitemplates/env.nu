@@ -18,6 +18,8 @@
 # them for future reference.
 
 $env.EDITOR = "nvim"
+$env.PUSHOVER_APP_TOKEN = "{{- (onepasswordDetailsFields "m3fndragiw4abz2kk3l5zjjj7i").credential.value }}"
+$env.PUSHOVER_USER_KEY = "{{- (onepasswordDetailsFields "m3fndragiw4abz2kk3l5zjjj7i").username.value }}"
 
 $env.CARAPACE_BRIDGES = 'zsh,fish,bash,inshellisense' # optional
 mkdir ~/.cache/carapace
