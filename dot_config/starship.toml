@@ -95,11 +95,11 @@ symbol = " "
 [scala]
 symbol = " "
 
-[shlvl]
-symbol = " "
-
 [shell]
 disabled = false
+
+[shlvl]
+symbol = " "
 
 [swift]
 symbol = "ﯣ "

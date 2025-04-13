@@ -60,6 +60,7 @@ def push [
     }
 }
 
+alias fg = job unfreeze
 alias v = nvim
 alias cat = bat
 alias nv = neovide
