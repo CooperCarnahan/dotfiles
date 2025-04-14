@@ -68,6 +68,11 @@ alias cha = chezmoi add
 alias chd = chezmoi diff
 alias che = nvim ~/.local/share/chezmoi
 alias chlg = lazygit -p ~/.local/share/chezmoi/
+alias zj = zellij
+
+def zja [] {
+    zellij attach (zellij list-sessions | ansi strip | fzf)
+}
 
 alias .. = cd ..
 alias ... = cd ../..
