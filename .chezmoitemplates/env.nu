@@ -31,3 +31,7 @@ starship init nu | save -f ~/.cache/starship/init.nu
 
 # zoxide
 zoxide init nushell | save -f ~/.zoxide.nu
+
+# atuin
+mkdir ~/.local/share/atuin/
+atuin init nu | save -f ~/.local/share/atuin/init.nu

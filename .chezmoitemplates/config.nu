@@ -96,3 +96,4 @@ alias fdi = fd -IH
 source ~/.cache/carapace/init.nu
 use ~/.cache/starship/init.nu
 source ~/.zoxide.nu
+source ~/.local/share/atuin/init.nu
