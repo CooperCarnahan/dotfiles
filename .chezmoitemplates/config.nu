@@ -94,21 +94,15 @@ alias gst = git status
 alias fdi = fd -IH
 
 # carapace
-if (which carapace | is-not-empty) {
 source ~/.cache/carapace/init.nu
-}
 
 # starship
-if (which starship | is-not-empty) {
 use ~/.cache/starship/init.nu
-}
 
 # zoxide
-if (which zoxide | is-not-empty) { 
 source ~/.zoxide.nu
-}
 
 # atuin
-if (which atuin | is-not-empty) {
+{{- if ne .chezmoi.os "windows" }}
 source ~/.local/share/atuin/init.nu
-}
+{{- end }}
