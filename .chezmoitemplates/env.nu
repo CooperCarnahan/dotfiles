@@ -21,17 +21,26 @@ $env.EDITOR = "nvim"
 $env.PUSHOVER_APP_TOKEN = "{{- (onepasswordDetailsFields "m3fndragiw4abz2kk3l5zjjj7i").credential.value }}"
 $env.PUSHOVER_USER_KEY = "{{- (onepasswordDetailsFields "m3fndragiw4abz2kk3l5zjjj7i").username.value }}"
 
-$env.CARAPACE_BRIDGES = 'zsh,fish,bash,inshellisense' # optional
-mkdir ~/.cache/carapace
-carapace _carapace nushell | save --force ~/.cache/carapace/init.nu
+# carapace
+if (which carapace | is-not-empty) {
+  $env.CARAPACE_BRIDGES = 'zsh,fish,bash,inshellisense' # optional
+  mkdir ~/.cache/carapace
+  carapace _carapace nushell | save --force ~/.cache/carapace/init.nu
+}
 
 # starship
+if (which starship | is-not-empty) {
 mkdir ~/.cache/starship
 starship init nu | save -f ~/.cache/starship/init.nu
+}
 
 # zoxide
-zoxide init nushell | save -f ~/.zoxide.nu
+if (which zoxide | is-not-empty) { 
+  zoxide init nushell | save -f ~/.zoxide.nu
+}
 
 # atuin
-mkdir ~/.local/share/atuin/
-atuin init nu | save -f ~/.local/share/atuin/init.nu
+if (which atuin | is-not-empty) {
+  mkdir ~/.local/share/atuin/
+  atuin init nu | save -f ~/.local/share/atuin/init.nu
+}
