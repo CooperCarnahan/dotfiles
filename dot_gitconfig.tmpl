@@ -40,6 +40,7 @@
   # `git diff` with difftastic.
   dft = -c diff.external=difft diff
 
+{{- if contains (lower .chezmoi.hostname) "cooper" }}
 # 1password signing stuff
 [gpg]
 	format = ssh
@@ -60,6 +61,7 @@
 
   # 1password public key for github signing key
 	signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIeClNytAT5eG6YM0L/giuA9pw9kRCgEmxEcz1uoa5yy
+{{- end }}
 
 [init]
 	defaultBranch = main
