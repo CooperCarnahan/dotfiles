@@ -99,7 +99,7 @@ function Install-WingetPackages {
 # Define Winget package groups
 $WingetPackageGroups = @{
     'Productivity and Development Tools' = @{
-        Packages = @('1password-cli', 'AgileBits.1Password', 'Nushell.Nushell', 'glazewm')
+        Packages = @('1password-cli', 'AgileBits.1Password', 'Nushell.Nushell', 'glazewm', 'win32yank')
         RequiresAdmin = $false
     }
 }
