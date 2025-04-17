@@ -1,7 +1,13 @@
 [core]
-	editor = nvim
-	excludesfile = ~/.gitignore_global
+  editor = nvim
+  excludesfile = ~/.gitignore_global
   pager = delta
+
+{{- if eq .chezmoi.os "linux" }}
+{{- if (.chezmoi.kernel.osrelease | lower | contains "microsoft") }}
+  sshCommand = ssh.exe
+{{- end }}
+{{- end }}
 
 [interactive]
   diffFilter = delta --color-only
@@ -17,11 +23,11 @@
   colorMoved = default
 
 [pull]
-	rebase = true
+  rebase = true
 
 [rebase]
-	autoStash = true
-	autoSquash = true
+  autoStash = true
+  autoSquash = true
 
 [alias]
   brt = "!git for-each-ref refs/heads --color=always --sort -committerdate --format='%(HEAD)%(color:reset);%(color:yellow)%(refname:short)%(color:reset);%(contents:subject);%(color:green)(%(committerdate:relative))%(color:blue);<%(authorname)>' | column -t -s ';'"
@@ -43,30 +49,32 @@
 {{- if contains "cooper" (lower .chezmoi.hostname) }}
 # 1password signing stuff
 [gpg]
-	format = ssh
+  format = ssh
 [gpg "ssh"]
 {{- if eq .chezmoi.os "windows" }}
   program = {{ .chezmoi.homeDir }}/AppData/Local/1Password/app/8/op-ssh-sign.exe
 {{- else if eq .chezmoi.os "darwin" }}
   program = /Applications/1Password.app/Contents/MacOS/op-ssh-sign
 {{- else if eq .chezmoi.os "linux" }}
-  program = /usr/bin/op-ssh-sign
+{{ if (.chezmoi.kernel.osrelease | lower | contains "microsoft") }}
+  program = "/mnt/c/Users/coopc/AppData/Local/1Password/app/8/op-ssh-sign-wsl"
+{{ end }}
 {{- end }}
 [commit]
-	gpgsign = true
+  gpgsign = true
 
 [user]
-	email = coopcarn@gmail.com
-	name = CooperCarnahan
+  email = coopcarn@gmail.com
+  name = CooperCarnahan
 
   # 1password public key for github signing key
-	signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIeClNytAT5eG6YM0L/giuA9pw9kRCgEmxEcz1uoa5yy
+  signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIeClNytAT5eG6YM0L/giuA9pw9kRCgEmxEcz1uoa5yy
 {{- end }}
 
 [init]
-	defaultBranch = main
+  defaultBranch = main
 [rerere]
-	enabled = true
-	autoUpdate = true
+  enabled = true
+  autoUpdate = true
 [branch]
-	sort = -committerdate
+  sort = -committerdate
