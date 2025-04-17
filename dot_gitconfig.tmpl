@@ -40,7 +40,7 @@
   # `git diff` with difftastic.
   dft = -c diff.external=difft diff
 
-{{- if contains (lower .chezmoi.hostname) "cooper" }}
+{{- if contains "cooper" (lower .chezmoi.hostname) }}
 # 1password signing stuff
 [gpg]
 	format = ssh
