@@ -195,7 +195,7 @@ Install-WSL
 Write-Step "Setting up Neovim configuration"
 $NvimConfigPath = "$env:USERPROFILE\AppData\Local\nvim"
 if (-not (Test-Path $NvimConfigPath)) {
-    git clone https://github.com/CooperCarnahan/nvim.git $NvimConfigPath
+    Invoke-AsAdmin -Command 'New-Item -ItemType SymbolicLink -Path "$env:LOCALAPPDATA\nvim" -Target "$env:USERPROFILE\.config\nvim"' -Message "Creating symlink to Neovim config..."
 } else {
     Write-Host "Neovim configuration already exists" -ForegroundColor Yellow
 }
