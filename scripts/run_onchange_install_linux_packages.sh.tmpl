@@ -49,7 +49,7 @@ install_dependencies() {
   # Install other dependencies
   sudo apt-get install -y build-essential cmake pkg-config libfreetype6-dev libfontconfig1-dev \
     libxcb-xfixes0-dev libxkbcommon-dev python3 curl unzip gettext libtool libtool-bin \
-    autoconf automake ninja-build g++ pkg-config libssl-dev python3-pip
+    autoconf automake ninja-build g++ pkg-config libssl-dev python3-pip python3-pynvim python3-venv
   
   log_success "System dependencies installed"
 }
@@ -290,7 +290,6 @@ install_neovim() {
     cd ~
     rm -rf "$tmpdir"
 
-    pip3 install pynvim
     fnm install --lts
 
     log_success "Neovim $latest_ver built and installed to ~/.local/bin/nvim"
