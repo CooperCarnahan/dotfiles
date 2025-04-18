@@ -152,10 +152,6 @@ install_golang() {
     sudo rm -rf /usr/local/go
     sudo tar -C /usr/local -xzf "go${GO_VERSION}.linux-amd64.tar.gz"
     rm "go${GO_VERSION}.linux-amd64.tar.gz"
-
-    # Set up Go environment variables
-    echo 'export PATH=$PATH:/usr/local/go/bin:$HOME/go/bin' >> "$HOME/.profile"
-    export PATH=$PATH:/usr/local/go/bin:$HOME/go/bin
     log_success "Go installed"
   else
     # There's no built-in Go update mechanism, but we can check the version

@@ -18,9 +18,18 @@
 # them for future reference.
 
 $env.EDITOR = "nvim"
-$env.path ++= ["~/.cargo/bin"]
-$env.path ++= ["~/go/bin"]
+
+# misc. path stuff
 $env.path ++= ["~/.local/bin"]
+
+# rust
+$env.path ++= ["~/.cargo/bin"]
+
+# golang
+$env.path ++= ["~/go/bin"]
+{{- if eq .chezmoi.os "linux" }}
+$env.path ++= ["/usr/local/go/bin"]
+{{- end }}
 
 {{- if contains (lower .chezmoi.hostname) "cooper" }}
 $env.PUSHOVER_APP_TOKEN = "{{- (onepasswordDetailsFields "m3fndragiw4abz2kk3l5zjjj7i").credential.value }}"
