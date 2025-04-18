@@ -51,6 +51,12 @@ install_dependencies() {
     libxcb-xfixes0-dev libxkbcommon-dev python3 curl unzip gettext libtool libtool-bin \
     autoconf automake ninja-build g++ pkg-config libssl-dev python3-pip python3-pynvim python3-venv
   
+  # because fnm and nushell don't play nicely
+  log_info "Adding Node.js 23.X LTS"
+  curl -fsSL https://deb.nodesource.com/setup_23.x -o ~/nodesource_setup.sh
+  sudo -E bash ~/nodesource_setup.sh
+  rm ~/nodesource_setup.sh
+  
   log_success "System dependencies installed"
 }
 
