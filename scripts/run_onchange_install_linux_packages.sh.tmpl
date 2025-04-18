@@ -55,6 +55,7 @@ install_dependencies() {
   log_info "Adding Node.js 23.X LTS"
   curl -fsSL https://deb.nodesource.com/setup_23.x -o ~/nodesource_setup.sh
   sudo -E bash ~/nodesource_setup.sh
+  sudo apt-get install -y nodejs
   rm ~/nodesource_setup.sh
   
   log_success "System dependencies installed"
