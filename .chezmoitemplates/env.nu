@@ -20,6 +20,7 @@
 $env.EDITOR = "nvim"
 $env.path ++= ["~/.cargo/bin"]
 $env.path ++= ["~/go/bin"]
+$env.path ++= ["~/.local/bin"]
 
 {{- if contains (lower .chezmoi.hostname) "cooper" }}
 $env.PUSHOVER_APP_TOKEN = "{{- (onepasswordDetailsFields "m3fndragiw4abz2kk3l5zjjj7i").credential.value }}"

@@ -17,6 +17,19 @@
 # You can remove these comments if you want or leave
 # them for future reference.
 
+$env.config.keybindings ++= [
+  {
+    name: fzf_paste
+    modifier: control
+    keycode: char_t
+    mode: emacs
+    event: {
+        send: executehostcommand,
+        cmd: "commandline edit --insert (fd | fzf --height=40% --reverse --preview 'bat -n --color=always {}' | str trim)"
+      }
+  }
+]
+
 def --env yz [...args] {
 	let tmp = (mktemp -t "yazi-cwd.XXXXXX")
 	yazi ...$args --cwd-file $tmp
