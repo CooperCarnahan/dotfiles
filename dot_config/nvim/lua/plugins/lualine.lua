@@ -1,5 +1,3 @@
-local gutentag_status = require("plugins.gutentags").status()
-
 return {
   "nvim-lualine/lualine.nvim",
   event = "VeryLazy",
