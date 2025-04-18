@@ -175,6 +175,9 @@ if command -v carapace > /dev/null; then
     source <(carapace _carapace)
 fi
 
+# fnm
+eval "$(fnm env --use-on-cd --shell zsh)"
+
 # Starship Prompt (only if command exists)
 if command -v starship > /dev/null; then
     eval "$(starship init zsh)"

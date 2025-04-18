@@ -115,4 +115,20 @@ if ! shopt -oq posix; then
     . /etc/bash_completion
   fi
 fi
+
+# cargo
 . "$HOME/.cargo/env"
+
+# go
+export PATH="~/go/bin":"$PATH"
+
+# fnm
+eval "$(fnm env --use-on-cd --shell bash)"
+
+# misc. path stuff
+export PATH="~/.local/bin":"$PATH"
+
+# Starship Prompt (only if command exists)
+if command -v starship > /dev/null; then
+    eval "$(starship init bash)"
+fi
