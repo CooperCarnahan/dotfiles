@@ -11,6 +11,9 @@ return {
     scroll = { enabled = false },
     picker = {
       sources = {
+        smart = {
+          multi = { "buffers", "files" },
+        },
         lsp_definitions = {
           layout = { preset = "ivy" },
           matcher = { frecency = true, history_bonus = true },
