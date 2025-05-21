@@ -1,5 +1,15 @@
 README.md
 
+**/.git/
+**/.git/**
+**/.gitignore
+
+**/node_modules/
+**/node_modules/**
+
+.config/nvim/lazyvim.json
+.config/nvim/lazy-lock.json
+
 {{- if eq .chezmoi.os "windows" -}}
 .config/nushell
 .config/helix
@@ -15,4 +25,5 @@ README.md
 {{ else }}
 AppData/
 scripts/*.ps1
+.glzr/
 {{ end }}
