@@ -120,17 +120,17 @@ workspaces:
     display_name: "Outlook"
     bind_to_monitor: 1
   - name: "4"
-    display_name: "Visual Studio"
-    bind_to_monitor: 1
+    display_name: "ToDo"
+    bind_to_monitor: 0
   - name: "5"
     display_name: "Teams"
     bind_to_monitor: 0
   - name: "6"
-    display_name: "ToDo"
-    bind_to_monitor: 0
-  - name: "7"
     display_name: "Spotify"
     bind_to_monitor: 0
+  - name: "7"
+    display_name: "Visual Studio"
+    bind_to_monitor: 1
   - name: "8"
   - name: "9"
 
@@ -141,24 +141,24 @@ window_rules:
       - window_process: { regex: "msedge|brave|chrome|[Aa]rc|[Zz]en" }
   - commands: ["move --workspace 3"]
     match:
-      # Move browsers to workspace 1.
       - window_process: { regex: "olk" }
   - commands: ["move --workspace 4"]
     match:
-      # Move browsers to workspace 4.
-      - window_process: { regex: "devenv|[cC]ode" }
+      - window_title: { regex: "Microsoft [tT]o ?[dD]o" }
   - commands: ["move --workspace 5"]
     match:
-      # Move browsers to workspace 1.
       - window_process: { regex: "ms-teams" }
+  - commands: ["move --workspace 6"]
+    match:
+      - window_process: { regex: "[sS]potify" }
   - commands: ["move --workspace 7"]
     match:
-      # Move browsers to workspace 1.
-      - window_process: { regex: "[sS]potify" }
+      - window_process: { regex: "devenv|[cC]ode" }
   - commands: ["ignore"]
     match:
       # Ignores any Zebar windows.
       - window_process: { equals: "zebar" }
+      - window_process: { equals: "explorer" }
 
       # Ignores picture-in-picture windows for browsers.
       - window_title: { regex: "[Pp]icture.in.[Pp]icture" }
