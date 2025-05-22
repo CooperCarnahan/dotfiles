@@ -5,9 +5,9 @@
 @import "https://www.nerdfonts.com/assets/css/webfont.css";
 
 :root {
-  --main-color: rgba(0, 135, 255, 0.95);
+  --main-color: rgba(76, 194, 255, 0.95);
   --background-color: linear-gradient(
-    rgba(0, 0, 0, 0.9),
+    rgba(0, 0, 0, 0.85),
     rgba(14, 2, 20, 0.85)
   );
   --font-color: rgba(255, 255, 255, 0.9);
@@ -42,19 +42,46 @@ body,
 
 .app {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  height: 100%;
-  /* padding app */
-  padding: 2px 0.5vw;
+  height: 3.2em;
+  padding: 0.2em 0.5vw;
   white-space: nowrap;
+  /* Windows 11 taskbar glassmorphism effect */
+  background: linear-gradient(
+    90deg,
+    rgba(40, 44, 52, 0.65) 0%,
+    rgba(32, 34, 37, 0.65) 100%
+  );
+  backdrop-filter: blur(32px) saturate(180%);
+  background-color: rgba(32, 34, 37, 0.82);
+  /* background-image: url('https://www.transparenttextures.com/patterns/noise.png'); */
+  background-blend-mode: overlay;
+  box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.18);
+  border-bottom: 1.5px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0;
+  gap: 1em;
 }
 
-.left,
-.center,
-.right {
+.left {
+  grid-column: 1;
   display: flex;
   align-items: center;
+  justify-content: flex-start;
+}
+
+.center {
+  grid-column: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.right {
+  grid-column: 3;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
 }
 
 .center {
@@ -84,34 +111,49 @@ body,
   margin-right: 10px !important;
 }
 
+.separator {
+  flex: 1 1 auto;
+  height: 1.5em;
+  margin: 0 1em;
+  border-left: 1.5px solid rgba(200, 200, 220, 0.18);
+}
+
 .workspaces {
   display: flex;
   align-items: center;
 }
 
 .workspace {
-  background: rgb(255 255 255 / 15%);
+  background: transparent;
+  color: var(--font-color);
+  font-family: "MapleCode Nerd Font", monospace;
+  font-weight: 600;
   margin-right: 4px;
   padding: 3px 8px;
-  color: var(--font-color);
   border: none;
   border-radius: 6px;
   cursor: pointer;
   transition:
-    all 0.3s,
-    transform 0.3s;
+    background 0.2s,
+    color 0.2s,
+    box-shadow 0.2s,
+    transform 0.2s;
+  box-shadow: none;
+}
 
-  &.displayed {
-    background: rgb(255 255 255 / 15%) !important;
-  }
+.workspace.displayed {
+  background: rgba(255, 255, 255, 0.08) !important;
+}
 
-  &.focused {
-    background: var(--main-color) !important;
-  }
+.workspace.focused {
+  background: #0090c8 !important;
+  color: #fff !important;
+  box-shadow: 0 0 8px 2px rgba(0, 135, 255, 0.32);
+}
 
-  &:hover {
-    transform: scale(0.9);
-  }
+.workspace:hover:not(.focused) {
+  background: rgba(255, 255, 255, 0.12);
+  transform: scale(0.96);
 }
 
 .binding-mode,
@@ -145,16 +187,15 @@ body,
 }
 
 .box {
-  background: var(--background-color);
-  border: 2px solid var(--main-color);
-  padding: 0.5em 1em;
-  border-radius: 1em;
+  background: none;
+  border: none;
+  padding: 0;
+  border-radius: 0;
   display: flex;
   align-items: center;
-  backdrop-filter: invert(1);
-  transition:
-    all 0.3s,
-    transform 0.3s;
+  backdrop-filter: none;
+  background-color: transparent;
+  transition: none;
 }
 
 .active-app {

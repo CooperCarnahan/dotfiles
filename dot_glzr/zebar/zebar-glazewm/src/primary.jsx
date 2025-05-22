@@ -31,46 +31,107 @@ function App() {
   }, []);
 
   function getBatteryIcon(batteryOutput) {
-    if (batteryOutput.chargePercent > 90)
-      return <i className="nf nf-fa-battery_4"></i>;
-    if (batteryOutput.chargePercent > 70)
-      return <i className="nf nf-fa-battery_3"></i>;
-    if (batteryOutput.chargePercent > 40)
-      return <i className="nf nf-fa-battery_2"></i>;
-    if (batteryOutput.chargePercent > 20)
-      return <i className="nf nf-fa-battery_1"></i>;
-    return <i className="nf nf-fa-battery_0"></i>;
+    let iconClass = "nf ";
+    let color = "";
+    if (batteryOutput.chargePercent > 90) {
+      iconClass += "nf-fa-battery_4";
+      color = "#4caf50"; // green
+    } else if (batteryOutput.chargePercent > 70) {
+      iconClass += "nf-fa-battery_3";
+      color = "#4caf50"; // green
+    } else if (batteryOutput.chargePercent > 40) {
+      iconClass += "nf-fa-battery_2";
+      color = "#ffeb3b"; // yellow
+    } else if (batteryOutput.chargePercent > 20) {
+      iconClass += "nf-fa-battery_1";
+      color = "#ffeb3b"; // yellow
+    } else {
+      iconClass += "nf-fa-battery_0";
+      color = "#e53935"; // red
+    }
+    return <i className={iconClass} style={{ color }}></i>;
   }
 
   function getWeatherIcon(weatherOutput) {
+    let iconClass = "nf ";
+    let color = "";
     switch (weatherOutput.status) {
       case "clear_day":
-        return <i className="nf nf-weather-day_sunny"></i>;
+        iconClass += "nf-weather-day_sunny";
+        color = "#FFD600"; // yellow
+        break;
       case "clear_night":
-        return <i className="nf nf-weather-night_clear"></i>;
+        iconClass += "nf-weather-night_clear";
+        color = "#FFD600"; // yellow
+        break;
       case "cloudy_day":
-        return <i className="nf nf-weather-day_cloudy"></i>;
+        iconClass += "nf-weather-day_cloudy";
+        color = "#B0BEC5"; // grey
+        break;
       case "cloudy_night":
-        return <i className="nf nf-weather-night_alt_cloudy"></i>;
+        iconClass += "nf-weather-night_alt_cloudy";
+        color = "#B0BEC5"; // grey
+        break;
       case "light_rain_day":
-        return <i className="nf nf-weather-day_sprinkle"></i>;
+        iconClass += "nf-weather-day_sprinkle";
+        color = "#2196F3"; // blue
+        break;
       case "light_rain_night":
-        return <i className="nf nf-weather-night_alt_sprinkle"></i>;
+        iconClass += "nf-weather-night_alt_sprinkle";
+        color = "#2196F3"; // blue
+        break;
       case "heavy_rain_day":
-        return <i className="nf nf-weather-day_rain"></i>;
+        iconClass += "nf-weather-day_rain";
+        color = "#1976D2"; // darker blue
+        break;
       case "heavy_rain_night":
-        return <i className="nf nf-weather-night_alt_rain"></i>;
+        iconClass += "nf-weather-night_alt_rain";
+        color = "#1976D2"; // darker blue
+        break;
       case "snow_day":
-        return <i className="nf nf-weather-day_snow"></i>;
+        iconClass += "nf-weather-day_snow";
+        color = "#FFFFFF"; // white
+        break;
       case "snow_night":
-        return <i className="nf nf-weather-night_alt_snow"></i>;
+        iconClass += "nf-weather-night_alt_snow";
+        color = "#FFFFFF"; // white
+        break;
       case "thunder_day":
-        return <i className="nf nf-weather-day_lightning"></i>;
+        iconClass += "nf-weather-day_lightning";
+        color = "#FFD600"; // yellow
+        break;
       case "thunder_night":
-        return <i className="nf nf-weather-night_alt_lightning"></i>;
+        iconClass += "nf-weather-night_alt_lightning";
+        color = "#FFD600"; // yellow
+        break;
       default: // Handle unknown status gracefully
-        return <i className="nf nf-weather-na"></i>; // "Not Available" icon
+        iconClass += "nf-weather-na";
+        color = "#B0BEC5"; // grey
+        break;
     }
+    return <i className={iconClass} style={{ color }}></i>;
+  }
+
+  function getMemoryIcon(memoryOutput) {
+    let iconClass = "nf nf-fae-chip";
+    let color = "#888888";
+    if (memoryOutput.usage > 85) {
+      color = "#e53935"; // red
+    } else if (memoryOutput.usage > 60) {
+      color = "#ffeb3b"; // yellow
+    }
+    return <i className={iconClass} style={{ color }}></i>;
+  }
+
+  function getCpuIcon(cpuOutput) {
+    let iconClass = "nf nf-oct-cpu";
+    let color = "#888888";
+    if (cpuOutput.usage > 85) {
+      color = "#e53935"; // red
+    } else if (cpuOutput.usage > 60) {
+      color = "#ffeb3b"; // yellow
+    }
+    return <i className={iconClass} style={{ color }}></i>;
   }
 
   // debug
@@ -81,9 +142,68 @@ function App() {
       <div className="left">
         <div className="box">
           <div className="logo">
-            <i className="nf nf-custom-windows"></i>
-            {output.host?.hostname} |
+            <span
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                height: "1em",
+                marginRight: "0.2em",
+              }}
+            >
+              <svg width="22" height="22" viewBox="0 0 48 48" fill="none">
+                <rect
+                  x="4"
+                  y="4"
+                  width="18"
+                  height="18"
+                  rx="2"
+                  fill="#00ADEF"
+                />
+                <rect
+                  x="26"
+                  y="4"
+                  width="18"
+                  height="18"
+                  rx="2"
+                  fill="#00ADEF"
+                />
+                <rect
+                  x="4"
+                  y="26"
+                  width="18"
+                  height="18"
+                  rx="2"
+                  fill="#00ADEF"
+                />
+                <rect
+                  x="26"
+                  y="26"
+                  width="18"
+                  height="18"
+                  rx="2"
+                  fill="#00ADEF"
+                />
+                <rect
+                  x="23"
+                  y="4"
+                  width="2"
+                  height="40"
+                  fill="#fff"
+                  opacity="0.15"
+                />
+                <rect
+                  x="4"
+                  y="23"
+                  width="40"
+                  height="2"
+                  fill="#fff"
+                  opacity="0.15"
+                />
+              </svg>
+            </span>
+            {output.host?.hostname}
           </div>
+          <div className="separator" />
           {output.glazewm && (
             <div className="workspaces">
               {output.glazewm.currentWorkspaces.map((workspace) => (
@@ -162,7 +282,7 @@ function App() {
                       output.glazewm.runCommand("shell-exec taskmgr")
                     }
                   >
-                    <i className="nf nf-fae-chip"></i>
+                    {getMemoryIcon(output.memory)}
                     {Math.round(output.memory.usage)}%
                   </button>
                 )}
@@ -175,8 +295,7 @@ function App() {
                       output.glazewm.runCommand("shell-exec taskmgr")
                     }
                   >
-                    <i className="nf nf-oct-cpu"></i>
-
+                    {getCpuIcon(output.cpu)}
                     {/* Change the text color if the CPU usage is high. */}
                     <span className={output.cpu.usage > 85 ? "high-usage" : ""}>
                       {Math.round(output.cpu.usage)}%

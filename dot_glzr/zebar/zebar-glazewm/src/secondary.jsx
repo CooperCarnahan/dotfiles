@@ -25,10 +25,66 @@ function App() {
       <div className="left">
         <div className="box">
           <div className="logo">
-            {/* Static Windows icon as host data is no longer provided */}
-            <i className="nf nf-custom-windows"></i>
-            {/* Hostname removed as host provider is no longer included
-                            You could hardcode a title here if desired, e.g., "Workspaces" */}
+            {/* Windows 11 logo SVG */}
+            <span
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                height: "1em",
+                marginRight: "0.2em",
+              }}
+            >
+              <svg width="22" height="22" viewBox="0 0 48 48" fill="none">
+                <rect
+                  x="4"
+                  y="4"
+                  width="18"
+                  height="18"
+                  rx="2"
+                  fill="#00ADEF"
+                />
+                <rect
+                  x="26"
+                  y="4"
+                  width="18"
+                  height="18"
+                  rx="2"
+                  fill="#00ADEF"
+                />
+                <rect
+                  x="4"
+                  y="26"
+                  width="18"
+                  height="18"
+                  rx="2"
+                  fill="#00ADEF"
+                />
+                <rect
+                  x="26"
+                  y="26"
+                  width="18"
+                  height="18"
+                  rx="2"
+                  fill="#00ADEF"
+                />
+                <rect
+                  x="23"
+                  y="4"
+                  width="2"
+                  height="40"
+                  fill="#fff"
+                  opacity="0.15"
+                />
+                <rect
+                  x="4"
+                  y="23"
+                  width="40"
+                  height="2"
+                  fill="#fff"
+                  opacity="0.15"
+                />
+              </svg>
+            </span>
           </div>
           {output.glazewm && (
             <div className="workspaces">
