@@ -82,6 +82,8 @@ alias chd = chezmoi diff
 alias che = nvim ~/.local/share/chezmoi
 alias chlg = lazygit -p ~/.local/share/chezmoi/
 alias zj = zellij
+alias rgi = rg -uu
+alias fdi = fd -IH
 
 def zja [] {
     zellij attach (zellij list-sessions | ansi strip | fzf)
@@ -104,7 +106,6 @@ alias gl = git pull
 alias gp = git push
 alias gco = git checkout
 alias gst = git status
-alias fdi = fd -IH
 
 # carapace
 source ~/.cache/carapace/init.nu
