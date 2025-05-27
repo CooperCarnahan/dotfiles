@@ -89,6 +89,13 @@ alias fdi = fd -IH
 def usbl [] {
     usbipd list | lines | parse --regex '\s*(?<BUSID>\d+-\d+) +(?<VID>\w+):(?<PID>\w+) +(?<Device>.*)  (?<Status>.*)'
 }
+
+def usba [] {
+    usbl | where Status == "Shared" | each { |dev| 
+    print $"Attaching device: ($dev.Device)"
+    usbipd attach --wsl --busid $dev.BUSID | ignore
+    } | ignore
+}
 {{- end }}
 
 def zja [] {
