@@ -29,6 +29,8 @@ $env.path ++= ["~/.cargo/bin"]
 $env.path ++= ["~/go/bin"]
 {{- if eq .chezmoi.os "linux" }}
 $env.path ++= ["/usr/local/go/bin"]
+{{- else if eq .chezmoi.os "darwin" }}
+$env.path ++= ["/opt/homebrew/bin"]
 {{- end }}
 
 {{- if contains (lower .chezmoi.hostname) "cooper" }}

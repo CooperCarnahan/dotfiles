@@ -85,6 +85,12 @@ alias zj = zellij
 alias rgi = rg -uu
 alias fdi = fd -IH
 
+{{- if eq .chezmoi.os "windows" }}
+def usbl [] {
+    usbipd list | lines | parse --regex '\s*(?<BUSID>\d+-\d+) +(?<VID>\w+):(?<PID>\w+) +(?<Device>.*)  (?<Status>.*)'
+}
+{{- end }}
+
 def zja [] {
     zellij attach (zellij list-sessions | ansi strip | fzf)
 }
