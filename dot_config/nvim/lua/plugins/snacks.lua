@@ -40,5 +40,8 @@ return {
         },
       },
     },
+    terminal = {
+      shell = "nu",
+    },
   },
 }
