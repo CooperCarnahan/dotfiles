@@ -100,7 +100,7 @@ body,
 .memory,
 .cpu,
 .battery {
-  margin-right: 20px !important;
+  /* margin-right: 20px !important; */
   display: flex;
   align-items: center;
   color: var(--font-color);
@@ -158,13 +158,27 @@ body,
 
 .binding-mode,
 .tiling-direction {
-  background: rgb(255 255 255 / 15%);
+  background: transparent;
   color: var(--font-color);
   border-radius: 2px;
   line-height: 1;
-  padding: 4px 8px;
-  border: 0;
+  padding: 6px 12px;
+  border: none;
   cursor: pointer;
+  min-height: 2.4em;
+  display: flex;
+  align-items: center;
+  transition:
+    background 0.2s,
+    color 0.2s,
+    box-shadow 0.2s,
+    transform 0.2s;
+}
+
+.tiling-direction:hover {
+  background: var(--main-color);
+  color: #fff;
+  transform: scale(0.96);
 }
 
 .binding-mode {
@@ -251,20 +265,33 @@ body,
 }
 
 .settings {
-  background: rgb(255 255 255 / 15%);
-  margin-right: 4px;
-  padding: 3px 8px;
+  background: transparent;
   color: var(--font-color);
-  border: none;
   border-radius: 2px;
+  line-height: 1;
+  padding: 6px 12px;
+  border: none;
   cursor: pointer;
+  min-height: 2.4em;
+  display: flex;
+  align-items: center;
   transition:
-    all 0.3s,
-    transform 0.3s;
+    background 0.2s,
+    color 0.2s,
+    box-shadow 0.2s,
+    transform 0.2s;
 
   &.focused,
   &:hover {
     background: var(--main-color);
     transform: scale(0.9);
   }
+}
+
+.settings .nf,
+.tiling-direction .nf {
+  font-size: 1.6em;
+  height: 1.6em;
+  display: flex;
+  align-items: center;
 }

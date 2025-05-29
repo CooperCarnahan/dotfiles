@@ -249,6 +249,8 @@ function App() {
 
       <div className="right">
         <div className="box">
+          <div className="separator" />
+
           {output.glazewm && (
             <>
               {output.glazewm.bindingModes.map((bindingMode) => (
@@ -266,6 +268,8 @@ function App() {
             </>
           )}
 
+          <div className="separator" />
+
           <Settings
             widgetObj={[
               { name: "Media", changeState: setShowMediaWidget }, // Still controls visibility of the media player
@@ -274,6 +278,7 @@ function App() {
             output={output}
             additionalContent={
               <>
+                <div className="separator" />
                 {/* memory */}
                 {output.memory && (
                   <button
@@ -286,6 +291,8 @@ function App() {
                     {Math.round(output.memory.usage)}%
                   </button>
                 )}
+
+                <div className="separator" />
 
                 {/* cpu */}
                 {output.cpu && (
@@ -303,6 +310,8 @@ function App() {
                   </button>
                 )}
 
+                <div className="separator" />
+
                 {/* battery */}
                 {output.battery && (
                   <div className="battery">
@@ -313,6 +322,8 @@ function App() {
                     {Math.round(output.battery.chargePercent)}%
                   </div>
                 )}
+
+                <div className="separator" />
 
                 {/* weather */}
                 {output.weather && (
