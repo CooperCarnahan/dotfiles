@@ -3,12 +3,15 @@ return {
   event = "VeryLazy",
   version = false, -- Never set this value to "*"! Never!
   opts = {
-    provider = "copilot",
-    copilot = {
-      model = "gpt-4.1",
-      temperature = 0,
-      timeout = 30000,
-      max_tokens = 8192,
+    providers = {
+      copilot = {
+        model = "gpt-4.1",
+        extra_request_body = {
+          temperature = 0,
+          timeout = 30000,
+          max_tokens = 8192,
+        },
+      },
     },
     behaviour = {
       auto_suggestions = false,
