@@ -1,3 +1,5 @@
+local util = require("util")
+
 -- Keymaps are automatically loaded on the VeryLazy event
 -- Default keymaps that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/keymaps.lua
 -- Add any additional keymaps here
@@ -19,5 +21,10 @@ vim.keymap.set("n", "<leader><tab>p", "<cmd>tabp<cr>", { desc = "Previous Tab" }
 vim.keymap.set("c", "<c-a>", "<Home>")
 vim.keymap.set("c", "<c-e>", "<End>")
 
-vim.keymap.set("n", "<leader>ghq" ,"<cmd>Gitsigns setqflist<cr>")
-vim.keymap.set('n', '<leader>ghQ', function() require("gitsigns").setqflist('all') end)
+vim.keymap.set("n", "<leader>ghq", "<cmd>Gitsigns setqflist<cr>")
+vim.keymap.set("n", "<leader>ghQ", function()
+  require("gitsigns").setqflist("all")
+end)
+
+-- Wezterm keymaps
+util.wezterm()
