@@ -1,6 +1,16 @@
 -- Pull in the wezterm API
 local wezterm = require("wezterm")
 local act = wezterm.action
+local config = wezterm.config_builder()
+
+config.default_prog = { "nu" }
+config.hide_tab_bar_if_only_one_tab = true
+config.color_scheme = "Tokyo Night"
+config.tab_bar_at_bottom = true
+config.switch_to_last_active_tab_when_closing_tab = true
+
+-- seems to be messing with 1Password ssh-agent
+config.mux_enable_ssh_agent = false
 
 wezterm.on("switch-to-left", function(window, pane)
 	local tab = window:mux_window():active_tab()
@@ -21,14 +31,6 @@ wezterm.on("switch-to-right", function(window, pane)
 		window:perform_action(wezterm.action.ActivateTabRelative(1), pane)
 	end
 end)
-
-local config = wezterm.config_builder()
-
-config.default_prog = { "nu" }
-config.hide_tab_bar_if_only_one_tab = true
-config.color_scheme = "Tokyo Night"
-config.tab_bar_at_bottom = true
-config.switch_to_last_active_tab_when_closing_tab = true
 
 -- keys
 config.leader = {
