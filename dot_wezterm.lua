@@ -129,6 +129,10 @@ config.keys = {
 		mods = "LEADER",
 		action = act.CloseCurrentPane({ confirm = true }),
 	},
+	{ key = "LeftArrow", mods = "CTRL", action = act.AdjustPaneSize({ "Left", 1 }) },
+	{ key = "RightArrow", mods = "CTRL", action = act.AdjustPaneSize({ "Right", 1 }) },
+	{ key = "UpArrow", mods = "CTRL", action = act.AdjustPaneSize({ "Up", 1 }) },
+	{ key = "DownArrow", mods = "CTRL", action = act.AdjustPaneSize({ "Down", 1 }) },
 
 	-- tab stuff
 	{
