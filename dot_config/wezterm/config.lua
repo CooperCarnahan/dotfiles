@@ -1,6 +1,7 @@
 local M = {}
 
 function M.apply(cfg)
+	local wezterm = require("wezterm")
 	cfg.default_prog = { "nu" }
 	cfg.color_scheme = "Tokyo Night"
 	cfg.switch_to_last_active_tab_when_closing_tab = true
@@ -9,6 +10,7 @@ function M.apply(cfg)
 	cfg.tab_bar_at_bottom = false
 	cfg.use_fancy_tab_bar = false
 	cfg.window_decorations = "RESIZE"
+	cfg.font = wezterm.font("Maple Mono NF", { weight = "Medium", italic = false })
 end
 
 return M
