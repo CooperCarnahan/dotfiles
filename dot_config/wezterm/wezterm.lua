@@ -1,16 +1,17 @@
+-- ~/.config/wezterm/wezterm.lua
 local wezterm = require("wezterm")
-local config = {}
+local config = wezterm.config_builder()
 
-config.font = wezterm.font("Caskaydia Cove")
-config.font_size = 13.0
-config.color_scheme = "Catppuccin Mocha"
+-- Load core configuration settings
+require("config").apply(config)
 
-config.hide_tab_bar_if_only_one_tab = true
+-- Load plugin definitions and apply them
+require("plugins").apply(config)
 
--- config.enable_kitty_keyboard = true
--- config.enable_csi_u_key_encoding = false
---
--- config.use_ime = false
-config.native_macos_fullscreen_mode = true
+-- Load keymaps
+require("keymaps").apply(config)
+
+-- Load event handlers
+require("events").setup()
 
 return config

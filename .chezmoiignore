@@ -15,7 +15,6 @@ README.md
 {{- if eq .chezmoi.os "windows" -}}
 .config/nushell
 .config/helix
-.config/wezterm
 .config/kitty
 .config/zellij
 .alias
