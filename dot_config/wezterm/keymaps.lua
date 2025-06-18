@@ -10,26 +10,10 @@ function M.apply(cfg)
 		timeout_milliseconds = 2000,
 	}
 	cfg.keys = {
-		-- Note: You still need the full path for the plugin require here
-		{
-			key = "s",
-			mods = "LEADER",
-			action = wezterm.plugin
-				.require("https://github.com/MLFlexer/smart_workspace_switcher.wezterm")
-				.switch_workspace(),
-		},
-		{
-			key = "S",
-			mods = "LEADER",
-			action = wezterm.plugin
-				.require("https://github.com/MLFlexer/smart_workspace_switcher.wezterm")
-				.switch_to_prev_workspace(),
-		},
-		-- ... (rest of your keymaps as before) ...
 		{
 			key = "h",
 			mods = "CTRL",
-			action = wezterm.action.EmitEvent("switch-to-left"),
+			action = act.ActivatePaneDirection("Left"),
 		},
 		{
 			key = "j",
@@ -44,7 +28,7 @@ function M.apply(cfg)
 		{
 			key = "l",
 			mods = "CTRL",
-			action = wezterm.action.EmitEvent("switch-to-right"),
+			action = act.ActivatePaneDirection("Right"),
 		},
 		{
 			-- Vertical split

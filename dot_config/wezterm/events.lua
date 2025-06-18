@@ -5,56 +5,6 @@ local act = wezterm.action
 local M = {}
 
 function M.setup()
-	wezterm.on("format-tab-title", function(tab, tabs, panes, config, hover, max_width)
-		local has_unseen_output = false
-		if not tab.is_active then
-			for _, pane in ipairs(tab.panes) do
-				if pane.has_unseen_output then
-					has_unseen_output = true
-					break
-				end
-			end
-		end
-
-		local cwd = wezterm.format({
-			{ Attribute = { Intensity = "Bold" } },
-			{ Text = get_current_working_dir(tab) },
-		})
-
-		local title = string.format(" [%s] %s", tab.tab_index + 1, cwd)
-
-		if has_unseen_output then
-			return {
-				{ Foreground = { Color = "#8866bb" } },
-				{ Text = title },
-			}
-		end
-
-		return {
-			{ Text = title },
-		}
-	end)
-
-	wezterm.on("switch-to-left", function(window, pane)
-		local tab = window:mux_window():active_tab()
-
-		if tab:get_pane_direction("Left") ~= nil then
-			window:perform_action(act.ActivatePaneDirection("Left"), pane)
-		else
-			window:perform_action(act.ActivateTabRelative(-1), pane)
-		end
-	end)
-
-	wezterm.on("switch-to-right", function(window, pane)
-		local tab = window:mux_window():active_tab()
-
-		if tab:get_pane_direction("Right") ~= nil then
-			window:perform_action(act.ActivatePaneDirection("Right"), pane)
-		else
-			window:perform_action(act.ActivateTabRelative(1), pane)
-		end
-	end)
-
 	wezterm.on("gui-startup", function(cmd)
 		local dotfiles_path = wezterm.home_dir .. "/.config/nvim"
 		local chezmoi_path = wezterm.home_dir .. "/.local/share/chezmoi"
