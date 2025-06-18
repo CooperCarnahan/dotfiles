@@ -4,14 +4,6 @@ local act = wezterm.action
 
 local M = {}
 
--- Helper function for get_current_working_dir
-local function get_current_working_dir(tab)
-	local current_dir = tab.active_pane and tab.active_pane.current_working_dir or { file_path = "" }
-	local HOME_DIR = string.format("file://%s", wezterm.home_dir)
-
-	return current_dir.file_path == HOME_DIR and "." or string.gsub(current_dir.file_path, "(.*[/\\])(.*)", "%2")
-end
-
 function M.setup()
 	wezterm.on("format-tab-title", function(tab, tabs, panes, config, hover, max_width)
 		local has_unseen_output = false
@@ -66,7 +58,7 @@ function M.setup()
 	wezterm.on("gui-startup", function(cmd)
 		local dotfiles_path = wezterm.home_dir .. "/.config/nvim"
 		local chezmoi_path = wezterm.home_dir .. "/.local/share/chezmoi"
-		local wezterm_config_path = wezterm.home_dir .. "/.config/wezterm/wezterm.lua" -- Updated path for config
+		local wezterm_config_path = wezterm.home_dir .. "/.config/wezterm" -- Updated path for config
 
 		-- Spawn the first window for nvim dotfiles
 		local tab_nvim, pane_nvim, window = mux.spawn_window({
@@ -86,9 +78,9 @@ function M.setup()
 
 		-- Add a tab for the wezterm lua config
 		local tab_wezterm_config, pane_wezterm_config = window:spawn_tab({
-			cwd = wezterm.home_dir,
+			cwd = wezterm_config_path,
 		})
-		pane_wezterm_config:send_text("nvim " .. wezterm_config_path .. "\r\n")
+		pane_wezterm_config:send_text("nvim " .. "\r\n")
 		tab_wezterm_config:set_title("wezterm.lua")
 	end)
 end
