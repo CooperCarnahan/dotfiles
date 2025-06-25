@@ -1,6 +1,5 @@
 local wezterm = require("wezterm")
 local mux = wezterm.mux
-local act = wezterm.action
 
 local M = {}
 

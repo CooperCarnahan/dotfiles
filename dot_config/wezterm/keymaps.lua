@@ -85,16 +85,6 @@ function M.apply(cfg)
 			}),
 		},
 		{
-			key = "i",
-			mods = "LEADER",
-			action = act.ActivatePaneDirection("Next"),
-		},
-		{
-			key = "o",
-			mods = "LEADER",
-			action = act.ActivatePaneDirection("Prev"),
-		},
-		{
 			key = "x",
 			mods = "LEADER",
 			action = act.CloseCurrentPane({ confirm = true }),
@@ -133,7 +123,7 @@ function M.apply(cfg)
 			action = act.ActivateTabRelative(-1),
 		},
 		{
-			key = "w",
+			key = "t",
 			mods = "LEADER",
 			action = act.ShowTabNavigator,
 		},
