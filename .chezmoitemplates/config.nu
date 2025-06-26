@@ -130,6 +130,4 @@ use ~/.cache/starship/init.nu
 source ~/.zoxide.nu
 
 # atuin
-{{- if ne .chezmoi.os "windows" }}
 source ~/.local/share/atuin/init.nu
-{{- end }}
