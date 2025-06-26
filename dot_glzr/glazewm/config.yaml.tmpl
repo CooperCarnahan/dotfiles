@@ -9,10 +9,11 @@ general:
   shutdown_commands: ["shell-exec taskkill /IM zebar.exe /F"]
 
   # Commands to run after the WM config is reloaded.
-  config_reload_commands: []
+  config_reload_commands:
+    ["shell-exec {{ .chezmoi.homeDir }}/.glzr/glazewm/ReloadZebar.vbs"]
 
   # Whether to automatically focus windows underneath the cursor.
-  focus_follows_cursor: false
+  focus_follows_cursor: true
 
   # Whether to switch back and forth between the previously focused
   # workspace when focusing the current workspace.
@@ -193,13 +194,15 @@ binding_modes:
 keybindings:
   # Shift focus in a given direction.
   - commands: ["focus --direction left"]
-    bindings: ["alt+left"]
+    bindings: ["alt+shift+h"]
+  - commands: ["focus --direction left"]
+    bindings: ["alt+shift+h"]
   - commands: ["focus --direction right"]
-    bindings: ["alt+right"]
+    bindings: ["alt+shift+l"]
   - commands: ["focus --direction up"]
-    bindings: ["alt+up"]
+    bindings: ["alt+shift+k"]
   - commands: ["focus --direction down"]
-    bindings: ["alt+down"]
+    bindings: ["alt+shift+j"]
 
   # Move focused window in a given direction.
   - commands: ["move --direction left"]
@@ -213,13 +216,13 @@ keybindings:
 
   # Resize focused window by a percentage or pixel amount.
   - commands: ["resize --width -2%"]
-    bindings: ["alt+shift+h"]
+    bindings: ["alt+left"]
   - commands: ["resize --width +2%"]
-    bindings: ["alt+shift+l"]
+    bindings: ["alt+right"]
   - commands: ["resize --height +2%"]
-    bindings: ["alt+shift+k"]
+    bindings: ["alt+up"]
   - commands: ["resize --height -2%"]
-    bindings: ["alt+shift+j"]
+    bindings: ["alt+down"]
 
   # As an alternative to the resize keybindings above, resize mode enables
   # resizing via arrow keys or HJKL. The binding mode is defined above with
@@ -324,10 +327,10 @@ keybindings:
     bindings: ["alt+shift+a"]
   - commands: ["move-workspace --direction right"]
     bindings: ["alt+shift+f"]
-  - commands: ["move-workspace --direction up"]
-    bindings: ["alt+shift+d"]
-  - commands: ["move-workspace --direction down"]
-    bindings: ["alt+shift+s"]
+  # - commands: ["move-workspace --direction up"]
+  #   bindings: ["alt+shift+d"]
+  # - commands: ["move-workspace --direction down"]
+  #   bindings: ["alt+shift+s"]
 
   # Move focused window to a workspace defined in `workspaces` config.
   - commands: ["move --workspace 1", "focus --workspace 1"]
