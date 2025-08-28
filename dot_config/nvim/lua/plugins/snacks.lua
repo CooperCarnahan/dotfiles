@@ -10,6 +10,14 @@ return {
   opts = {
     scroll = { enabled = false },
     picker = {
+      win = {
+        -- input window
+        input = {
+          keys = {
+            ["<a-i>"] = { { "toggle_ignored", "toggle_hidden" }, mode = { "i", "n" } },
+          },
+        },
+      },
       sources = {
         smart = {
           multi = { "buffers", "files" },
