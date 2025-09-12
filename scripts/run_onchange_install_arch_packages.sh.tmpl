@@ -1,0 +1,116 @@
+#!/bin/bash
+set -e
+
+# Use Chezmoi's template variables to check the OS ID.
+{{- if or (eq .chezmoi.osRelease.id "arch") (eq .chezmoi.osRelease.id "cachyos") -}}
+
+echo "--- Detected supported OS: {{ .chezmoi.osRelease.id }} ---"
+
+# --- Configuration ---
+# Packages to install from the official Arch repositories
+pacman_packages=(
+    "atuin"
+    "base"
+    "base-devel"
+    "ccache"
+    "chezmoi"
+    "cmake"
+    "difftastic"
+    "dfu-util"
+    "dtc"
+    "fastfetch"
+    "fd"
+    "fzf"
+    "git"
+    "git-delta"
+    "gperf"
+    "lazygit"
+    "make"
+    "mise"
+    "neovim"
+    "ninja"
+    "nodejs"
+    "nushell"
+    "openssh"
+    "python-pip"
+    "python-setuptools"
+    "python-wheel"
+    "ripgrep"
+    "starship"
+    "sudo"
+    "tk"
+    "tree"
+    "unzip"
+    "uv"
+    "wget"
+    "which"
+    "yazi"
+    "zellij"
+    "zoxide"
+)
+
+# Packages to install from the Arch User Repository (AUR)
+aur_packages=(
+    "carapace-bin"
+)
+
+# --- Functions ---
+# A function to check if a command exists
+command_exists () {
+    command -v "$1" >/dev/null 2>&1
+}
+
+# --- Script Execution ---
+
+echo "--- System Information ---"
+os_info=$(cat /etc/os-release 2>/dev/null | grep "^NAME=" | cut -d'=' -f2 | tr -d '"')
+kernel_version=$(uname -r)
+
+echo "Operating System: $os_info"
+echo "Kernel Version: $kernel_version"
+
+echo "--------------------------"
+echo "--- Installing/updating essential packages via pacman ---"
+
+# Check if pacman is installed before proceeding.
+if ! command_exists "pacman"; then
+    echo "Error: pacman not found. This script is for Arch-based systems."
+    exit 1
+fi
+
+# Update system and install official packages.
+# --noconfirm: Assumes 'yes' to all prompts.
+# --needed: Skips packages that are already installed.
+sudo pacman -Syu --noconfirm --needed "${pacman_packages[@]}"
+
+# Check for yay and install it if it's missing.
+if ! command_exists "yay"; then
+    echo "yay not found. Installing it now from the AUR."
+    sudo pacman -S --needed --noconfirm git base-devel
+    
+    # Temporarily clone and install yay from the AUR
+    # It's important to use a temporary directory for this.
+    mkdir -p "$HOME/src/temp"
+    cd "$HOME/src/temp"
+    git clone https://aur.archlinux.org/yay-bin.git
+    cd yay-bin
+    makepkg -si --noconfirm
+    
+    # Clean up temporary files
+    cd ~
+    rm -rf "$HOME/src/temp"
+fi
+
+echo "--- Installing/updating AUR packages via yay ---"
+
+# Install AUR packages.
+yay -S --noconfirm --needed "${aur_packages[@]}"
+
+echo "--- All packages installed successfully! ---"
+
+fastfetch
+
+{{- else -}}
+echo "Unsupported OS: {{ .chezmoi.os.id }}. Skipping package installation."
+echo "This script is only for Arch-based systems."
+{{- end -}}
