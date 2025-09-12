@@ -17,7 +17,10 @@
 # You can remove these comments if you want or leave
 # them for future reference.
 
+$env.YAZI_CONFIG_HOME = "~/.config/yazi"
 $env.EDITOR = "nvim"
+$env.FZF_DEFAULT_COMMAND = "fd --type f --hidden --follow --exclude .git --no-ignore"
+$env.FZF_DEFAULT_OPTS = '--preview "bat --style=numbers --color=always --line-range :500 {}"'
 
 # misc. path stuff
 $env.path ++= ["~/.local/bin"]
