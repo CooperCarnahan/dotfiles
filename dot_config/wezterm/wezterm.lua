@@ -12,8 +12,15 @@ require("keymaps").apply(config)
 require("plugins").apply_workspace_switcher(config)
 require("plugins").apply_tabline(config)
 require("plugins").apply_smart_splits(config)
-
+--
 -- Load event handlers
 require("events").setup()
+
+local path = wezterm.home_dir .. "/.config/wezterm/local/events.lua"
+local f = io.open(path, "r")
+if f then
+	f:close()
+	require("local/events").setup()
+end
 
 return config

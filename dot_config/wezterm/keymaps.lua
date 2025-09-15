@@ -5,7 +5,7 @@ local M = {}
 
 function M.apply(cfg)
 	cfg.leader = {
-		key = "a",
+		key = "b",
 		mods = "CTRL",
 		timeout_milliseconds = 2000,
 	}
@@ -83,6 +83,11 @@ function M.apply(cfg)
 				direction = "Down",
 				size = { Percent = 50 },
 			}),
+		},
+		{
+			key = "q",
+			mods = "LEADER",
+			action = act.QuitApplication,
 		},
 		{
 			key = "x",
