@@ -11,6 +11,7 @@ end, {})
 return {
   "stevearc/overseer.nvim",
   opts = {
+    templates = { "builtin", "user.zig_build" },
     component_aliases = {
       -- Most tasks are initialized with the default components
       default = {
