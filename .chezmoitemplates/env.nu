@@ -64,3 +64,7 @@ if (which atuin | is-not-empty) {
   mkdir ~/.local/share/atuin/
   atuin init nu | save -f ~/.local/share/atuin/init.nu
 }
+
+# mise
+let mise_path = $nu.default-config-dir | path join mise.nu
+^mise activate nu | save $mise_path --force

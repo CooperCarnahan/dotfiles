@@ -131,3 +131,6 @@ source ~/.zoxide.nu
 
 # atuin
 source ~/.local/share/atuin/init.nu
+
+# mise
+use ($nu.default-config-dir | path join mise.nu)
