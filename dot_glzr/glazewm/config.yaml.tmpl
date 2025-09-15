@@ -13,7 +13,7 @@ general:
     ["shell-exec {{ .chezmoi.homeDir }}/.glzr/glazewm/ReloadGlazeWM.vbs"]
 
   # Whether to automatically focus windows underneath the cursor.
-  focus_follows_cursor: true
+  focus_follows_cursor: false
 
   # Whether to switch back and forth between the previously focused
   # workspace when focusing the current workspace.
@@ -262,7 +262,7 @@ keybindings:
 
   # Close focused window.
   - commands: ["close"]
-    bindings: ["alt+shift+q"]
+    bindings: ["alt+q"]
 
   # Kill GlazeWM process safely.
   - commands: ["wm-exit"]
