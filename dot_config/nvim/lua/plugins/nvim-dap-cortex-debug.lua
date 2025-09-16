@@ -51,6 +51,7 @@ return {
               or "JLinkGDBServerCLExe",
             toolchainPrefix = "arm-zephyr-eabi",
             toolchainPath = os.getenv("ZEPHYR_SDK_INSTALL_DIR") .. "arm-zephyr-eabi/bin",
+            rttConfig = cortex.rtt_config(0),
           }),
         }
       end
