@@ -1,3 +1,4 @@
+{{- if eq .chezmoi.os "linux" -}}
 #!/bin/bash
 set -e
 
@@ -119,4 +120,5 @@ fastfetch
 {{- else -}}
 echo "Unsupported OS: {{ .osid }}. Skipping package installation."
 echo "This script is only for Arch-based systems."
+{{- end -}}
 {{- end -}}
