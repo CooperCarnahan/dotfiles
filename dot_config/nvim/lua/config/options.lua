@@ -2,7 +2,12 @@
 -- Default options that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/options.lua
 -- Add any additional options here
 
-vim.opt.shell = "cmd"
+if vim.fn.has("win32") == 1 then
+  vim.opt.shell = "cmd"
+else
+  vim.opt.shell = "bash"
+end
+
 vim.cmd("abb u8 UINT8")
 vim.cmd("abb u64 UINT64")
 vim.cmd("abb u32 UINT32")
