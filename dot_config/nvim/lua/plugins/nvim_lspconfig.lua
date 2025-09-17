@@ -25,7 +25,10 @@ return {
             "build.ninja"
           )(fname) or require("lspconfig.util").root_pattern("compile_commands.json", "compile_flags.txt")(
             fname
-          ) or vim.fs.dirname(vim.fs.find(".git", { path = fname, upward = true })[1])
+          ) or (function()
+            local gitdir = vim.fs.find(".git", { path = fname, upward = true })[1]
+            return gitdir and vim.fs.dirname(gitdir) or nil
+          end)()
         end,
         capabilities = {
           offsetEncoding = { "utf-16" },
