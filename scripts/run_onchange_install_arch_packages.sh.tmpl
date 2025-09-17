@@ -10,17 +10,20 @@ echo "--- Detected supported OS: {{ .chezmoi.osRelease.id }} ---"
 # Packages to install from the official Arch repositories
 pacman_packages=(
     "atuin"
+    "bat"
     "base"
     "base-devel"
     "ccache"
     "chezmoi"
     "cmake"
+    "ctags"
     "difftastic"
     "dfu-util"
     "dtc"
     "fastfetch"
     "fd"
     "fzf"
+    "go"
     "git"
     "git-delta"
     "gperf"
@@ -39,7 +42,9 @@ pacman_packages=(
     "starship"
     "sudo"
     "tk"
+    "tmux"
     "tree"
+    "tree-sitter-cli"
     "unzip"
     "uv"
     "wget"
@@ -52,6 +57,7 @@ pacman_packages=(
 # Packages to install from the Arch User Repository (AUR)
 aur_packages=(
     "carapace-bin"
+    "ov"
 )
 
 # --- Functions ---
