@@ -1,8 +1,5 @@
 return {
   "neovim/nvim-lspconfig",
-  dependencies = {
-    "netmute/ctags-lsp.nvim",
-  },
   opts = {
     diagnostics = {
       virtual_text = false,
