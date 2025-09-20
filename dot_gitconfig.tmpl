@@ -64,6 +64,14 @@
 [credential]
 	helper = "/mnt/c/Program\\ Files/Git/mingw64/bin/git-credential-manager.exe"
 	useHttpPath = true
+{{- else }}
+	program = /opt/1Password/op-ssh-sign
+[credential]
+	helper = cache
+	credentialStore = gpg
+	helper = /usr/local/bin/git-credential-manager
+	useHttpPath = true
+
 {{- end }}
 {{- end }}
 [commit]
