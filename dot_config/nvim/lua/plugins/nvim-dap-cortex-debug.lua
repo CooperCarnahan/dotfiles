@@ -47,8 +47,7 @@ return {
             cwd = "${workspaceFolder}",
             executable = "${workspaceFolder}/build/zephyr/zephyr.elf",
             gdbPath = os.getenv("ZEPHYR_SDK_INSTALL_DIR") .. "arm-zephyr-eabi/bin/arm-zephyr-eabi-gdb",
-            serverpath = vim.loop.os_uname().sysname == "Windows_NT" and "JLinkGDBServerCL.exe"
-              or "JLinkGDBServerCLExe",
+            serverpath = vim.uv.os_uname().sysname == "Windows_NT" and "JLinkGDBServerCL.exe" or "JLinkGDBServerCLExe",
             toolchainPrefix = "arm-zephyr-eabi",
             toolchainPath = os.getenv("ZEPHYR_SDK_INSTALL_DIR") .. "arm-zephyr-eabi/bin",
             rttConfig = cortex.rtt_config(0),
