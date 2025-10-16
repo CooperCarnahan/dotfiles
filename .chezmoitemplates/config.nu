@@ -2,30 +2,36 @@
 #
 # Installed by:
 # version = "0.103.0"
-#
-# This file is used to override default Nushell settings, define
-# (or import) custom commands, or run any other startup tasks.
-# See https://www.nushell.sh/book/configuration.html
-#
-# This file is loaded after env.nu and before login.nu
-#
-# You can open this file in your default editor using:
-# config nu
-#
-# See `help config nu` for more options
-#
-# You can remove these comments if you want or leave
-# them for future reference.
 
 $env.config.keybindings ++= [
   {
     name: fzf_paste
     modifier: control
     keycode: char_t
-    mode: emacs
+    mode: vi_normal
     event: {
         send: executehostcommand,
-        cmd: "commandline edit --insert (fd | fzf --height=40% --reverse --preview 'bat -n --color=always {}' | str trim)"
+        cmd: "commandline edit --insert (fd | fzf --height=40% --preview 'bat -n --color=always {}' | str trim)"
+      }
+  },
+  {
+    name: nvim_fzf
+    modifier: control
+    keycode: char_v
+    mode: [vi_normal, vi_insert]
+    event: {
+        send: executehostcommand,
+        cmd: "nvim (fzf --type file --height=40%)"
+      }
+  }
+  {
+    name: cd_fzf
+    modifier: control
+    keycode: char_d
+    mode: [vi_normal, vi_insert]
+    event: {
+        send: executehostcommand,
+        cmd: "cd (fd --type dir | fzf --height=40%)"
       }
   }
 ]
@@ -84,19 +90,7 @@ alias chlg = lazygit -p ~/.local/share/chezmoi/
 alias zj = zellij
 alias rgi = rg -uu
 alias fdi = fd -IH
-
-{{- if eq .chezmoi.os "windows" }}
-def usbl [] {
-    usbipd list | lines | parse --regex '\s*(?<BUSID>\d+-\d+) +(?<VID>\w+):(?<PID>\w+) +(?<Device>.*)  (?<Status>.*)'
-}
-
-def usba [] {
-    usbl | where Status == "Shared" | each { |dev| 
-    print $"Attaching device: ($dev.Device)"
-    usbipd attach --wsl --busid $dev.BUSID | ignore
-    } | ignore
-}
-{{- end }}
+alias cc = cd -
 
 def zja [] {
     zellij attach (zellij list-sessions | ansi strip | fzf)
