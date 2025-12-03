@@ -1,11 +1,20 @@
 ---
 name: commit
 description: "Generates concise and conventional git commit messages based on current diffs."
+mode: subagent
 model: github-copilot/gpt-4.1
 temperature: 0.1
 tools:
+  webfetch: false
+  edit: false
+  write: false
+  todoread: true
+  todowrite: true
+  read: true
+  grep: true
+  glob: true
+  list: true
   bash: true
-  git: true
 ---
 
 # Git conventions
