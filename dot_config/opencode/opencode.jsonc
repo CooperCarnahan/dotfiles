@@ -2,8 +2,6 @@
   "$schema": "https://opencode.ai/config.json",
   // Theme configuration
   "theme": "tokyonight",
-  "model": "anthropic.claude-sonnet-4-5-20250929-v1:0",
-  "small_model": "anthropic.claude-haiku-4-5-20251001-v1:0",
   "autoupdate": true,
   "mcp": {
     "gh_grep": {
@@ -24,8 +22,11 @@
       },
     },
   },
-  "tools": {
-    // "gh_grep": false,
-    // "context7": false,
+  "plugin": [
+    "opencode-gemini-auth@latest"
+  ],
+  "permission": {
+    "gh_grep": "deny",
+    "context7": "deny",
   },
 }
