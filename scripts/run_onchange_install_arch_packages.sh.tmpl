@@ -20,11 +20,14 @@ pacman_packages=(
     "ctags"
     "difftastic"
     "dfu-util"
+    "docker"
+    "docker-compose"
     "dtc"
     "fastfetch"
     "fd"
     "fzf"
     "go"
+    "ghostty"
     "git"
     "git-delta"
     "gperf"
@@ -34,12 +37,14 @@ pacman_packages=(
     "neovim"
     "ninja"
     "nodejs"
+    "npm"
     "nushell"
     "openssh"
     "python-pip"
     "python-setuptools"
     "python-wheel"
     "ripgrep"
+    "rust"
     "starship"
     "sudo"
     "tk"
@@ -52,13 +57,19 @@ pacman_packages=(
     "which"
     "yazi"
     "zellij"
+    "zen-browser-bin"
     "zoxide"
 )
 
 # Packages to install from the Arch User Repository (AUR)
 aur_packages=(
+    "1password"
     "carapace-bin"
+    "gearlever"
+    "maplemono-nf-unhinted"
+    "opencode"
     "ov"
+    "winboat-bin"
 )
 
 # --- Functions ---
@@ -90,28 +101,24 @@ fi
 # --needed: Skips packages that are already installed.
 sudo pacman -Syu --noconfirm --needed "${pacman_packages[@]}"
 
-# Check for yay and install it if it's missing.
-if ! command_exists "yay"; then
-    echo "yay not found. Installing it now from the AUR."
-    sudo pacman -S --needed --noconfirm git base-devel
-    
-    # Temporarily clone and install yay from the AUR
+# Check for paru and install it if it's missing.
+if ! command_exists "paru"; then
+    # Temporarily clone and install paru from the AUR
     # It's important to use a temporary directory for this.
-    mkdir -p "$HOME/src/temp"
-    cd "$HOME/src/temp"
-    git clone https://aur.archlinux.org/yay-bin.git
-    cd yay-bin
+    cd /tmp
+    git clone https://aur.archlinux.org/paru.git
+    cd paru
     makepkg -si --noconfirm
     
     # Clean up temporary files
     cd ~
-    rm -rf "$HOME/src/temp"
+    rm -rf "/tmp/paru"
 fi
 
-echo "--- Installing/updating AUR packages via yay ---"
+echo "--- Installing/updating AUR packages via paru ---"
 
 # Install AUR packages.
-yay -S --noconfirm --needed "${aur_packages[@]}"
+paru -S --noconfirm --needed "${aur_packages[@]}"
 
 echo "--- All packages installed successfully! ---"
 
