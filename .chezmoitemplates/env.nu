@@ -39,12 +39,6 @@ if (which carapace | is-not-empty) {
   carapace _carapace nushell | save --force ~/.cache/carapace/init.nu
 }
 
-# starship
-if (which starship | is-not-empty) {
-mkdir ~/.cache/starship
-starship init nu | save -f ~/.cache/starship/init.nu
-}
-
 # zoxide
 if (which zoxide | is-not-empty) { 
   zoxide init nushell | save -f ~/.zoxide.nu

@@ -44,7 +44,7 @@
 
 # Font settings
 font-family = "Maple Mono NF Semibold"
-font-size = 12.0
+font-size = 14.0
 
 # Set the built-in Tokyo Night theme
 theme = "TokyoNight"
@@ -52,3 +52,10 @@ theme = "TokyoNight"
 background-opacity = .90
 
 keybind = global:ctrl+grave_accent=toggle_quick_terminal
+
+{{- if eq .chezmoi.os "darwin" }}
+macos-option-as-alt = left
+
+keybind = alt+left=unbind
+keybind = alt+right=unbind
+{{- end }}

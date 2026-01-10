@@ -161,10 +161,6 @@ export NVM_DIR="${XDG_CONFIG_HOME:-$HOME/.nvm}"
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 eval "$(zoxide init zsh)"
 
-###################################
-#         COMPLETIONS             #
-###################################
-
 # Load completions before configuring them
 autoload -U +X bashcompinit && bashcompinit
 
@@ -175,10 +171,11 @@ if command -v carapace > /dev/null; then
     source <(carapace _carapace)
 fi
 
-# fnm
-eval "$(fnm env --use-on-cd --shell zsh)"
-
 # Starship Prompt (only if command exists)
 if command -v starship > /dev/null; then
     eval "$(starship init zsh)"
+fi
+
+if command -v mise > /dev/null; then
+    eval "$(mise activate zsh)"
 fi
