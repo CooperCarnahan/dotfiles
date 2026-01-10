@@ -170,7 +170,7 @@ $PackageGroups = @{
         RequiresAdmin = $false
     }
     'Programming Languages' = @{
-        Packages = @('go', 'nodejs-lts', 'zig', 'python')
+        Packages = @('go', 'nodejs-lts', 'zig', 'python', 'uv')
         RequiresAdmin = $false
     }
     'System Tools' = @{
@@ -188,6 +188,9 @@ foreach ($Group in $PackageGroups.GetEnumerator()) {
     Install-ScoopPackages -Category $Group.Key -Packages $Group.Value.Packages -RequiresAdmin $Group.Value.RequiresAdmin
 }
 
+Write-Step "Installing Apprise via uv"
+uv tool install apprise --python 3.12
+
 # Install WSL
 Install-WSL
 
@@ -200,7 +203,4 @@ if (-not (Test-Path $NvimConfigPath)) {
     Write-Host "Neovim configuration already exists" -ForegroundColor Yellow
 }
 
-# install uv
-Write-Step "Setting up UV Python package + project manager"
-Invoke-Expression "powershell -ExecutionPolicy ByPass -c 'irm https://astral.sh/uv/install.ps1 | iex'"
 Write-Host "`nSetup completed successfully!" -ForegroundColor Green

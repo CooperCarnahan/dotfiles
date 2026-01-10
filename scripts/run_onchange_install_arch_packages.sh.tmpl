@@ -122,6 +122,9 @@ echo "--- Installing/updating AUR packages via paru ---"
 # Install AUR packages.
 paru -S --noconfirm --needed "${aur_packages[@]}"
 
+echo "--- Installing Apprise via uv ---"
+uv tool install apprise --python 3.12
+
 echo "--- All packages installed successfully! ---"
 
 fastfetch

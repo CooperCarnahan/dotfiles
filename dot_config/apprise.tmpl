@@ -1,0 +1,9 @@
+{{- $pushover := onepasswordDetailsFields "Pushover API Credentials" -}}
+pover://{{ $pushover.username.value }}@{{ $pushover.credential.value }}
+{{ if eq .chezmoi.os "darwin" -}}
+macosx://
+{{ else if eq .chezmoi.os "windows" -}}
+windows://
+{{ else if eq .chezmoi.os "linux" -}}
+gnome://
+{{ end -}}
