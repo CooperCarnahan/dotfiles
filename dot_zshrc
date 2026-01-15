@@ -5,11 +5,12 @@
 # Initialize completion system
 autoload -Uz compinit
 # Only update completion dump once per day
-if [ $(date +'%j') != $(stat -f '%Sm' -t '%j' ${ZDOTDIR:-$HOME}/.zcompdump 2>/dev/null) ]; then
+if [[ -n ${ZDOTDIR:-$HOME}/.zcompdump(#qN.m+0) ]]; then
   compinit
 else
   compinit -C
 fi
+
 # History Configuration
 export HISTFILE=~/.zsh_history
 export HISTSIZE=1000000
@@ -65,31 +66,6 @@ bindkey '^[OB' history-search-forward
 MODE_CURSOR_VIINS="#eceff1 blinking underline"
 
 ###################################
-#           TOOL SETUP            #
-###################################
-
-# FZF Configuration
-if type rg &> /dev/null; then
-  export FZF_DEFAULT_COMMAND='rg --files'
-  export FZF_DEFAULT_OPTS='-m --height 50% --border'
-fi
-
-# Bat Configuration
-if ! command -v bat &> /dev/null; then
-    echo "'bat' not installed. Using default 'cat'"
-else
-    export BAT_THEME=TwoDark
-fi
-
-# SSH Keychain Setup
-if command -v keychain &> /dev/null; then
-  keychain --clear --quiet
-  [ -z "$HOSTNAME" ] && HOSTNAME=`uname -n`
-  [ -f $HOME/.keychain/$HOSTNAME-sh ] && \
-    . $HOME/.keychain/$HOSTNAME-sh
-fi
-
-###################################
 #           PLUGIN MANAGER        #
 ###################################
 
@@ -127,6 +103,8 @@ zinit lucid for \
 # Git Utilities
 zinit load wfxr/forgit
 
+zinit load atuinsh/atuin
+
 # Syntax Highlighting (load last)
 zinit wait lucid for \
     atinit"zicompinit; zicdreplay" \
@@ -148,6 +126,31 @@ path_dirs=(
     "$HOME/.scripts"
     "$HOME/.local/bin"
 )
+
+if command -v mise > /dev/null; then
+    eval "$(mise activate zsh)"
+fi
+
+# FZF Configuration
+if type rg &> /dev/null; then
+  export FZF_DEFAULT_COMMAND='rg --files'
+  export FZF_DEFAULT_OPTS='-m --height 50% --border'
+fi
+
+# Bat Configuration
+if ! command -v bat &> /dev/null; then
+    echo "'bat' not installed. Using default 'cat'"
+else
+    export BAT_THEME=TwoDark
+fi
+
+# SSH Keychain Setup
+if command -v keychain &> /dev/null; then
+  keychain --clear --quiet
+  [ -z "$HOSTNAME" ] && HOSTNAME=`uname -n`
+  [ -f $HOME/.keychain/$HOSTNAME-sh ] && \
+    . $HOME/.keychain/$HOSTNAME-sh
+fi
 
 for dir in "${path_dirs[@]}"; do
     [[ -d "$dir" ]] && export PATH="$PATH:$dir"
@@ -174,8 +177,4 @@ fi
 # Starship Prompt (only if command exists)
 if command -v starship > /dev/null; then
     eval "$(starship init zsh)"
-fi
-
-if command -v mise > /dev/null; then
-    eval "$(mise activate zsh)"
 fi

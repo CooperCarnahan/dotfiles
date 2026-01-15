@@ -1,7 +1,7 @@
 # config.nu
 #
 # Installed by:
-# version = "0.103.0"
+# version = "0.109.1"
 
 $env.config.keybindings ++= [
   {
@@ -113,19 +113,6 @@ alias gl = git pull
 alias gp = git push
 alias gco = git checkout
 alias gst = git status
-
-# carapace
-source ~/.cache/carapace/init.nu
-
-# starship
-mkdir ($nu.data-dir | path join "vendor/autoload")
-starship init nu | save -f ($nu.data-dir | path join "vendor/autoload/starship.nu")
-
-# zoxide
-source ~/.zoxide.nu
-
-# atuin
-source ~/.local/share/atuin/init.nu
 
 # mise
 use ($nu.default-config-dir | path join mise.nu)
