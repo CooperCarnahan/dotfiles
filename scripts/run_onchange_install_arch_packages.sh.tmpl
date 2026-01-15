@@ -10,71 +10,38 @@ echo "--- Detected supported OS: {{ .osid }} ---"
 # --- Configuration ---
 # Packages to install from the official Arch repositories
 pacman_packages=(
-    "atuin"
-    "bat"
     "base"
     "base-devel"
-    "ccache"
-    "chezmoi"
-    "cmake"
-    "croc"
     "ctags"
-    "difftastic"
     "dfu-util"
     "docker"
     "docker-compose"
     "dtc"
-    "fastfetch"
-    "fd"
-    "fzf"
     "ghostty"
     "git"
-    "git-delta"
-    "go"
     "gperf"
-    "jujutsu"
-    "lazygit"
     "make"
-    "mise"
-    "neovim"
-    "ninja"
-    "nodejs"
-    "npm"
     "nushell"
     "openssh"
-    "python-pip"
-    "python-setuptools"
-    "python-wheel"
-    "ripgrep"
-    "rust"
-    "starship"
     "sudo"
     "tk"
-    "tmux"
     "tree"
-    "tree-sitter-cli"
     "unzip"
-    "uv"
     "wget"
     "which"
-    "yazi"
-    "zellij"
     "zen-browser-bin"
-    "zoxide"
 )
 
 # Packages to install from the Arch User Repository (AUR)
 aur_packages=(
     "1password"
-    "carapace-bin"
     "gearlever"
     "git-credential-manager-bin"
     "gnome-browser-connector"
     "maplemono-nf-unhinted"
     "tlp"
-    "tlpgui"
-    "vicinae"
-    "opencode"
+    "tlpui"
+    "vicinae-bin"
     "ov"
     "winboat-bin"
 )
@@ -127,8 +94,38 @@ echo "--- Installing/updating AUR packages via paru ---"
 # Install AUR packages.
 paru -S --noconfirm --needed "${aur_packages[@]}"
 
+echo "--- Checking for mise installation ---"
+if ! command_exists "mise"; then
+    echo "mise not found. Installing mise..."
+    curl https://mise.run | sh
+    if [ $? -ne 0 ]; then
+        echo "Error: Failed to install mise"
+        exit 1
+    fi
+    # Add mise to PATH for current session
+    export PATH="$HOME/.local/bin:$PATH"
+    echo "mise installed successfully"
+else
+    echo "mise is already installed"
+fi
+
+echo "--- Upgrading packages installed via mise ---"
+read -p "Do you want to upgrade all mise-installed tools automatically? (Y/n): " -r
+echo
+if [[ $REPLY =~ ^[Nn]$ ]]; then
+    mise upgrade --interactive --bump
+else
+    mise upgrade --bump
+fi
+mise install
+
 echo "--- Installing Apprise via uv ---"
-uv tool install apprise --python 3.12
+if ! command_exists "apprise"; then
+    uv tool install apprise --python 3.12
+    echo "Apprise installed successfully"
+else
+    echo "Apprise is already installed"
+fi
 
 echo "--- All packages installed successfully! ---"
 
