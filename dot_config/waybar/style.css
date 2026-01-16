@@ -1,6 +1,6 @@
 
 * {
-    font-family: "Fira Sans Semibold", "Font Awesome 6 Free", FontAwesome, Roboto, Helvetica, Arial, sans-serif;
+    font-family: "FiraCode Semibold", "Font Awesome 7 Free", FontAwesome, Roboto, Helvetica, Arial, sans-serif;
     font-size: 14px;  /* Slightly smaller font size */
     font-weight: 900;
     margin: 0;
@@ -32,13 +32,15 @@ window#waybar.hidden {
 }
 
 #workspaces button {
-    padding: 3px 5px;  /* Adjusted padding to reduce height */
-    margin: 3px 5px;    /* Reduced margin slightly */
+    padding: 6px 8px 6px 9px;
+    margin: 3px 5px;
     border-radius: 6px;
     color: @foreground;
     background-color: #111827;
     transition: all 0.3s ease-in-out;
-    font-size: 13px;  /* Slightly smaller font size */
+    font-size: 20px;
+    min-width: 36px;
+    min-height: 28px;
 }
 
 #workspaces button.active {
