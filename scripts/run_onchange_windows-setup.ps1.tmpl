@@ -11,7 +11,26 @@ function Write-Step {
 
 function Refresh-SessionEnvironment {
     Write-Host "Refreshing environment variables from registry..." -ForegroundColor Gray
-    $env:Path = [System.Environment]::GetEnvironmentVariable("Path", "Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path", "User")
+    
+    # Reload Path from Registry (Machine and User)
+    $machinePath = [System.Environment]::GetEnvironmentVariable("Path", "Machine")
+    $userPath = [System.Environment]::GetEnvironmentVariable("Path", "User")
+    $env:Path = "$machinePath;$userPath"
+    
+    # Manual fallback for Git if WinGet just installed it but it's not yet in the session path
+    if (-not (Get-Command git -ErrorAction SilentlyContinue)) {
+        $gitPath = "C:\Program Files\Git\cmd"
+        if (Test-Path $gitPath) {
+            Write-Host "Manually adding Git to session path..." -ForegroundColor Gray
+            $env:Path += ";$gitPath"
+        }
+    }
+
+    # Ensure local bin is in path for UV tools
+    $localBin = Join-Path $env:USERPROFILE ".local\bin"
+    if (Test-Path $localBin -and $env:Path -notlike "*$localBin*") {
+        $env:Path += ";$localBin"
+    }
 }
 
 # 1. Declarative Configuration (WinGet)
@@ -22,7 +41,7 @@ $configFile = Join-Path "{{ .chezmoi.sourceDir }}" "win_configuration.winget"
 if (Get-Command winget -ErrorAction SilentlyContinue) {
     & winget configure --file "$configFile" --accept-configuration-agreements
     
-    # Refresh the current session's PATH so subsequent steps see the new global variables
+    # Refresh the current session's PATH so subsequent steps see the new global variables and installed tools (like Git)
     Refresh-SessionEnvironment
 } else {
     Write-Warning "WinGet not found. Skipping declarative configuration."
@@ -33,6 +52,11 @@ Write-Step "Checking Scoop installation"
 if (-not (Get-Command scoop -ErrorAction SilentlyContinue)) {
     Write-Host "Installing Scoop..."
     Invoke-RestMethod -Uri https://get.scoop.sh | Invoke-Expression
+}
+
+# Ensure Git is available for Scoop buckets (Scoop won't add buckets without it)
+if (-not (Get-Command git -ErrorAction SilentlyContinue)) {
+    Write-Warning "Git not found. Scoop bucket operations may fail."
 }
 
 $ScoopBuckets = @('extras', 'nerd-fonts')
@@ -54,7 +78,7 @@ function Get-UVPath {
         (Get-Command mise -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Source)
     )
     foreach ($path in $misePaths) {
-        if (Test-Path $path) {
+        if ($null -ne $path -and (Test-Path $path)) {
             $uvBin = & $path where uv 2>$null
             if ($uvBin -and (Test-Path $uvBin)) { return $uvBin }
         }
@@ -65,6 +89,7 @@ function Get-UVPath {
 Write-Step "Setting up Apprise via UV"
 $uvPath = Get-UVPath
 if ($null -ne $uvPath) {
+    Write-Host "Using uv from mise: $uvPath" -ForegroundColor Gray
     & $uvPath tool install apprise --python 3.12
 } else {
     Write-Warning "uv not found via mise. Attempting fallback..."

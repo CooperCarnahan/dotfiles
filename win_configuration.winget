@@ -110,6 +110,24 @@ properties:
         ValueType: DWord
         Ensure: Present
 
+    - resource: Microsoft.Windows.Registry/Registry
+      id: Explorer-HideFileExt
+      settings:
+        Key: HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced
+        ValueName: HideFileExt
+        ValueData: 0
+        ValueType: DWord
+        Ensure: Present
+
+    - resource: Microsoft.Windows.Registry/Registry
+      id: Explorer-CabinetFullPath
+      settings:
+        Key: HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\CabinetState
+        ValueName: FullPath
+        ValueData: 1
+        ValueType: DWord
+        Ensure: Present
+
     # --- Services ---
     - resource: Microsoft.Windows.Service/Service
       id: SSDPSRV
