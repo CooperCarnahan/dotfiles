@@ -1,11 +1,19 @@
 # yaml-language-server: $schema=https://aka.ms/configuration-dsc-schema/0.2
 properties:
   configurationVersion: 0.2.0
+  assertions:
+    - resource: Microsoft.Windows.Developer/OsVersion
+      directives:
+        description: Verify min OS version requirement (Windows 11)
+        allowPrerelease: true
+      settings:
+        MinVersion: '10.0.22000'
   resources:
     # --- System Settings ---
     - resource: Microsoft.Windows.Settings/WindowsSettings
       directives:
         description: Enable Developer Mode
+        allowPrerelease: true
         securityContext: elevated
       settings:
         DeveloperMode: true
@@ -13,11 +21,19 @@ properties:
     # --- Windows Features ---
     - resource: Microsoft.Windows.Feature/WindowsOptionalFeature
       id: WSL-Feature
+      directives:
+        description: Enable Windows Subsystem for Linux
+        allowPrerelease: true
+        securityContext: elevated
       settings:
         Name: Microsoft-Windows-Subsystem-Linux
         Ensure: Present
     - resource: Microsoft.Windows.Feature/WindowsOptionalFeature
       id: VirtualMachinePlatform
+      directives:
+        description: Enable Virtual Machine Platform
+        allowPrerelease: true
+        securityContext: elevated
       settings:
         Name: VirtualMachinePlatform
         Ensure: Present
@@ -25,6 +41,9 @@ properties:
     # --- Global Environment Variables ---
     - resource: Environment
       id: LocalBinPath
+      directives:
+        description: Add .local/bin to User Path
+        allowPrerelease: true
       settings:
         Name: Path
         Value: "%USERPROFILE%\\.local\\bin"
@@ -33,6 +52,9 @@ properties:
 
     - resource: Environment
       id: CargoBinPath
+      directives:
+        description: Add .cargo/bin to User Path
+        allowPrerelease: true
       settings:
         Name: Path
         Value: "%USERPROFILE%\\.cargo\\bin"
@@ -41,6 +63,9 @@ properties:
 
     - resource: Environment
       id: GoBinPath
+      directives:
+        description: Add go/bin to User Path
+        allowPrerelease: true
       settings:
         Name: Path
         Value: "%USERPROFILE%\\go\\bin"
@@ -49,6 +74,9 @@ properties:
 
     - resource: Microsoft.Windows.Registry/Registry
       id: GlobalEditor
+      directives:
+        description: Set global EDITOR to nvim
+        allowPrerelease: true
       settings:
         Key: HKEY_CURRENT_USER\Environment
         ValueName: EDITOR
@@ -60,6 +88,8 @@ properties:
       id: PowerShellExecutionPolicy
       directives:
         description: Set PowerShell Execution Policy to RemoteSigned
+        allowPrerelease: true
+        securityContext: elevated
       settings:
         Key: HKEY_CURRENT_USER\Software\Microsoft\PowerShell\1\ShellIds\Microsoft.PowerShell
         ValueName: ExecutionPolicy
@@ -70,6 +100,10 @@ properties:
     # --- Registry Tweaks ---
     - resource: Microsoft.Windows.Registry/Registry
       id: CapsLockToCtrl
+      directives:
+        description: Remap Caps Lock to Control
+        allowPrerelease: true
+        securityContext: elevated
       settings:
         Key: HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Keyboard Layout
         ValueName: "Scancode Map"
@@ -79,6 +113,10 @@ properties:
 
     - resource: Microsoft.Windows.Registry/Registry
       id: EnableSudo
+      directives:
+        description: Enable Windows Sudo
+        allowPrerelease: true
+        securityContext: elevated
       settings:
         Key: HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Sudo
         ValueName: Enabled
@@ -88,6 +126,9 @@ properties:
 
     - resource: Microsoft.Windows.Registry/Registry
       id: Explorer-Hidden
+      directives:
+        description: Show hidden files in Explorer
+        allowPrerelease: true
       settings:
         Key: HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced
         ValueName: Hidden
@@ -97,6 +138,9 @@ properties:
 
     - resource: Microsoft.Windows.Registry/Registry
       id: Explorer-ShowSuperHidden
+      directives:
+        description: Show system files in Explorer
+        allowPrerelease: true
       settings:
         Key: HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced
         ValueName: ShowSuperHidden
@@ -106,6 +150,9 @@ properties:
 
     - resource: Microsoft.Windows.Registry/Registry
       id: Explorer-HideFileExt
+      directives:
+        description: Show file extensions in Explorer
+        allowPrerelease: true
       settings:
         Key: HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced
         ValueName: HideFileExt
@@ -115,6 +162,9 @@ properties:
 
     - resource: Microsoft.Windows.Registry/Registry
       id: Explorer-CabinetFullPath
+      directives:
+        description: Show full path in title bar
+        allowPrerelease: true
       settings:
         Key: HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\CabinetState
         ValueName: FullPath
@@ -125,6 +175,10 @@ properties:
     # --- Services ---
     - resource: Microsoft.Windows.Service/Service
       id: SSDPSRV
+      directives:
+        description: Ensure SSDPSRV service is running
+        allowPrerelease: true
+        securityContext: elevated
       settings:
         Name: SSDPSRV
         StartupType: Automatic
@@ -133,148 +187,229 @@ properties:
     # --- Winget Packages ---
 
     # Browsers
-    - resource: Microsoft.WinGet.Client/WinGetPackage
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
       id: ZenBrowser
+      directives:
+        description: Install Zen Browser
+        allowPrerelease: true
       settings:
         id: Zen-Team.Zen-Browser
         source: winget
 
     # Security
-    - resource: Microsoft.WinGet.Client/WinGetPackage
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
       id: 1Password-CLI
+      directives:
+        description: Install 1Password CLI
+        allowPrerelease: true
       settings:
         id: AgileBits.1Password.CLI
         source: winget
-    - resource: Microsoft.WinGet.Client/WinGetPackage
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
       id: 1Password-App
+      directives:
+        description: Install 1Password App
+        allowPrerelease: true
       settings:
         id: AgileBits.1Password
         source: winget
 
     # Development
-    - resource: Microsoft.WinGet.Client/WinGetPackage
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
       id: Git
+      directives:
+        description: Install Git
+        allowPrerelease: true
       settings:
         id: Git.Git
         source: winget
-    - resource: Microsoft.WinGet.Client/WinGetPackage
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
       id: VSCode
+      directives:
+        description: Install Visual Studio Code
+        allowPrerelease: true
       settings:
         id: Microsoft.VisualStudioCode
         source: winget
-    - resource: Microsoft.WinGet.Client/WinGetPackage
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
       id: Neovim
+      directives:
+        description: Install Neovim
+        allowPrerelease: true
       settings:
         id: Neovim.Neovim
         source: winget
-    - resource: Microsoft.WinGet.Client/WinGetPackage
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
       id: OpenCode
+      directives:
+        description: Install OpenCode
+        allowPrerelease: true
       settings:
         id: SST.opencode
         source: winget
-    - resource: Microsoft.WinGet.Client/WinGetPackage
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
       id: UniversalCtags
+      directives:
+        description: Install Universal Ctags
+        allowPrerelease: true
       settings:
         id: UniversalCtags.Ctags
         source: winget
-    - resource: Microsoft.WinGet.Client/WinGetPackage
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
       id: lazygit
+      directives:
+        description: Install lazygit
+        allowPrerelease: true
       settings:
         id: JesseDuffield.lazygit
         source: winget
-    - resource: Microsoft.WinGet.Client/WinGetPackage
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
       id: yazi
+      directives:
+        description: Install yazi
+        allowPrerelease: true
       settings:
         id: sxyazi.yazi
         source: winget
-    - resource: Microsoft.WinGet.Client/WinGetPackage
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
       id: mise
+      directives:
+        description: Install mise
+        allowPrerelease: true
       settings:
         id: jdx.mise
         source: winget
 
     # Terminal & Shell
-    - resource: Microsoft.WinGet.Client/WinGetPackage
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
       id: Nushell
+      directives:
+        description: Install Nushell
+        allowPrerelease: true
       settings:
         id: Nushell.Nushell
         source: winget
-    - resource: Microsoft.WinGet.Client/WinGetPackage
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
       id: Zoxide
+      directives:
+        description: Install zoxide
+        allowPrerelease: true
       settings:
         id: ajeetdsouza.zoxide
         source: winget
-    - resource: Microsoft.WinGet.Client/WinGetPackage
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
       id: Starship
+      directives:
+        description: Install Starship
+        allowPrerelease: true
       settings:
         id: starship.starship
         source: winget
-    - resource: Microsoft.WinGet.Client/WinGetPackage
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
       id: win32yank
+      directives:
+        description: Install win32yank
+        allowPrerelease: true
       settings:
         id: equalsraf.win32yank
         source: winget
-    - resource: Microsoft.WinGet.Client/WinGetPackage
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
       id: ripgrep
+      directives:
+        description: Install ripgrep
+        allowPrerelease: true
       settings:
         id: BurntSushi.ripgrep.MSVC
         source: winget
-    - resource: Microsoft.WinGet.Client/WinGetPackage
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
       id: fd
+      directives:
+        description: Install fd
+        allowPrerelease: true
       settings:
         id: sharkdp.fd
         source: winget
-    - resource: Microsoft.WinGet.Client/WinGetPackage
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
       id: bat
+      directives:
+        description: Install bat
+        allowPrerelease: true
       settings:
         id: sharkdp.bat
         source: winget
-    - resource: Microsoft.WinGet.Client/WinGetPackage
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
       id: delta
+      directives:
+        description: Install delta
+        allowPrerelease: true
       settings:
         id: dandavison.delta
         source: winget
-    - resource: Microsoft.WinGet.Client/WinGetPackage
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
       id: fzf
+      directives:
+        description: Install fzf
+        allowPrerelease: true
       settings:
         id: junegunn.fzf
         source: winget
 
     # Utilities
-    - resource: Microsoft.WinGet.Client/WinGetPackage
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
       id: Deskflow
+      directives:
+        description: Install Deskflow
+        allowPrerelease: true
       settings:
         id: Deskflow.Deskflow
         source: winget
-    - resource: Microsoft.WinGet.Client/WinGetPackage
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
       id: Clipboard
+      directives:
+        description: Install Clipboard
+        allowPrerelease: true
       settings:
         id: Slackadays.Clipboard
         source: winget
-    - resource: Microsoft.WinGet.Client/WinGetPackage
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
       id: PowerToys
+      directives:
+        description: Install PowerToys
+        allowPrerelease: true
       settings:
         id: Microsoft.PowerToys
         source: winget
-    - resource: Microsoft.WinGet.Client/WinGetPackage
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
       id: Aria2
+      directives:
+        description: Install aria2
+        allowPrerelease: true
       settings:
         id: aria2.aria2
         source: winget
-    - resource: Microsoft.WinGet.Client/WinGetPackage
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
       id: UnZip
+      directives:
+        description: Install UnZip
+        allowPrerelease: true
       settings:
         id: GnuWin32.UnZip
         source: winget
-    - resource: Microsoft.WinGet.Client/WinGetPackage
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
       id: Gzip
+      directives:
+        description: Install Gzip
+        allowPrerelease: true
       settings:
         id: GnuWin32.Gzip
         source: winget
 
     # Window Management
-    - resource: Microsoft.WinGet.Client/WinGetPackage
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
       id: GlazeWM
+      directives:
+        description: Install GlazeWM
+        allowPrerelease: true
       settings:
         id: glzr-io.glazewm
         source: winget
