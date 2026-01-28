@@ -12,6 +12,7 @@ $env.config.edit_mode = 'vi'
 $env.MANPAGER = "sh -c 'awk \"{ gsub(/\\x1B\\[[0-9;]*m/, \\\"\\\", \$0); gsub(/.\\x08/, \\\"\\\", \$0); print }\" | bat -p -lman'"
 
 # misc. path stuff
+{{- if ne .chezmoi.os "windows" }}
 $env.path ++= ["~/.local/bin"]
 
 # rust
@@ -20,6 +21,7 @@ $env.path ++= ["~/.cargo/bin"]
 # golang
 $env.path ++= ["~/go/bin"]
 $env.path ++= ["/usr/local/go/bin"]
+{{- end }}
 
 # mise (must activate first to get correct PATH for tools)
 let mise_path = $nu.default-config-dir | path join mise.nu

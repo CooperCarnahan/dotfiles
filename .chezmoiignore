@@ -25,6 +25,8 @@ README.md
 !.git*
 {{ else }}
 AppData/
-scripts/*.ps1
+win_configuration.winget
+**/*.ps1
+**/*.bat
 .glzr/
 {{ end }}

@@ -1,0 +1,268 @@
+# yaml-language-server: $schema=https://aka.ms/configuration-dsc-schema/0.2
+configurationVersion: 0.2.0
+properties:
+  assertions:
+    - resource: Microsoft.Windows.Developer/OsVersion
+      directives:
+        description: Verify min OS version requirement (Windows 11)
+      settings:
+        MinVersion: '10.0.22000'
+  resources:
+    # --- System Settings ---
+    - resource: Microsoft.Windows.Settings/WindowsSettings
+      directives:
+        description: Enable Developer Mode
+        securityContext: elevated
+      settings:
+        DeveloperMode: true
+
+    # --- Windows Features ---
+    - resource: Microsoft.Windows.Feature/WindowsOptionalFeature
+      id: WSL-Feature
+      settings:
+        Name: Microsoft-Windows-Subsystem-Linux
+        Ensure: Present
+    - resource: Microsoft.Windows.Feature/WindowsOptionalFeature
+      id: VirtualMachinePlatform
+      settings:
+        Name: VirtualMachinePlatform
+        Ensure: Present
+
+    # --- Global Environment Variables ---
+    - resource: Environment
+      id: LocalBinPath
+      settings:
+        Name: Path
+        Value: "%USERPROFILE%\\.local\\bin"
+        Path: true
+        Ensure: Present
+
+    - resource: Environment
+      id: CargoBinPath
+      settings:
+        Name: Path
+        Value: "%USERPROFILE%\\.cargo\\bin"
+        Path: true
+        Ensure: Present
+
+    - resource: Environment
+      id: GoBinPath
+      settings:
+        Name: Path
+        Value: "%USERPROFILE%\\go\\bin"
+        Path: true
+        Ensure: Present
+
+    - resource: Microsoft.Windows.Registry/Registry
+      id: GlobalEditor
+      settings:
+        Key: HKEY_CURRENT_USER\Environment
+        ValueName: EDITOR
+        ValueData: nvim
+        ValueType: String
+        Ensure: Present
+
+    - resource: Microsoft.Windows.Registry/Registry
+      id: PowerShellExecutionPolicy
+      directives:
+        description: Set PowerShell Execution Policy to RemoteSigned
+      settings:
+        Key: HKEY_CURRENT_USER\Software\Microsoft\PowerShell\1\ShellIds\Microsoft.PowerShell
+        ValueName: ExecutionPolicy
+        ValueData: RemoteSigned
+        ValueType: String
+        Ensure: Present
+
+    # --- Registry Tweaks ---
+    - resource: Microsoft.Windows.Registry/Registry
+      id: CapsLockToCtrl
+      settings:
+        Key: HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Keyboard Layout
+        ValueName: "Scancode Map"
+        ValueData: [0,0,0,0,0,0,0,0,2,0,0,0,0x1D,0,0x3A,0,0,0,0,0]
+        ValueType: Binary
+        Ensure: Present
+
+    - resource: Microsoft.Windows.Registry/Registry
+      id: EnableSudo
+      settings:
+        Key: HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Sudo
+        ValueName: Enabled
+        ValueData: 3
+        ValueType: DWord
+        Ensure: Present
+
+    - resource: Microsoft.Windows.Registry/Registry
+      id: Explorer-Hidden
+      settings:
+        Key: HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced
+        ValueName: Hidden
+        ValueData: 1
+        ValueType: DWord
+        Ensure: Present
+
+    - resource: Microsoft.Windows.Registry/Registry
+      id: Explorer-ShowSuperHidden
+      settings:
+        Key: HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced
+        ValueName: ShowSuperHidden
+        ValueData: 1
+        ValueType: DWord
+        Ensure: Present
+
+    # --- Services ---
+    - resource: Microsoft.Windows.Service/Service
+      id: SSDPSRV
+      settings:
+        Name: SSDPSRV
+        StartupType: Automatic
+        State: Running
+
+    # --- Winget Packages ---
+
+    # Browsers
+    - resource: Microsoft.WinGet.Client/WinGetPackage
+      id: ZenBrowser
+      settings:
+        id: Zen-Team.Zen-Browser
+        source: winget
+
+    # Security
+    - resource: Microsoft.WinGet.Client/WinGetPackage
+      id: 1Password-CLI
+      settings:
+        id: AgileBits.1Password.CLI
+        source: winget
+    - resource: Microsoft.WinGet.Client/WinGetPackage
+      id: 1Password-App
+      settings:
+        id: AgileBits.1Password
+        source: winget
+
+    # Development
+    - resource: Microsoft.WinGet.Client/WinGetPackage
+      id: Git
+      settings:
+        id: Git.Git
+        source: winget
+    - resource: Microsoft.WinGet.Client/WinGetPackage
+      id: VSCode
+      settings:
+        id: Microsoft.VisualStudioCode
+        source: winget
+    - resource: Microsoft.WinGet.Client/WinGetPackage
+      id: Neovim
+      settings:
+        id: Neovim.Neovim
+        source: winget
+    - resource: Microsoft.WinGet.Client/WinGetPackage
+      id: OpenCode
+      settings:
+        id: SST.opencode
+        source: winget
+    - resource: Microsoft.WinGet.Client/WinGetPackage
+      id: UniversalCtags
+      settings:
+        id: UniversalCtags.Ctags
+        source: winget
+    - resource: Microsoft.WinGet.Client/WinGetPackage
+      id: lazygit
+      settings:
+        id: JesseDuffield.lazygit
+        source: winget
+    - resource: Microsoft.WinGet.Client/WinGetPackage
+      id: yazi
+      settings:
+        id: sxyazi.yazi
+        source: winget
+    - resource: Microsoft.WinGet.Client/WinGetPackage
+      id: mise
+      settings:
+        id: jdx.mise
+        source: winget
+
+    # Terminal & Shell
+    - resource: Microsoft.WinGet.Client/WinGetPackage
+      id: Nushell
+      settings:
+        id: Nushell.Nushell
+        source: winget
+    - resource: Microsoft.WinGet.Client/WinGetPackage
+      id: Zoxide
+      settings:
+        id: ajeetdsouza.zoxide
+        source: winget
+    - resource: Microsoft.WinGet.Client/WinGetPackage
+      id: Starship
+      settings:
+        id: starship.starship
+        source: winget
+    - resource: Microsoft.WinGet.Client/WinGetPackage
+      id: win32yank
+      settings:
+        id: equalsraf.win32yank
+        source: winget
+    - resource: Microsoft.WinGet.Client/WinGetPackage
+      id: ripgrep
+      settings:
+        id: BurntSushi.ripgrep.MSVC
+        source: winget
+    - resource: Microsoft.WinGet.Client/WinGetPackage
+      id: fd
+      settings:
+        id: sharkdp.fd
+        source: winget
+    - resource: Microsoft.WinGet.Client/WinGetPackage
+      id: bat
+      settings:
+        id: sharkdp.bat
+        source: winget
+    - resource: Microsoft.WinGet.Client/WinGetPackage
+      id: delta
+      settings:
+        id: dandavison.delta
+        source: winget
+    - resource: Microsoft.WinGet.Client/WinGetPackage
+      id: fzf
+      settings:
+        id: junegunn.fzf
+        source: winget
+
+    # Utilities
+    - resource: Microsoft.WinGet.Client/WinGetPackage
+      id: Deskflow
+      settings:
+        id: Deskflow.Deskflow
+        source: winget
+    - resource: Microsoft.WinGet.Client/WinGetPackage
+      id: Clipboard
+      settings:
+        id: Slackadays.Clipboard
+        source: winget
+    - resource: Microsoft.WinGet.Client/WinGetPackage
+      id: PowerToys
+      settings:
+        id: Microsoft.PowerToys
+        source: winget
+    - resource: Microsoft.WinGet.Client/WinGetPackage
+      id: Aria2
+      settings:
+        id: aria2.aria2
+        source: winget
+    - resource: Microsoft.WinGet.Client/WinGetPackage
+      id: UnZip
+      settings:
+        id: GnuWin32.UnZip
+        source: winget
+    - resource: Microsoft.WinGet.Client/WinGetPackage
+      id: Gzip
+      settings:
+        id: GnuWin32.Gzip
+        source: winget
+
+    # Window Management
+    - resource: Microsoft.WinGet.Client/WinGetPackage
+      id: GlazeWM
+      settings:
+        id: glzr-io.glazewm
+        source: winget

@@ -1,5 +1,9 @@
+{{- if (lookPath "op") -}}
 {{- $pushover := onepasswordDetailsFields "Pushover API Credentials" -}}
 pover://{{ $pushover.username.value }}@{{ $pushover.credential.value }}
+{{- else -}}
+# 1Password CLI ('op') not found. Run 'chezmoi apply' again after installing and signing into 1Password.
+{{- end -}}
 {{ if eq .chezmoi.os "darwin" -}}
 macosx://
 {{ else if eq .chezmoi.os "windows" -}}

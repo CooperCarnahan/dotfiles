@@ -79,7 +79,9 @@ def push [
     }
 }
 
+{{- if not (eq .chezmoi.os "windows") }}
 alias fg = job unfreeze
+{{- end }}
 alias v = nvim
 alias cat = bat
 alias nv = neovide
