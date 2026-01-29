@@ -21,7 +21,7 @@ $env.path ++= [$env.USERPROFILE + '/.local/bin']
 $env.path ++= [$env.USERPROFILE + '/.cargo/bin']
 
 # golang
-$env.path ++= ["$env.USERPROFILE + '/go/bin']
+$env.path ++= [$env.USERPROFILE + '/go/bin']
 
 {{- else }}
 $env.path ++= ["~/.local/bin"]
