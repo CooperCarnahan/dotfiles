@@ -1,5 +1,5 @@
-# win_configuration.winget hash: {{ include "win_configuration.winget" | sha256sum }}
-# This script consolidates Windows setup logic: WinGet Configuration, Scoop, and UV/Apprise.
+# win_configuration.winget hash: {{ include "windows_config.winget" | sha256sum }}
+# This script consolidates Windows setup logic: WinGet Configuration and Scoop
 
 $ErrorActionPreference = 'Continue'
 $ProgressPreference = 'SilentlyContinue'
@@ -24,12 +24,6 @@ function Refresh-SessionEnvironment {
             Write-Host "Manually adding Git to session path..." -ForegroundColor Gray
             $env:Path += ";$gitPath"
         }
-    }
-
-    # Ensure local bin is in path for UV tools
-    $localBin = Join-Path $env:USERPROFILE ".local\bin"
-    if (Test-Path $localBin -and $env:Path -notlike "*$localBin*") {
-        $env:Path += ";$localBin"
     }
 }
 
@@ -65,38 +59,9 @@ foreach ($Bucket in $ScoopBuckets) {
 }
 
 Write-Step "Installing Scoop-only Packages (Fonts)"
-$ScoopPackages = @('nerd-fonts/CascadiaCode-NF', 'nerd-fonts/Maple-Mono-NF', 'ouch')
+$ScoopPackages = @('nerd-fonts/CascadiaCode-NF', 'nerd-fonts/Maple-Mono-NF', 'ouch', 'tree-sitter')
 foreach ($Package in $ScoopPackages) {
     scoop install $Package
-}
-
-# 3. UV / Apprise (via mise)
-function Get-UVPath {
-    $misePaths = @(
-        "$env:USERPROFILE\.local\bin\mise.exe",
-        "$env:LOCALAPPDATA\bin\mise.exe",
-        (Get-Command mise -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Source)
-    )
-    foreach ($path in $misePaths) {
-        if ($null -ne $path -and (Test-Path $path)) {
-            $uvBin = & $path where uv 2>$null
-            if ($uvBin -and (Test-Path $uvBin)) { return $uvBin }
-        }
-    }
-    return $null
-}
-
-Write-Step "Setting up Apprise via UV"
-$uvPath = Get-UVPath
-if ($null -ne $uvPath) {
-    Write-Host "Using uv from mise: $uvPath" -ForegroundColor Gray
-    & $uvPath tool install apprise --python 3.12
-} else {
-    Write-Warning "uv not found via mise. Attempting fallback..."
-    if (-not (Get-Command uv -ErrorAction SilentlyContinue)) {
-        scoop install uv
-    }
-    uv tool install apprise --python 3.12
 }
 
 Write-Host "`nWindows Setup Completed!" -ForegroundColor Green

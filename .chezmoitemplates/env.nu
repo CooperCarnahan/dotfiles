@@ -12,7 +12,18 @@ $env.config.edit_mode = 'vi'
 $env.MANPAGER = "sh -c 'awk \"{ gsub(/\\x1B\\[[0-9;]*m/, \\\"\\\", \$0); gsub(/.\\x08/, \\\"\\\", \$0); print }\" | bat -p -lman'"
 
 # misc. path stuff
-{{- if ne .chezmoi.os "windows" }}
+{{- if eq .chezmoi.os "windows"}}
+$env.XDG_CONFIG_HOME = $env.USERPROFILE + '/.config'
+
+$env.path ++= [$env.USERPROFILE + '/.local/bin']
+
+# rust
+$env.path ++= [$env.USERPROFILE + '/.cargo/bin']
+
+# golang
+$env.path ++= ["$env.USERPROFILE + '/go/bin']
+
+{{- else }}
 $env.path ++= ["~/.local/bin"]
 
 # rust
