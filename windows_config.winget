@@ -6,7 +6,7 @@ metadata:
     processor:
       identifier: "dscv3"
 resources:
-- name: Microsoft.WinGet/Package_nox399mn
+- name: Microsoft.WinGet/Package_cgca7ltl
   type: Microsoft.WinGet/Package
   metadata:
     description: "Configure Microsoft.PowerShell"
@@ -29,12 +29,12 @@ resources:
       BypassCertificatePinningForMicrosoftStore: false
       InstallerHashOverride: false
       LocalArchiveMalwareScanOverride: false
-- name: Microsoft.DSC.Transitional/RunCommandOnSet_s5lmmy2l
+- name: Microsoft.DSC.Transitional/RunCommandOnSet_eq94ymfj
   type: Microsoft.DSC.Transitional/RunCommandOnSet
   metadata:
     description: "Configure Microsoft.Windows.Settings"
   dependsOn:
-  - Microsoft.WinGet/Package_nox399mn
+  - Microsoft.WinGet/Package_cgca7ltl
   properties:
     arguments:
     - "-NoProfile"
@@ -44,14 +44,14 @@ resources:
       -Name Microsoft.Windows.Settings -Confirm:$False -Force -AllowPrerelease -AllowClobber
       }"
     executable: "pwsh"
-- name: Microsoft.Windows.Settings/WindowsSettings_moe4ukwj
+- name: Microsoft.Windows.Settings/WindowsSettings_tz0347ol
   type: Microsoft.Windows.Settings/WindowsSettings
   metadata:
     description: "Configure Microsoft.Windows.Settings/WindowsSettings"
     winget:
       securityContext: "elevated"
   dependsOn:
-  - Microsoft.DSC.Transitional/RunCommandOnSet_s5lmmy2l
+  - Microsoft.DSC.Transitional/RunCommandOnSet_eq94ymfj
   properties:
     SystemColorMode: "Dark"
     DeveloperMode: true
@@ -197,6 +197,13 @@ resources:
   properties:
     id: "Microsoft.VCRedist.2015+.x64"
     source: "winget"
+- name: winget_Python.Launcher
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Install Python.Launcher"
+  properties:
+    id: "Python.Launcher"
+    source: "winget"
 - name: winget_Microsoft.DotNet.DesktopRuntime.8
   type: Microsoft.WinGet/Package
   metadata:
@@ -210,6 +217,13 @@ resources:
     description: "Install AgileBits.1Password.CLI"
   properties:
     id: "AgileBits.1Password.CLI"
+    source: "winget"
+- name: winget_Anthropic.Claude
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Install Anthropic.Claude"
+  properties:
+    id: "Anthropic.Claude"
     source: "winget"
 - name: winget_BrechtSanders.WinLibs.POSIX.UCRT
   type: Microsoft.WinGet/Package
@@ -591,10 +605,10 @@ resources:
       properties:
         expirationDateTime: "2026-01-29T12:59:08.6980926-08:00"
         keepDisplayOn: false
-        intervalMinutes: 1
+        intervalMinutes: 0
         mode: 0
         customTrayTimes: {}
-        intervalHours: 0
+        intervalHours: 2
       name: "Awake"
 - name: Microsoft.PowerToys/ColorPickerSettings-0
   type: Microsoft.PowerToys/ColorPickerSettings
@@ -1336,3 +1350,10 @@ resources:
   properties:
     id: "Microsoft.WindowsTerminal"
     source: "winget"
+- name: msstore_9PNRBTZXMB4Z
+  type: Microsoft.WinGet/Package
+  metadata:
+    description: "Install 9PNRBTZXMB4Z"
+  properties:
+    id: "9PNRBTZXMB4Z"
+    source: "msstore"
