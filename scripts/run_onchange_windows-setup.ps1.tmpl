@@ -1,4 +1,4 @@
-# win_configuration.winget hash: {{ include "windows_config.winget" | sha256sum }}
+# windows_config.winget hash: {{ include "windows_config.winget" | sha256sum }}
 # This script consolidates Windows setup logic: WinGet Configuration and Scoop
 
 $ErrorActionPreference = 'Continue'
@@ -30,10 +30,17 @@ function Refresh-SessionEnvironment {
 # 1. Declarative Configuration (WinGet)
 # We do this first to enable Features (WSL) and set global Paths/Environment.
 Write-Step "Applying WinGet Configuration"
-$configFile = Join-Path "{{ .chezmoi.sourceDir }}" "win_configuration.winget"
+$configFile = Join-Path "{{ .chezmoi.sourceDir }}" "windows_config.winget"
 
 if (Get-Command winget -ErrorAction SilentlyContinue) {
-    & winget configure --file "$configFile" --accept-configuration-agreements
+    # Ensure the configuration feature is enabled
+    Write-Host "Ensuring WinGet Configuration is enabled..." -ForegroundColor Gray
+    & winget configure --enable --accept-configuration-agreements
+
+    # Run the actual configuration elevated to handle system settings in one go
+    Write-Host "Elevating WinGet Configuration (one UAC prompt required)..." -ForegroundColor Yellow
+    $wingetArgs = "configure --file `"$configFile`" --accept-configuration-agreements --disable-interactivity"
+    Start-Process winget -ArgumentList $wingetArgs -Verb RunAs -Wait
     
     # Refresh the current session's PATH so subsequent steps see the new global variables and installed tools (like Git)
     Refresh-SessionEnvironment
