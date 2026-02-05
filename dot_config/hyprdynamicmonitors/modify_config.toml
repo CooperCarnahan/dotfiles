@@ -1,0 +1,9 @@
+{{- /* chezmoi:modify-template */ -}}
+{{- $config := .chezmoi.stdin | fromToml -}}
+{{- $newDest := printf "%s/.config/hypr/config/monitors.conf" .chezmoi.homeDir -}}
+{{- if not (hasKey $config "general") -}}
+{{-   $config = dict "general" (dict "destination" $newDest) | merge $config -}}
+{{- else -}}
+{{-   $_ := set $config.general "destination" $newDest -}}
+{{- end -}}
+{{- $config | toToml -}}
