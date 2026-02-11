@@ -104,7 +104,7 @@
       "critical": 15
     },
     "format": "{icon} {capacity}%",
-    "format-charging": " {capacity}%",
+    "format-charging": "󱊥 {capacity}%",
     "format-plugged": " {capacity}%",
     "format-icons": [
       "",
@@ -116,10 +116,10 @@
   },
   "network": {
     "format-wifi": "  {essid}",
-    "format-ethernet": "{ifname}: {ipaddr}/{cidr} ",
-    "format-linked": "{ifname} (No IP) ",
-    "format": "",
-    "format-disconnected": "",
+    "format-ethernet": "{ifname}: {ipaddr}/{cidr}  ",
+    "format-linked": "{ifname} (No IP)  ",
+    "format": " ",
+    "format-disconnected": "󰤮 ",
     "format-alt": "{ifname}: {ipaddr}/{cidr}",
     "on-click": "wl-copy $(ip address show up scope global | grep inet | head -n1 | cut -d/ -f 1 | tr -d [:space:] | cut -c5-)",
     "on-click-right": "wl-copy $(ip address show up scope global | grep inet6 | head -n1 | cut -d/ -f 1 | tr -d [:space:] | cut -c6-)",
@@ -155,7 +155,7 @@
   "custom/weather": {
     "format": "{}",
     "interval": 3600,
-    "exec": "curl -s 'https://wttr.in/?format=1'",
+    "exec": "curl -s 'https://wttr.in/?u&format=1'",
     //"return-type": "json",
     //"exec": "~/.config/waybar/modules/weather.sh",
     "exec-if": "ping wttr.in -c1"
