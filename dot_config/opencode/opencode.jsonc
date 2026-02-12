@@ -22,7 +22,8 @@
     },
   },
   "plugin": [
-    "opencode-gemini-auth@latest"
+    "opencode-gemini-auth@latest",
+    "opencode-beads",
   ],
   "permission": {
     "gh_grep": "deny",
