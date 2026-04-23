@@ -16,7 +16,6 @@ README.md
 .config/nushell
 .config/helix
 .config/kitty
-.config/zellij
 .alias
 .bashrc
 .functions
