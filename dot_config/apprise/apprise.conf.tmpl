@@ -6,7 +6,9 @@ windows://
 gnome://
 {{ end -}}
 
-{{- if (lookPath "op") -}}
+{{- if .work }}
+# pover://YOUR_USER_KEY@YOUR_API_TOKEN
+{{- else if (lookPath "op") -}}
 {{- $pushover := onepasswordDetailsFields "Pushover API Credentials" -}}
 pover://{{ $pushover.username.value }}@{{ $pushover.credential.value }}
 {{- else -}}
