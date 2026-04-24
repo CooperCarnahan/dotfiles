@@ -1,0 +1,99 @@
+{{- if eq .chezmoi.os "windows" -}}
+$ErrorActionPreference = 'Continue'
+$ProgressPreference = 'SilentlyContinue'
+
+function Write-Step {
+    param([string]$Message)
+    Write-Host "`n==> $Message" -ForegroundColor Cyan
+}
+
+function Refresh-SessionEnvironment {
+    Write-Host "Refreshing environment variables from registry..." -ForegroundColor Gray
+
+    $machinePath = [System.Environment]::GetEnvironmentVariable("Path", "Machine")
+    $userPath = [System.Environment]::GetEnvironmentVariable("Path", "User")
+    $env:Path = "$machinePath;$userPath"
+}
+
+{{- if .work }}
+Write-Host "`n[MODE: WORK]" -ForegroundColor Magenta
+{{- else }}
+Write-Host "`n[MODE: PERSONAL]" -ForegroundColor Magenta
+{{- end }}
+
+# 1. WinGet Package Installs
+Write-Step "Installing packages via WinGet"
+
+$packages = @(
+    "Nushell.Nushell"
+    "Microsoft.VisualStudioCode"
+    "Microsoft.PowerToys"
+)
+
+{{- if not .work }}
+# Personal-only winget packages
+$packages += @(
+    "NordSecurity.NordVPN"
+    "AgileBits.1Password"
+    "AgileBits.1Password.CLI"
+    "Anthropic.Claude"
+    "Zen-Team.Zen-Browser"
+)
+{{- end }}
+
+if (Get-Command winget -ErrorAction SilentlyContinue) {
+    foreach ($pkg in $packages) {
+        Write-Host "Installing $pkg..." -ForegroundColor Gray
+        winget install --id $pkg --silent --accept-source-agreements --accept-package-agreements
+    }
+} else {
+    Write-Warning "WinGet not found. Skipping winget package installs."
+}
+
+Refresh-SessionEnvironment
+
+# 2. Scoop Setup
+Write-Step "Checking Scoop installation"
+if (-not (Get-Command scoop -ErrorAction SilentlyContinue)) {
+    Write-Host "Installing Scoop..." -ForegroundColor Gray
+    Invoke-RestMethod -Uri https://get.scoop.sh | Invoke-Expression
+    $env:Path += ";$env:USERPROFILE\scoop\shims"
+}
+
+if (-not (Get-Command git -ErrorAction SilentlyContinue)) {
+    Write-Warning "Git not found. Scoop bucket operations may fail."
+}
+
+Write-Step "Adding Scoop buckets"
+$ScoopBuckets = @('extras', 'nerd-fonts')
+foreach ($Bucket in $ScoopBuckets) {
+    scoop bucket add $Bucket 2>$null
+}
+
+Write-Step "Installing Scoop packages"
+$ScoopPackages = @(
+    # main bucket
+    'aria2'
+    'gzip'
+    'unzip'
+    'mise'
+    'nanazip'
+    'ouch'
+    'tree-sitter'
+    # extras bucket
+    'extras/glazewm'
+    'extras/universal-ctags'
+    'extras/clipboard'
+    'extras/win32yank'
+    # nerd-fonts bucket
+    'nerd-fonts/CascadiaCode-NF'
+    'nerd-fonts/Maple-Mono-NF'
+)
+
+foreach ($Package in $ScoopPackages) {
+    Write-Host "Installing $Package..." -ForegroundColor Gray
+    scoop install $Package
+}
+
+Write-Host "`nWindows package setup completed!" -ForegroundColor Green
+{{- end }}

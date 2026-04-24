@@ -2,9 +2,14 @@
 {{- if hasKey .chezmoi.osRelease "id" -}}
 {{-   $osid = printf "%s-%s" .chezmoi.os .chezmoi.osRelease.id -}}
 {{- end -}}
+{{- $work := false -}}
+{{- if eq .chezmoi.os "windows" -}}
+{{-   $work = promptBoolOnce . "work" "Is this a work machine?" -}}
+{{- end -}}
 
 [data]
     osid = {{ $osid | quote }}
+    work = {{ $work }}
 
 [interpreters.ps1]
     command = "powershell"

@@ -1,0 +1,41 @@
+{{- if eq .chezmoi.os "windows" -}}
+$ErrorActionPreference = 'Continue'
+$ProgressPreference = 'SilentlyContinue'
+
+function Write-Step {
+    param([string]$Message)
+    Write-Host "`n==> $Message" -ForegroundColor Cyan
+}
+
+{{- if .work }}
+Write-Host "`n[MODE: WORK]" -ForegroundColor Magenta
+{{- else }}
+Write-Host "`n[MODE: PERSONAL]" -ForegroundColor Magenta
+{{- end }}
+
+# 1. User Environment Variables
+Write-Step "Setting user environment variables"
+[System.Environment]::SetEnvironmentVariable("XDG_CONFIG_HOME", "$env:USERPROFILE\.config", "User")
+[System.Environment]::SetEnvironmentVariable("ZELLIJ_CONFIG_DIR", "$env:USERPROFILE\.config\zellij", "User")
+Write-Host "XDG_CONFIG_HOME and ZELLIJ_CONFIG_DIR set" -ForegroundColor Gray
+
+# 2. Windows System Settings
+Write-Step "Applying Windows system settings"
+
+# Dark mode (apps + system)
+Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize" -Name "AppsUseLightTheme" -Value 0 -Type DWord
+Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize" -Name "SystemUsesLightTheme" -Value 0 -Type DWord
+Write-Host "Dark mode enabled" -ForegroundColor Gray
+
+# Taskbar center alignment
+Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "TaskbarAl" -Value 1 -Type DWord
+Write-Host "Taskbar center alignment set" -ForegroundColor Gray
+
+# Developer mode (requires elevation)
+Write-Host "Enabling Developer Mode (elevation required)..." -ForegroundColor Yellow
+$devModeScript = 'reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\AppModelUnlock" /t REG_DWORD /v "AllowDevelopmentWithoutDevLicense" /d 1 /f'
+Start-Process pwsh -ArgumentList "-NoProfile -NoLogo -Command $devModeScript" -Verb RunAs -Wait
+Write-Host "Developer mode enabled" -ForegroundColor Gray
+
+Write-Host "`nWindows system settings applied!" -ForegroundColor Green
+{{- end }}

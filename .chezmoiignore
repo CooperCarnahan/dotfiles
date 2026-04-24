@@ -13,7 +13,6 @@ README.md
 .config/nvim/lazy-lock.json
 
 {{- if eq .chezmoi.os "windows" -}}
-.config/nushell
 .config/helix
 .config/kitty
 .alias
@@ -24,7 +23,6 @@ README.md
 !.git*
 {{ else }}
 AppData/
-win_configuration.winget
 **/*.ps1
 **/*.bat
 .glzr/
