@@ -60,10 +60,10 @@
   program = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign"
 {{- else if eq .chezmoi.os "linux" }}
   {{- if (.chezmoi.kernel.osrelease | lower | contains "microsoft") }}
-  program = "/mnt/c/Program Files/1Password/app/8/op-ssh-sign.exe"
+  program = {{ lookPath "op-ssh-sign.exe" | quote }}
 
 [credential]
-	helper = "/mnt/c/Program\\ Files/Git/mingw64/bin/git-credential-manager.exe"
+  helper = {{ lookPath "git-credential-manager.exe" | quote }}
 	useHttpPath = true
   {{- else }}
 	program = /opt/1Password/op-ssh-sign
