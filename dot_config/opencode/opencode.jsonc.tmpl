@@ -12,6 +12,7 @@
       "type": "remote",
       "url": "https://mcp.grep.app",
     },
+{{- if not .work }}
     "gitnexus": {
       "type": "local",
       "command": [
@@ -20,18 +21,21 @@
         "mcp"
       ],
     },
-    // "context7": {
-    //   "type": "remote",
-    //   "url": "https://mcp.context7.com/mcp",
-    // },
+    "context7": {
+      "type": "remote",
+      "url": "https://mcp.context7.com/mcp",
+    },
+{{- end }}
   },
   "agent": {
+{{- if .work }}
     "explore": {
       "model": "github-copilot/gpt-5-mini",
     },
     "general": {
       "model": "github-copilot/gpt-5-mini",
     },
+{{- end }}
     "plan": {
       "permission": {
         "webfetch": "allow",
@@ -41,14 +45,18 @@
     },
   },
   "plugin": [
+{{- if not .work }}
     "opencode-gemini-auth@latest",
-    "opencode-beads",
     "./plugins/notify-tool.ts",
+{{- end }}
+    "opencode-beads",
     "superpowers@git+https://github.com/obra/superpowers.git",
     "context-mode"
   ],
+{{- if .work }}
   "permission": {
     "gh_grep": "deny",
     "context7": "deny",
+{{- end }}
   },
 }
