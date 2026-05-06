@@ -114,11 +114,6 @@ zinit wait lucid for \
 #           PATH & ENV            #
 ###################################
 
-# Load Additional Configuration Files
-for config_file in ~/.{alias,functions,zshrc.local}; do
-    [[ -f "$config_file" ]] && source "$config_file"
-done
-
 # Path Configuration
 path_dirs=(
     "/usr/local/go/bin"
@@ -126,6 +121,15 @@ path_dirs=(
     "$HOME/.scripts"
     "$HOME/.local/bin"
 )
+
+for dir in "${path_dirs[@]}"; do
+    [[ -d "$dir" ]] && export PATH="$PATH:$dir"
+done
+
+# Load Additional Configuration Files
+for config_file in ~/.{alias,functions,zshrc.local}; do
+    [[ -f "$config_file" ]] && source "$config_file"
+done
 
 if command -v mise > /dev/null; then
     eval "$(mise activate zsh)"
@@ -151,14 +155,6 @@ if command -v keychain &> /dev/null; then
   [ -f $HOME/.keychain/$HOSTNAME-sh ] && \
     . $HOME/.keychain/$HOSTNAME-sh
 fi
-
-for dir in "${path_dirs[@]}"; do
-    [[ -d "$dir" ]] && export PATH="$PATH:$dir"
-done
-
-# NVM Configuration
-export NVM_DIR="${XDG_CONFIG_HOME:-$HOME/.nvm}"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 
 # Additional Tools
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
