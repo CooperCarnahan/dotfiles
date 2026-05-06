@@ -16,3 +16,6 @@ if vim.g.neovide then
 end
 
 vim.g.zig_fmt_autosave = 0
+
+-- enable project-specific setting overrides
+vim.opt.exrc = true
