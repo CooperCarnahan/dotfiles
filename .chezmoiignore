@@ -27,3 +27,22 @@ AppData/
 **/*.bat
 .glzr/
 {{ end }}
+
+.claude/settings.local.json
+.claude/projects
+.claude/sessions
+.claude/shell-snapshots
+.claude/telemetry
+.claude/cache
+.claude/file-history
+.claude/paste-cache
+.claude/backups
+.claude/session-env
+.claude/tasks
+.claude/plans
+.claude/plugins
+.claude/context-mode
+.claude/history.jsonl
+.claude/*.bak
+.claude/*.orig
+.claude/mcp-needs-auth-cache.json
