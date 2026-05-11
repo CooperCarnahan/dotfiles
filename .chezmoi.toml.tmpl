@@ -15,3 +15,11 @@
     command = "powershell"
     args = ["-NoLogo", "-NoProfile", "-ExecutionPolicy", "Bypass"]
 
+[merge]
+    command = "nvim"
+    args = [
+        "-d",
+        "{{ .Destination }}",
+        "{{ .Source }}",
+        "{{ .Target }}"
+    ]
