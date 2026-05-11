@@ -13,18 +13,26 @@ return {
   },
   keys = {
     {
-      "<leader>ff",
+      "<C-p>",
       function()
         require("fff").find_files()
       end,
       desc = "Find Files (fff)",
     },
     {
-      "<leader>fG",
+      "<leader>sg",
       function()
-        require("fff").live_grep()
+        require("fff").live_grep({ cwd = vim.fn.getcwd() })
       end,
-      desc = "Live Grep (fff)",
+      desc = "Live Grep (cwd)",
+    },
+    {
+      "<leader>sG",
+      function()
+        local root = vim.fs.root(0, ".git") or vim.fn.getcwd()
+        require("fff").live_grep({ cwd = root })
+      end,
+      desc = "Live Grep (root)",
     },
   },
 }
