@@ -1,4 +1,20 @@
 {
+  "permissions": {
+    "defaultMode": "acceptEdits",
+    "allow": [
+      "mcp__plugin_context-mode_context-mode",
+      "Bash(git diff:*)",
+      "Bash(git status:*)",
+      "Bash(git log:*)",
+      "Bash(git show:*)",
+      "Bash(git blame:*)",
+      "Bash(git branch:*)"
+    ],
+    "deny": [
+      "mcp__plugin_context-mode_context-mode__ctx_purge"
+    ]
+  },
+  "model": "opus",
   "hooks": {
     "SessionStart": [
       {
@@ -11,10 +27,18 @@
       }
     ]
   },
+  "statusLine": {
+    "type": "command",
+    "command": "bash -c 'cols=$(stty size </dev/tty 2>/dev/null | awk '\"'\"'{print $2}'\"'\"'); export COLUMNS=$(( ${cols:-120} > 4 ? ${cols:-120} - 4 : 1 )); plugin_dir=$(ls -d \"${CLAUDE_CONFIG_DIR:-$HOME/.claude}\"/plugins/cache/*/claude-hud/*/ 2>/dev/null | awk -F/ '\"'\"'{ print $(NF-1) \"\\t\" $(0) }'\"'\"' | grep -E '\"'\"'^[0-9]+\\.[0-9]+\\.[0-9]+[[:space:]]'\"'\"' | sort -t. -k1,1n -k2,2n -k3,3n -k4,4n | tail -1 | cut -f2-); exec \"{{ lookPath "bun" }}\" --env-file /dev/null \"${plugin_dir}src/index.ts\"'",
+    "padding": 0,
+    "refreshInterval": 10
+  },
   "enabledPlugins": {
     "context-mode@context-mode": true,
     "superpowers@claude-plugins-official": true,
-    "andrej-karpathy-skills@karpathy-skills": true
+    "andrej-karpathy-skills@karpathy-skills": true,
+    "lua-lsp@claude-plugins-official": true,
+    "claude-hud@claude-hud": true
   },
   "extraKnownMarketplaces": {
     "context-mode": {
@@ -28,35 +52,18 @@
         "source": "github",
         "repo": "forrestchang/andrej-karpathy-skills"
       }
+    },
+    "claude-hud": {
+      "source": {
+        "source": "github",
+        "repo": "jarrodwatts/claude-hud"
+      }
     }
-  },
-  "theme": "auto",
-  "model": "opus",
-  "statusLine": {
-    "type": "command",
-    "command": "bunx -y ccstatusline@latest",
-    "padding": 0,
-    "refreshInterval": 10
   },
   "sandbox": {
     "enabled": true,
     "autoAllowBashIfSandboxed": true,
-    "filesystem": {
-      "allowWrite": [
-        "{{ .chezmoi.homeDir }}/.cache/prek"
-      ],
-      "denyRead": [
-        "~/.ssh",
-        "~/.aws",
-        "~/.gnupg"
-      ],
-      "allowRead": [
-        "~/.ssh/claude_signing",
-        "~/.ssh/claude_signing.pub"
-      ]
-    },
     "network": {
-      "allowLocalBinding": true,
       "allowedDomains": [
         "github.com",
         "*.github.com",
@@ -73,10 +80,23 @@
         "*.airtable.com",
         "api.airtable.com",
         "content.airtable.com"
+      ],
+      "allowLocalBinding": true
+    },
+    "filesystem": {
+      "allowWrite": [
+        "{{ .chezmoi.homeDir }}/.cache/prek"
+      ],
+      "denyRead": [
+        "~/.ssh",
+        "~/.aws",
+        "~/.gnupg"
+      ],
+      "allowRead": [
+        "~/.ssh/claude_signing",
+        "~/.ssh/claude_signing.pub"
       ]
     }
   },
-  "permissions": {
-    "defaultMode": "acceptEdits"
-  }
+  "theme": "auto"
 }

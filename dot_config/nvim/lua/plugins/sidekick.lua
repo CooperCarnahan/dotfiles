@@ -6,6 +6,9 @@ return {
         float = {
           title = "",
         },
+        split = {
+          width = 100,
+        },
       },
       mux = {
         backend = "zellij",

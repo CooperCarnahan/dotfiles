@@ -40,7 +40,10 @@ AppData/
 .claude/session-env
 .claude/tasks
 .claude/plans
-.claude/plugins
+.claude/plugins/*
+!.claude/plugins/claude-hud
+.claude/plugins/claude-hud/*
+!.claude/plugins/claude-hud/config.json
 .claude/context-mode
 .claude/history.jsonl
 .claude/*.bak
