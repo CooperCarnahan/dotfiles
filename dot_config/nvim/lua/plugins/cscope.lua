@@ -3,7 +3,6 @@ return {
   commit = "a4e8cf0a48b14696c32ea99edb1bf5d28e2b8384",
   event = "VeryLazy",
   dependencies = {
-    "nvim-telescope/telescope.nvim", -- optional [for picker="telescope"]
     "nvim-tree/nvim-web-devicons", -- optional [for devicons in telescope or fzf]
   },
   opts = {
@@ -18,7 +17,7 @@ return {
       -- cscope executable
       exec = "cscope", -- "cscope" or "gtags-cscope"
       -- choose your fav picker
-      picker = "telescope", -- "telescope", "fzf-lua" or "quickfix"
+      picker = "quickfix", -- "telescope", "fzf-lua" or "quickfix"
       -- "true" does not open picker for single result, just JUMP
       skip_picker_for_single_result = true, -- "false" or "true"
       -- these args are directly passed to "cscope -f <db_file> <args>"

@@ -1,7 +1,20 @@
 # config.nu
 #
 # Installed by:
-# version = "0.109.1"
+# version = "0.112.2"
+
+# fzf launchers. Start permissive (hidden + gitignored shown); ctrl-h toggles
+# to a clean view and back. State is encoded in the prompt: "all> " vs "> ".
+# POSIX `[ ]` used in the bind so it works regardless of $SHELL.
+def fzf-pick-file [] {
+  fd --hidden --no-ignore
+    | fzf --height=40% --prompt 'all> ' --preview 'bat -n --color=always {}' --header 'ctrl-h: toggle hidden/ignored' --bind 'ctrl-h:transform:[ "$FZF_PROMPT" = "all> " ] && echo "reload(fd)+change-prompt(> )" || echo "reload(fd --hidden --no-ignore)+change-prompt(all> )"'
+}
+
+def fzf-pick-dir [] {
+  fd --type dir --hidden --no-ignore
+    | fzf --height=40% --prompt 'all> ' --header 'ctrl-h: toggle hidden/ignored' --bind 'ctrl-h:transform:[ "$FZF_PROMPT" = "all> " ] && echo "reload(fd --type dir)+change-prompt(> )" || echo "reload(fd --type dir --hidden --no-ignore)+change-prompt(all> )"'
+}
 
 $env.config.keybindings ++= [
   {
@@ -11,7 +24,7 @@ $env.config.keybindings ++= [
     mode: vi_normal
     event: {
         send: executehostcommand,
-        cmd: "commandline edit --insert (fd | fzf --height=40% --preview 'bat -n --color=always {}' | str trim)"
+        cmd: "commandline edit --insert (fzf-pick-file | str trim)"
       }
   },
   {
@@ -21,7 +34,7 @@ $env.config.keybindings ++= [
     mode: [vi_normal, vi_insert]
     event: {
         send: executehostcommand,
-        cmd: "nvim (fzf --type file --height=40%)"
+        cmd: "nvim (fzf-pick-file)"
       }
   }
   {
@@ -31,7 +44,7 @@ $env.config.keybindings ++= [
     mode: [vi_normal, vi_insert]
     event: {
         send: executehostcommand,
-        cmd: "cd (fd --type dir | fzf --height=40%)"
+        cmd: "cd (fzf-pick-dir)"
       }
   }
 ]
@@ -46,44 +59,12 @@ def --env yz [...args] {
 	rm -fp $tmp
 }
 
-def push [
-    message: string
-] {
-    let app_token = $env.PUSHOVER_APP_TOKEN?
-    let user_key = $env.PUSHOVER_USER_KEY?
-
-    if ($app_token == null) {
-        print "Error: PUSHOVER_APP_TOKEN missing"
-        return {status: "failed", error: "missing_app_token"}
-    }
-
-    if ($user_key == null) {
-        print "Error: PUSHOVER_USER_KEY missing"
-        return {status: "failed", error: "missing_user_key"}
-    }
-
-    try {
-        let response = (http post https://api.pushover.net/1/messages.json --content-type multipart/form-data {
-            token: $app_token
-            user: $user_key
-            message: $message
-        })
-
-        if $response.status == "failed" {
-            print $"API Error: ($response.errors.0)"
-            return $response
-        }
-
-    } catch {|e|
-        return $"HTTP Error: ($e.debug)"
-    }
-}
-
 {{- if not (eq .chezmoi.os "windows") }}
 alias fg = job unfreeze
 {{- end }}
 alias v = nvim
 alias cat = bat
+alias mr = mise run
 alias nv = neovide
 alias cha = chezmoi add
 alias chd = chezmoi diff
@@ -93,6 +74,8 @@ alias zj = zellij
 alias rgi = rg -uu
 alias fdi = fd -IH
 alias cc = cd -
+alias zz = cd -
+alias zp = cd -
 
 def zja [] {
     zellij attach (zellij list-sessions | ansi strip | fzf)
@@ -116,5 +99,6 @@ alias gp = git push
 alias gco = git checkout
 alias gst = git status
 
-# mise
+# mise (activation must run after env.nu so the pre_prompt hook is set up
+# in the same scope as the prompt)
 use ($nu.default-config-dir | path join mise.nu)

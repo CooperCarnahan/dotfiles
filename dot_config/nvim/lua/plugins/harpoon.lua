@@ -1,10 +1,9 @@
--- basic telescope configuration
-local function toggle_telescope(harpoon_files)
+local function toggle_picker(harpoon_files)
   local file_paths = {}
   for idx, item in ipairs(harpoon_files.items) do
-    table.insert(file_paths, {file = item.value, text = item.value, idx = idx})
+    table.insert(file_paths, { file = item.value, text = item.value, idx = idx })
   end
-  require("snacks.picker").pick({title = "Harpoon", items = file_paths})
+  require("snacks.picker").pick({ title = "Harpoon", items = file_paths })
 end
 
 return {
@@ -19,7 +18,7 @@ return {
     {
       "<leader>ho",
       function()
-        toggle_telescope(require("harpoon"):list())
+        toggle_picker(require("harpoon"):list())
       end,
       desc = "Open harpoon window",
     },
