@@ -6,6 +6,9 @@ return {
       options = {
         section_separators = { left = "", right = "" },
         component_separators = { left = "", right = "" },
+        disabled_filetypes = {
+          winbar = { "sidekick_terminal" },
+        },
       },
       winbar = {
         lualine_a = {
@@ -27,8 +30,7 @@ return {
             },
           },
         },
-        lualine_c = {
-        },
+        lualine_c = {},
         lualine_x = {},
         lualine_y = {},
         lualine_z = {},
