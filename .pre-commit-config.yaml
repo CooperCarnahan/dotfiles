@@ -1,0 +1,44 @@
+# Pre-commit hooks for the chezmoi dotfiles repo.
+# Compatible with `prek` (drop-in replacement: https://github.com/j178/prek).
+#
+# Install once per clone:
+#     prek install     # or: pre-commit install
+#
+# Manually run on the whole repo:
+#     prek run --all-files
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+        exclude: '\.patch$'
+      - id: end-of-file-fixer
+      - id: check-yaml
+        # Skip files chezmoi will template — they contain non-YAML {{ }} blocks
+        # that some parsers can't handle.
+        exclude: '\.tmpl$'
+      - id: check-json
+        # GLZR's executable_*.vbs.tmpl files contain JSON-like blocks but are
+        # full templates; exclude.
+        exclude: '\.tmpl$'
+      - id: check-toml
+        exclude: '\.tmpl$'
+      - id: check-merge-conflict
+      - id: check-added-large-files
+        args: [--maxkb=512]
+
+  - repo: https://github.com/JohnnyMorganz/StyLua
+    rev: v2.4.1
+    hooks:
+      - id: stylua-system
+        # Use system stylua so we share the user's exact installed version
+        # (mason-managed at /home/cooper/.local/share/nvim/mason/bin/stylua).
+
+  - repo: https://github.com/shellcheck-py/shellcheck-py
+    rev: v0.10.0.1
+    hooks:
+      - id: shellcheck
+        # Templated shell scripts have chezmoi template directives that
+        # shellcheck can't parse; skip them.
+        exclude: '\.tmpl$'
