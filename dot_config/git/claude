@@ -1,0 +1,18 @@
+# Git identity used by Claude (Anthropic's CLI agent) when committing
+# in any of Cooper's repos. Pulled in explicitly via:
+#
+#   git -c "include.path=~/.config/git/claude" commit ...
+#
+# Purpose: differentiate AI-authored commits from human-authored ones in
+# the log, and avoid invoking Cooper's 1Password-stored SSH signing key
+# (which would prompt for the 1P login on every commit).
+
+[user]
+    name = Claude
+    email = noreply@anthropic.com
+
+[commit]
+    gpgsign = false
+
+[tag]
+    gpgsign = false
