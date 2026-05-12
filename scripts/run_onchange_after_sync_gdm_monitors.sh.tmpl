@@ -1,0 +1,38 @@
+{{- if eq .chezmoi.os "linux" -}}
+{{- if or (eq .osid "linux-arch") (eq .osid "linux-cachyos") -}}
+#!/usr/bin/env bash
+# Sync the user's GNOME monitor layout (~/.config/monitors.xml) to GDM's
+# greeter user, so the login screen uses the same monitor positions /
+# rotations / primary as the user session.
+#
+# Without this, GDM's greeter falls back to a default layout — typically
+# side-by-side everything-horizontal with no rotation — which is wrong
+# for any docked setup that has a portrait monitor.
+#
+# Hash of the source file is embedded so chezmoi re-runs this script
+# whenever monitors.xml changes:
+#   monitors.xml sha256: {{ include "dot_config/monitors.xml" | sha256sum }}
+
+set -euo pipefail
+
+USER_FILE="${HOME}/.config/monitors.xml"
+GDM_DIR="/var/lib/gdm/.config"
+GDM_FILE="${GDM_DIR}/monitors.xml"
+
+if [ ! -f "${USER_FILE}" ]; then
+    echo "skipping GDM monitor sync: ${USER_FILE} not present"
+    exit 0
+fi
+
+# GDM is on Arch under the gdm user; bail gracefully on systems without it.
+if ! id -u gdm >/dev/null 2>&1; then
+    echo "skipping GDM monitor sync: no gdm user on this system"
+    exit 0
+fi
+
+echo "--- Syncing GNOME monitor layout to GDM greeter ---"
+sudo install -d -o gdm -g gdm -m 755 "${GDM_DIR}"
+sudo install -o gdm -g gdm -m 644 "${USER_FILE}" "${GDM_FILE}"
+echo "wrote ${GDM_FILE}"
+{{- end -}}
+{{- end -}}
