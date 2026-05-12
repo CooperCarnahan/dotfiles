@@ -1,54 +1,54 @@
 local seen = {} -- used to skip duplicate entries in lsp_definitions
 
 return {
-  "folke/snacks.nvim",
-  keys = {
-    { "<C-t>", "<cmd>lua require('snacks').picker('treesitter')<cr>", desc = "Find treesitter symbols" },
-    { "<leader>sz", "<cmd>lua require('snacks').picker('zoxide')<cr>", desc = "Find Zoxide" },
-  },
-  opts = {
-    scroll = { enabled = false },
-    picker = {
-      win = {
-        -- input window
-        input = {
-          keys = {
-            ["<a-i>"] = { { "toggle_ignored", "toggle_hidden" }, mode = { "i", "n" } },
-          },
-        },
-      },
-      sources = {
-        smart = {
-          multi = { "buffers", "files" },
-        },
-        lsp_definitions = {
-          layout = { preset = "ivy" },
-          matcher = { frecency = true, history_bonus = true },
-          unique_lines = true,
-          filter = {
-            filter = function(item, _)
-              if not item.file or not item.line then
-                return false -- Return false for invalid items
-              end
+	"folke/snacks.nvim",
+	keys = {
+		{ "<C-t>", "<cmd>lua require('snacks').picker('treesitter')<cr>", desc = "Find treesitter symbols" },
+		{ "<leader>sz", "<cmd>lua require('snacks').picker('zoxide')<cr>", desc = "Find Zoxide" },
+	},
+	opts = {
+		scroll = { enabled = false },
+		picker = {
+			win = {
+				-- input window
+				input = {
+					keys = {
+						["<a-i>"] = { { "toggle_ignored", "toggle_hidden" }, mode = { "i", "n" } },
+					},
+				},
+			},
+			sources = {
+				smart = {
+					multi = { "buffers", "files" },
+				},
+				lsp_definitions = {
+					layout = { preset = "ivy" },
+					matcher = { frecency = true, history_bonus = true },
+					unique_lines = true,
+					filter = {
+						filter = function(item, _)
+							if not item.file or not item.line then
+								return false -- Return false for invalid items
+							end
 
-              -- skip stuff we've already seen
-              local key = item.file .. ":" .. item.line
-              if not seen[key] then
-                seen[key] = true
-                return true
-              end
-              return false
-            end,
-          },
-          on_close = function()
-            -- Clear the `seen` table efficiently when the picker is closed
-            seen = {}
-          end,
-        },
-      },
-    },
-    terminal = {
-      shell = "nu",
-    },
-  },
+							-- skip stuff we've already seen
+							local key = item.file .. ":" .. item.line
+							if not seen[key] then
+								seen[key] = true
+								return true
+							end
+							return false
+						end,
+					},
+					on_close = function()
+						-- Clear the `seen` table efficiently when the picker is closed
+						seen = {}
+					end,
+				},
+			},
+		},
+		terminal = {
+			shell = "nu",
+		},
+	},
 }

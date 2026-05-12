@@ -21,7 +21,7 @@ vim.keymap.set("c", "<c-e>", "<End>")
 
 vim.keymap.set("n", "<leader>ghq", "<cmd>Gitsigns setqflist<cr>")
 vim.keymap.set("n", "<leader>ghQ", function()
-  require("gitsigns").setqflist("all")
+	require("gitsigns").setqflist("all")
 end)
 
 -- moving between splits

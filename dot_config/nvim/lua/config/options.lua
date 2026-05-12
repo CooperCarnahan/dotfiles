@@ -3,16 +3,16 @@
 -- Add any additional options here
 
 if vim.fn.has("win32") == 1 then
-  vim.opt.shell = "cmd"
+	vim.opt.shell = "cmd"
 else
-  vim.opt.shell = "bash"
+	vim.opt.shell = "bash"
 end
 
 vim.cmd("abb u8 UINT8")
 vim.cmd("abb u64 UINT64")
 vim.cmd("abb u32 UINT32")
 if vim.g.neovide then
-  vim.o.guifont = "CaskaydiaCove Nerd Font:h14"
+	vim.o.guifont = "CaskaydiaCove Nerd Font:h14"
 end
 
 vim.g.zig_fmt_autosave = 0

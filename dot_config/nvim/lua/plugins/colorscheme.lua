@@ -1,12 +1,12 @@
 return {
-  {
-    { "sainnhe/gruvbox-material" },
-  },
-  -- Configure LazyVim to load gruvbox
-  {
-    "LazyVim/LazyVim",
-    opts = {
-      colorscheme = "tokyonight-night",
-    },
-  },
+	{
+		{ "sainnhe/gruvbox-material" },
+	},
+	-- Configure LazyVim to load gruvbox
+	{
+		"LazyVim/LazyVim",
+		opts = {
+			colorscheme = "tokyonight-night",
+		},
+	},
 }

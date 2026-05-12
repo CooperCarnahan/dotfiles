@@ -12,6 +12,11 @@ README.md
 
 .config/nvim/lazy-lock.json
 
+# hyprdynamicmonitors writes this at runtime based on the matched profile.
+# Templates live under .config/hyprdynamicmonitors/hyprconfigs/; the rendered
+# output is machine state, not dotfile content.
+.config/hypr/config/monitors.lua
+
 {{- if eq .chezmoi.os "windows" -}}
 .config/helix
 .config/kitty
