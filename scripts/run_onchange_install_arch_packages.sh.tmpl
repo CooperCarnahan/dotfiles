@@ -17,17 +17,19 @@ pacman_packages=(
     "docker"
     "docker-compose"
     "dtc"
-    "dunst"
     "ghostty"
     "git"
     "gperf"
     "hyprlock"
+    "hyprshot"
+    "jq"
     "make"
     "nushell"
     "openssh"
     "ouch"
     "socat"
     "sudo"
+    "swaync"
     "tk"
     "tree"
     "unzip"
@@ -105,6 +107,13 @@ echo "--- Installing/updating AUR packages via paru ---"
 # Install AUR packages.
 paru -S --noconfirm --needed "${aur_packages[@]}"
 
+echo "--- Disabling services for replaced daemons ---"
+# CachyOS's cachyos-hyprland-settings pulls in mako, whose user .service unit
+# is DBus-activated. Without disabling, mako would silently acquire the
+# org.freedesktop.Notifications name on first toast and prevent swaync from
+# binding. Safe to run repeatedly (idempotent).
+systemctl --user disable --now mako.service 2>/dev/null || true
+
 echo "--- Checking for mise installation ---"
 if ! command_exists "mise"; then
     echo "mise not found. Installing mise..."
@@ -129,6 +138,7 @@ else
     mise upgrade --bump
 fi
 mise install
+mise self-update
 
 echo "--- Installing Apprise via uv ---"
 if ! command_exists "apprise"; then
