@@ -107,7 +107,8 @@ window#waybar.hidden {
     padding: 6px;  /* Adjusted padding */
 }
 
-#custom-screenshot_t {
+#custom-screenshot_t,
+#custom-notification {
     background-color: #111827;
     border-radius: 14px;
     padding: 6px;

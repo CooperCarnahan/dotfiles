@@ -33,6 +33,7 @@
     "backlight",
     "wireplumber",
     "custom/screenshot_t",
+    "custom/notification",
     "tray",
     "custom/power"
   ],
@@ -55,9 +56,9 @@
     "on-click-middle": "pkill -9 wofi"
   },
   "custom/screenshot_t": {
-    "format": " ",
-    "on-click": "~/.config/hypr/scripts/screenshot_full",
-    "on-click-right": "~/.config/hypr/scripts/screenshot_area"
+    "format": "  ",
+    "on-click": "hyprshot -m output --clipboard-only",
+    "on-click-right": "hyprshot -m region --clipboard-only"
   },
   "clock#1": {
     "format": " {:%a}",
@@ -348,5 +349,25 @@
   "tray": {
     "icon-size": 15,
     "spacing": 5
+  },
+  "custom/notification": {
+    "tooltip": false,
+    "format": " {icon} ",
+    "format-icons": {
+      "notification":               "<span foreground='#e06c75'>󰵙</span>",
+      "none":                       "󰂚",
+      "dnd-notification":           "<span foreground='#e06c75'>󰂛</span>",
+      "dnd-none":                   "󰂛",
+      "inhibited-notification":     "<span foreground='#e06c75'>󰵙</span>",
+      "inhibited-none":             "󰂚",
+      "dnd-inhibited-notification": "<span foreground='#e06c75'>󰂛</span>",
+      "dnd-inhibited-none":         "󰂛"
+    },
+    "return-type": "json",
+    "exec-if": "which swaync-client",
+    "exec": "swaync-client -swb",
+    "on-click": "swaync-client -t -sw",
+    "on-click-right": "swaync-client -d -sw",
+    "escape": true
   }
 }
