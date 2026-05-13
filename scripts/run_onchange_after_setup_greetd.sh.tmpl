@@ -33,12 +33,9 @@ if ! sudo test -f "$CONFIG" || ! sudo cmp -s "$NEW" "$CONFIG"; then
     sudo install -m 644 "$NEW" "$CONFIG"
 fi
 
-# Enable greetd at boot. Idempotent.
-sudo systemctl enable greetd.service >/dev/null
-
-# Disable any competing display managers, but only if they're installed and
-# currently enabled. Leaves the unit alone otherwise so this stays safe to
-# run on minimal systems.
+# Disable any competing display managers FIRST so the display-manager.service
+# symlink they own is freed before we enable greetd. Only act on units that
+# are installed and currently enabled — leaves minimal systems alone.
 for dm in gdm sddm lightdm lxdm; do
     if systemctl list-unit-files "${dm}.service" >/dev/null 2>&1 \
         && systemctl is-enabled "${dm}.service" >/dev/null 2>&1; then
@@ -46,5 +43,8 @@ for dm in gdm sddm lightdm lxdm; do
         sudo systemctl disable "${dm}.service" >/dev/null
     fi
 done
+
+# Enable greetd at boot. Idempotent.
+sudo systemctl enable greetd.service >/dev/null
 {{- end -}}
 {{- end -}}
