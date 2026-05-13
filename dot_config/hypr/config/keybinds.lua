@@ -176,8 +176,6 @@ local quickResizes = {
 	{ key = "left", x = -15, y = 0, desc = "Resize to the left" },
 	{ key = "up", x = 0, y = -15, desc = "Resize upwards" },
 	{ key = "down", x = 0, y = 15, desc = "Resize downwards" },
-	{ key = "l", x = 15, y = 0, desc = "Resize to the right" },
-	{ key = "h", x = -15, y = 0, desc = "Resize to the left" },
 	{ key = "k", x = 0, y = -15, desc = "Resize upwards" },
 	{ key = "j", x = 0, y = 15, desc = "Resize downwards" },
 }
@@ -190,6 +188,20 @@ for _, r in ipairs(quickResizes) do
 end
 
 -- ──────────────────────────────────────────────────────────────────────────
+-- Move window in tiling direction (vim-style; arrows kept for resize)
+-- ──────────────────────────────────────────────────────────────────────────
+hl.bind(
+	mod .. " + CTRL + SHIFT + H",
+	hl.dsp.window.move({ direction = "l" }),
+	{ description = "Move window leftwards" }
+)
+hl.bind(
+	mod .. " + CTRL + SHIFT + L",
+	hl.dsp.window.move({ direction = "r" }),
+	{ description = "Move window rightwards" }
+)
+
+-- ──────────────────────────────────────────────────────────────────────────
 -- Workspace 1..10: switch, move active, move silent
 -- ──────────────────────────────────────────────────────────────────────────
 for i = 1, 10 do
@@ -200,12 +212,9 @@ for i = 1, 10 do
 		hl.dsp.window.move({ workspace = i }),
 		{ description = "Move window and switch to workspace " .. i }
 	)
-	-- "Silent" move: window goes to the workspace without changing focus.
-	-- Use hyprctl dispatch directly because hl.dsp.window.move doesn't have a
-	-- documented "silent" option in the Lua API.
 	hl.bind(
 		mod .. " + CTRL + " .. key,
-		hl.dsp.exec_cmd("hyprctl dispatch movetoworkspacesilent " .. i),
+		hl.dsp.window.move({ workspace = i, silent = true }),
 		{ description = "Move window silently to workspace " .. i }
 	)
 end
@@ -213,10 +222,34 @@ end
 -- ──────────────────────────────────────────────────────────────────────────
 -- Move current workspace to neighbouring monitor
 -- ──────────────────────────────────────────────────────────────────────────
-hl.bind(mod .. " + SHIFT + Left", hl.dsp.exec_cmd("hyprctl dispatch movecurrentworkspacetomonitor l"))
-hl.bind(mod .. " + SHIFT + h", hl.dsp.exec_cmd("hyprctl dispatch movecurrentworkspacetomonitor l"))
-hl.bind(mod .. " + SHIFT + Right", hl.dsp.exec_cmd("hyprctl dispatch movecurrentworkspacetomonitor r"))
-hl.bind(mod .. " + SHIFT + l", hl.dsp.exec_cmd("hyprctl dispatch movecurrentworkspacetomonitor r"))
+local function move_workspace_to_neighbor(dir)
+	return function()
+		local cur = hl.get_active_monitor()
+		if not cur then
+			return
+		end
+		local mons = hl.get_monitors() or {}
+		table.sort(mons, function(a, b)
+			return (a.x or 0) < (b.x or 0)
+		end)
+		local idx
+		for i, m in ipairs(mons) do
+			if m.id == cur.id then
+				idx = i
+				break
+			end
+		end
+		if not idx then
+			return
+		end
+		local target = mons[dir == "l" and idx - 1 or idx + 1]
+		if target then
+			hl.dispatch(hl.dsp.workspace.move({ monitor = target.name }))
+		end
+	end
+end
+hl.bind(mod .. " + SHIFT + Left", move_workspace_to_neighbor("l"))
+hl.bind(mod .. " + SHIFT + Right", move_workspace_to_neighbor("r"))
 
 -- ──────────────────────────────────────────────────────────────────────────
 -- Workspace scrolling
@@ -273,19 +306,28 @@ hl.bind(
 )
 hl.bind(
 	mod .. " + ALT + SHIFT + F1",
-	hl.dsp.exec_cmd("hyprctl dispatch movetoworkspacesilent special:scratchpad"),
+	hl.dsp.window.move({ workspace = "special:scratchpad", silent = true }),
 	{ description = "Move active window to special workspace scratchpad" }
 )
 hl.bind(mod .. " + SLASH", hl.dsp.workspace.toggle_special("quake"), { description = "Toggle Quake Terminal" })
 
 -- 1Password: toggle the special workspace if 1Password is already running,
--- otherwise launch + move it there + toggle.
-hl.bind(
-	mod .. " + P",
-	hl.dsp.exec_cmd(
-		[[hyprctl clients | grep -q "class: 1password" && hyprctl dispatch togglespecialworkspace 1password || (1password hyprctl dispatch movetoworkspacesilent special:1password,class:^1password$ && hyprctl dispatch togglespecialworkspace 1password)]]
-	)
-)
+-- otherwise launch it onto the special workspace and toggle.
+hl.bind(mod .. " + P", function()
+	local running = false
+	for _, w in ipairs(hl.get_windows({ class = "1password" }) or {}) do
+		if w then
+			running = true
+			break
+		end
+	end
+	if running then
+		hl.dispatch(hl.dsp.workspace.toggle_special("1password"))
+	else
+		hl.exec_cmd("1password", { workspace = "special:1password silent" })
+		hl.dispatch(hl.dsp.workspace.toggle_special("1password"))
+	end
+end)
 hl.bind(mod .. " + SPACE", hl.dsp.exec_cmd("1password --quick-access --toggle"))
 
 -- ──────────────────────────────────────────────────────────────────────────

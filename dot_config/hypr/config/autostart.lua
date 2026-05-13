@@ -8,6 +8,26 @@ hl.env("XCURSOR_SIZE", "24")
 hl.env("QT_CURSOR_SIZE", "24")
 
 -- ──────────────────────────────────────────────────────────────────────────
+-- Pin workspace 1 (terminal) to the rightmost active monitor. Re-evaluates
+-- on monitor changes so dock/undock and hyprdynamicmonitors swaps Just Work.
+-- ──────────────────────────────────────────────────────────────────────────
+local function pin_ws1_to_rightmost()
+	local rightmost
+	for _, m in ipairs(hl.get_monitors() or {}) do
+		if not rightmost or (m.x or 0) > (rightmost.x or 0) then
+			rightmost = m
+		end
+	end
+	if rightmost then
+		hl.workspace_rule({ workspace = "1", monitor = rightmost.name, persistent = true })
+		hl.dispatch(hl.dsp.workspace.move({ workspace = 1, monitor = rightmost.name }))
+	end
+end
+hl.on("monitor.added", pin_ws1_to_rightmost)
+hl.on("monitor.removed", pin_ws1_to_rightmost)
+hl.on("monitor.layout_changed", pin_ws1_to_rightmost)
+
+-- ──────────────────────────────────────────────────────────────────────────
 -- Startup commands
 -- ──────────────────────────────────────────────────────────────────────────
 hl.on("hyprland.start", function()
@@ -29,11 +49,13 @@ hl.on("hyprland.start", function()
 		[[bash -c "mkfifo /tmp/$HYPRLAND_INSTANCE_SIGNATURE.wob && tail -f /tmp/$HYPRLAND_INSTANCE_SIGNATURE.wob | wob & disown" &]]
 	)
 
-	-- workspace-pinned launches
-	hl.exec_cmd("[workspace 1] " .. programs.terminal)
-	hl.exec_cmd("[workspace 2 silent] " .. programs.browser)
-	hl.exec_cmd("[workspace special:quake silent] ghostty --title=quake-terminal")
-	hl.exec_cmd("[workspace special:1password silent; no_initial_focus] 1password --silent")
+	pin_ws1_to_rightmost()
+
+	-- workspace-pinned launches (new Lua API: rules table instead of [..] prefix)
+	hl.exec_cmd(programs.terminal, { workspace = "1" })
+	hl.exec_cmd(programs.browser, { workspace = "2 silent" })
+	hl.exec_cmd("ghostty --title=quake-terminal", { workspace = "special:quake silent" })
+	hl.exec_cmd("1password --silent", { workspace = "special:1password silent", no_initial_focus = true })
 
 	-- dynamic monitor configuration daemon
 	hl.exec_cmd("hyprdynamicmonitors run")
