@@ -59,16 +59,23 @@ hl.bind(mod .. " + Tab", hl.dsp.group.next(), { description = "Switches to the n
 -- ──────────────────────────────────────────────────────────────────────────
 -- Gaps toggle
 -- ──────────────────────────────────────────────────────────────────────────
-hl.bind(
-	mod .. " + SHIFT + G",
-	hl.dsp.exec_cmd([[hyprctl --batch "keyword general:gaps_out 5;keyword general:gaps_in 3"]]),
-	{ description = "Set CachyOS default gaps" }
-)
-hl.bind(
-	mod .. " + G",
-	hl.dsp.exec_cmd([[hyprctl --batch "keyword general:gaps_out 0;keyword general:gaps_in 0"]]),
-	{ description = "Remove gaps between windows" }
-)
+hl.bind(mod .. " + SHIFT + G", function()
+	hl.config({ general = { gaps_out = 5, gaps_in = 3 } })
+end, { description = "Set CachyOS default gaps" })
+hl.bind(mod .. " + G", function()
+	hl.config({ general = { gaps_out = 0, gaps_in = 0 } })
+end, { description = "Remove gaps between windows" })
+
+-- ──────────────────────────────────────────────────────────────────────────
+-- Layout toggle (dwindle ↔ scrolling)
+-- The non-legacy (Lua) config parser rejects `hyprctl keyword`, so set the
+-- value through hl.config from inside the bind callback instead.
+-- ──────────────────────────────────────────────────────────────────────────
+hl.bind(mod .. " + S", function()
+	local current = hl.get_config("general:layout")
+	local target = current == "scrolling" and "dwindle" or "scrolling"
+	hl.config({ general = { layout = target } })
+end, { description = "Toggle layout between dwindle and scrolling" })
 
 -- ──────────────────────────────────────────────────────────────────────────
 -- Volume (locked + repeating; routes to the wob FIFO for the OSD)
