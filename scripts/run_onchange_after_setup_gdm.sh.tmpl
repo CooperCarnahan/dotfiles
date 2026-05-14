@@ -1,0 +1,40 @@
+{{- if eq .chezmoi.os "linux" -}}
+{{- if or (eq .osid "linux-arch") (eq .osid "linux-cachyos") -}}
+#!/usr/bin/env bash
+# Configure GDM as the active display manager and install a systemd drop-in
+# that syncs the user's ~/.config/monitors.xml to /etc/xdg/monitors.xml on
+# each GDM start (per https://wiki.archlinux.org/title/GDM). This is what
+# lets the greeter honor your current monitor layout after dock/undock
+# without manually re-copying anything.
+#
+# config-version: 1
+
+set -euo pipefail
+
+# Bail until the package installer has put gdm in place.
+if ! command -v gdm >/dev/null 2>&1; then
+    echo "skipping gdm setup: gdm not installed yet (rerun chezmoi apply after install_arch_packages)"
+    exit 0
+fi
+
+DROPIN_DIR=/etc/systemd/system/gdm.service.d
+DROPIN=${DROPIN_DIR}/override.conf
+NEW=$(mktemp)
+trap 'rm -f "$NEW"' EXIT
+
+cat > "$NEW" <<TOML
+[Service]
+ExecStartPre=/bin/cp {{ .chezmoi.homeDir }}/.config/monitors.xml /etc/xdg/monitors.xml
+TOML
+
+if ! sudo test -f "$DROPIN" || ! sudo cmp -s "$NEW" "$DROPIN"; then
+    echo "writing $DROPIN"
+    sudo install -d -m 755 "$DROPIN_DIR"
+    sudo install -m 644 "$NEW" "$DROPIN"
+    sudo systemctl daemon-reload
+fi
+
+# Enable gdm at boot. Idempotent.
+sudo systemctl enable gdm.service >/dev/null
+{{- end -}}
+{{- end -}}
