@@ -37,7 +37,8 @@ hl.config({
 	misc = {
 		font_family = "Fira Sans",
 		splash_font_family = "Fira Sans",
-		disable_hyprland_logo = true,
+		disable_hyprland_logo = false,
+		disable_splash_rendering = true,
 		col = { splash = colors.cachylgreen },
 		background_color = colors.cachydblue,
 		enable_swallow = true,
@@ -73,7 +74,7 @@ hl.config({
 	},
 
 	animations = {
-		enabled = false,
+		enabled = true,
 	},
 })
 
@@ -82,8 +83,8 @@ hl.config({
 -- switch on later "just works".
 hl.curve("overshot", { type = "bezier", points = { { 0.13, 0.99 }, { 0.29, 1.1 } } })
 
-hl.animation({ leaf = "windowsIn", enabled = true, speed = 4, bezier = "overshot", style = "slide" })
-hl.animation({ leaf = "windowsOut", enabled = true, speed = 5, bezier = "default", style = "popin 80%" })
+hl.animation({ leaf = "windowsIn", enabled = true, speed = 3, bezier = "overshot", style = "slide" })
+hl.animation({ leaf = "windowsOut", enabled = true, speed = 3, bezier = "default", style = "popin 80%" })
 hl.animation({ leaf = "border", enabled = true, speed = 5, bezier = "default" })
-hl.animation({ leaf = "workspacesIn", enabled = true, speed = 6, bezier = "overshot", style = "slide" })
-hl.animation({ leaf = "workspacesOut", enabled = true, speed = 6, bezier = "overshot", style = "slidefade 80%" })
+hl.animation({ leaf = "workspacesIn", enabled = false, speed = 6, bezier = "default", style = "slide" })
+hl.animation({ leaf = "workspacesOut", enabled = false, speed = 6, bezier = "default", style = "slidefade 80%" })
