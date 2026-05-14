@@ -9,8 +9,14 @@ hl.env("QT_CURSOR_SIZE", "24")
 
 -- ──────────────────────────────────────────────────────────────────────────
 -- Pin workspace 1 (terminal) to the rightmost active monitor. Re-evaluates
--- on monitor changes so dock/undock and hyprdynamicmonitors swaps Just Work.
+-- on monitor add/remove so dock/undock swaps Just Work.
+--
+-- Why no monitor.layout_changed subscription: hl.workspace_rule() with
+-- persistent=true mutates config, which triggers a reapply, which fires
+-- monitor.layout_changed — feedback loop that re-modesets DP-10 dozens of
+-- times in a row, spamming hyprdynamicmonitors notifications.
 -- ──────────────────────────────────────────────────────────────────────────
+local last_pinned_monitor
 local function pin_ws1_to_rightmost()
 	local rightmost
 	for _, m in ipairs(hl.get_monitors() or {}) do
@@ -18,14 +24,15 @@ local function pin_ws1_to_rightmost()
 			rightmost = m
 		end
 	end
-	if rightmost then
-		hl.workspace_rule({ workspace = "1", monitor = rightmost.name, persistent = true })
-		hl.dispatch(hl.dsp.workspace.move({ workspace = 1, monitor = rightmost.name }))
+	if not rightmost or rightmost.name == last_pinned_monitor then
+		return
 	end
+	last_pinned_monitor = rightmost.name
+	hl.workspace_rule({ workspace = "1", monitor = rightmost.name, persistent = true })
+	hl.dispatch(hl.dsp.workspace.move({ workspace = 1, monitor = rightmost.name }))
 end
 hl.on("monitor.added", pin_ws1_to_rightmost)
 hl.on("monitor.removed", pin_ws1_to_rightmost)
-hl.on("monitor.layout_changed", pin_ws1_to_rightmost)
 
 -- ──────────────────────────────────────────────────────────────────────────
 -- Startup commands
@@ -37,8 +44,8 @@ hl.on("hyprland.start", function()
 	-- wallpaper
 	hl.exec_cmd([[swaybg -o '*' -i /usr/share/wallpapers/cachyos-wallpapers/Skyscraper.png -m fill]])
 
-	-- bar, input method, notifications, network, polkit
-	hl.exec_cmd("waybar &")
+	-- input method, notifications, network, polkit
+	-- waybar is managed by waybar.service (graphical-session.target)
 	hl.exec_cmd("fcitx5 -d &")
 	hl.exec_cmd("swaync &")
 	hl.exec_cmd("nm-applet --indicator &")
@@ -56,9 +63,6 @@ hl.on("hyprland.start", function()
 	hl.exec_cmd(programs.browser, { workspace = "2 silent" })
 	hl.exec_cmd("ghostty --title=quake-terminal", { workspace = "special:quake silent" })
 	hl.exec_cmd("1password --silent", { workspace = "special:1password silent", no_initial_focus = true })
-
-	-- dynamic monitor configuration daemon
-	hl.exec_cmd("hyprdynamicmonitors run")
 
 	-- environment propagation for dbus / systemd user services
 	hl.exec_cmd("systemctl --user import-environment &")

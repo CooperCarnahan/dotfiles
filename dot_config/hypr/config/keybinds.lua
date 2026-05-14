@@ -119,7 +119,11 @@ hl.bind(
 	hl.dsp.exec_cmd(os.getenv("HOME") .. "/.config/hypr/scripts/lock"),
 	{ description = "Lock the screen" }
 )
-hl.bind(mod .. " + CTRL + R", hl.dsp.exec_cmd("killall -SIGUSR2 waybar"), { description = "Reload/restart Waybar" })
+hl.bind(
+	mod .. " + CTRL + R",
+	hl.dsp.exec_cmd("systemctl --user restart waybar.service"),
+	{ description = "Restart Waybar" }
+)
 hl.bind(mod .. " + N", hl.dsp.exec_cmd("swaync-client -t -sw"), { description = "Toggle notification center" })
 
 -- ──────────────────────────────────────────────────────────────────────────
