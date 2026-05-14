@@ -39,6 +39,7 @@ hl.config({
 		splash_font_family = "Fira Sans",
 		disable_hyprland_logo = false,
 		disable_splash_rendering = true,
+		force_default_wallpaper = 0,
 		col = { splash = colors.cachylgreen },
 		background_color = colors.cachydblue,
 		enable_swallow = true,
