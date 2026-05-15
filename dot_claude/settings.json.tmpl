@@ -1,6 +1,66 @@
 {
+  "editorMode": "vim",
+  "enabledPlugins": {
+    "andrej-karpathy-skills@karpathy-skills": true,
+    "claude-hud@claude-hud": true,
+    "context-mode@context-mode": true,
+    "lua-lsp@claude-plugins-official": true,
+    "superpowers@claude-plugins-official": true
+  },
+  "extraKnownMarketplaces": {
+    "claude-hud": {
+      "source": {
+        "repo": "jarrodwatts/claude-hud",
+        "source": "github"
+      }
+    },
+    "context-mode": {
+      "source": {
+        "repo": "mksglu/context-mode",
+        "source": "github"
+      }
+    },
+    "karpathy-skills": {
+      "source": {
+        "repo": "forrestchang/andrej-karpathy-skills",
+        "source": "github"
+      }
+    }
+  },
+  "hooks": {
+    "PreCompact": [
+      {
+        "hooks": [
+          {
+            "command": "bd prime",
+            "type": "command"
+          }
+        ],
+        "matcher": ""
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "command": "{{ lookPath "node" }} \"{{ .chezmoi.homeDir }}/.claude/hooks/context-mode-cache-heal.mjs\"",
+            "type": "command"
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "command": "bd prime",
+            "type": "command"
+          }
+        ],
+        "matcher": ""
+      }
+    ]
+  },
+  "model": "opus",
   "permissions": {
-    "defaultMode": "acceptEdits",
     "allow": [
       "mcp__plugin_context-mode_context-mode",
       "Bash(git diff:*)",
@@ -10,80 +70,30 @@
       "Bash(git blame:*)",
       "Bash(git branch:*)"
     ],
+    "defaultMode": "acceptEdits",
     "deny": [
       "mcp__plugin_context-mode_context-mode__ctx_purge"
     ]
   },
-  "model": "opus",
-  "hooks": {
-    "PreCompact": [
-      {
-        "matcher": "",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bd prime"
-          }
-        ]
-      }
-    ],
-    "SessionStart": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "{{ lookPath "node" }} \"{{ .chezmoi.homeDir }}/.claude/hooks/context-mode-cache-heal.mjs\""
-          }
-        ]
-      },
-      {
-        "matcher": "",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bd prime"
-          }
-        ]
-      }
-    ]
-  },
-  "statusLine": {
-    "type": "command",
-    "command": "bash -c 'cols=$(stty size </dev/tty 2>/dev/null | awk '\"'\"'{print $2}'\"'\"'); export COLUMNS=$(( ${cols:-120} > 4 ? ${cols:-120} - 4 : 1 )); plugin_dir=$(ls -d \"${CLAUDE_CONFIG_DIR:-$HOME/.claude}\"/plugins/cache/*/claude-hud/*/ 2>/dev/null | awk -F/ '\"'\"'{ print $(NF-1) \"\\t\" $(0) }'\"'\"' | grep -E '\"'\"'^[0-9]+\\.[0-9]+\\.[0-9]+[[:space:]]'\"'\"' | sort -t. -k1,1n -k2,2n -k3,3n -k4,4n | tail -1 | cut -f2-); exec \"{{ lookPath "bun" }}\" --env-file /dev/null \"${plugin_dir}src/index.ts\"'",
-    "padding": 0,
-    "refreshInterval": 10
-  },
-  "enabledPlugins": {
-    "context-mode@context-mode": true,
-    "superpowers@claude-plugins-official": true,
-    "andrej-karpathy-skills@karpathy-skills": true,
-    "lua-lsp@claude-plugins-official": true,
-    "claude-hud@claude-hud": true
-  },
-  "extraKnownMarketplaces": {
-    "context-mode": {
-      "source": {
-        "source": "github",
-        "repo": "mksglu/context-mode"
-      }
-    },
-    "karpathy-skills": {
-      "source": {
-        "source": "github",
-        "repo": "forrestchang/andrej-karpathy-skills"
-      }
-    },
-    "claude-hud": {
-      "source": {
-        "source": "github",
-        "repo": "jarrodwatts/claude-hud"
-      }
-    }
-  },
   "sandbox": {
-    "enabled": true,
     "autoAllowBashIfSandboxed": true,
+    "enabled": true,
+    "filesystem": {
+      "allowRead": [
+        "~/.ssh/claude_signing",
+        "~/.ssh/claude_signing.pub"
+      ],
+      "allowWrite": [
+        "{{ .chezmoi.homeDir }}/.cache/prek"
+      ],
+      "denyRead": [
+        "~/.ssh",
+        "~/.aws",
+        "~/.gnupg"
+      ]
+    },
     "network": {
+      "allowLocalBinding": true,
       "allowedDomains": [
         "github.com",
         "*.github.com",
@@ -100,25 +110,15 @@
         "*.airtable.com",
         "api.airtable.com",
         "content.airtable.com"
-      ],
-      "allowLocalBinding": true
-    },
-    "filesystem": {
-      "allowWrite": [
-        "{{ .chezmoi.homeDir }}/.cache/prek"
-      ],
-      "denyRead": [
-        "~/.ssh",
-        "~/.aws",
-        "~/.gnupg"
-      ],
-      "allowRead": [
-        "~/.ssh/claude_signing",
-        "~/.ssh/claude_signing.pub"
       ]
     }
   },
-  "theme": "auto",
-  "editorMode": "vim",
-  "skipAutoPermissionPrompt": true
+  "skipAutoPermissionPrompt": true,
+  "statusLine": {
+    "command": "bash -c 'cols=$(stty size \u003c/dev/tty 2\u003e/dev/null | awk '\"'\"'{print $2}'\"'\"'); export COLUMNS=$(( ${cols:-120} \u003e 4 ? ${cols:-120} - 4 : 1 )); plugin_dir=$(ls -d \"${CLAUDE_CONFIG_DIR:-$HOME/.claude}\"/plugins/cache/*/claude-hud/*/ 2\u003e/dev/null | awk -F/ '\"'\"'{ print $(NF-1) \"\\t\" $(0) }'\"'\"' | grep -E '\"'\"'^[0-9]+\\.[0-9]+\\.[0-9]+[[:space:]]'\"'\"' | sort -t. -k1,1n -k2,2n -k3,3n -k4,4n | tail -1 | cut -f2-); exec \"{{ lookPath "bun" }}\" --env-file /dev/null \"${plugin_dir}src/index.ts\"'",
+    "padding": 0,
+    "refreshInterval": 10,
+    "type": "command"
+  },
+  "theme": "auto"
 }
