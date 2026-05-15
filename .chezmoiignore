@@ -12,6 +12,10 @@ README.md
 
 .config/nvim/lazy-lock.json
 
+# Per-machine private git profile (work credentials, internal URLs).
+# Loaded via [include] from .gitconfig. Maintained out-of-band; never tracked.
+.config/git/work
+
 # hyprdynamicmonitors writes this at runtime based on the matched profile.
 # Templates live under .config/hyprdynamicmonitors/hyprconfigs/; the rendered
 # output is machine state, not dotfile content.
