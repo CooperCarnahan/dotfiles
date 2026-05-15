@@ -23,20 +23,6 @@
       "type": "remote",
       "url": "http://localhost:3001/mcp"
     },
-{{- if not .work }}
-    "gitnexus": {
-      "type": "local",
-      "command": [
-        "npx",
-        "gitnexus",
-        "mcp"
-      ],
-    },
-    "context7": {
-      "type": "remote",
-      "url": "https://mcp.context7.com/mcp",
-    },
-{{- end }}
   },
   "agent": {
 {{- if .work }}
@@ -67,7 +53,6 @@
   "permission": {
 {{- if .work }}
     "gh_grep": "deny",
-    "context7": "deny",
 {{- end }}
   },
 }
