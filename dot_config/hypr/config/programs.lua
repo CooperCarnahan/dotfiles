@@ -2,7 +2,8 @@ return {
 	terminal = "ghostty",
 	browser = "zen-browser",
 	filemanager = "yazi",
-	applauncher = "vicinae toggle",
+	-- Trialing noctalia launcher (2026-05-15). Revert to `vicinae toggle` if it doesn't fit.
+	applauncher = "qs -c noctalia-shell ipc call launcher toggle",
 	idlehandler = "hypridle",
 
 	shot_region = "hyprshot -m region --clipboard-only",

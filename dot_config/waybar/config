@@ -16,7 +16,7 @@
     "temperature",
     //"idle_inhibitor",
     //"mpd"
-    "custom/spotify"
+    "mpris"
   ],
   "modules-center": [
     //"hyprland/window"
@@ -171,13 +171,30 @@
     "max-length": 5,
     "min-length": 3
   },
-  "custom/spotify": {
-    "exec": "~/.config/waybar/mediaplayer.py --player spotify",
-    "format": "{}  ",
-    "return-type": "json",
-    "on-click": "playerctl play-pause",
-    "on-scroll-up": "playerctl next",
-    "on-scroll-down": "playerctl previous"
+  "mpris": {
+    "format": "{player_icon} {dynamic}",
+    "format-paused": "{status_icon} <i>{dynamic}</i>",
+    "format-stopped": "",
+    "player-icons": {
+      "default": "",
+      "spotify": "",
+      "spotify_player": ""
+    },
+    "status-icons": {
+      "paused": "",
+      "playing": "",
+      "stopped": ""
+    },
+    "dynamic-order": ["title", "artist"],
+    "dynamic-separator": " · ",
+    "dynamic-len": 50,
+    "interval": 1,
+    "tooltip-format": "{status} on {player}\n{title}\n{artist}\n{album}",
+    "on-click": "playerctl --player=spotify_player,spotify play-pause",
+    "on-click-right": "~/.local/bin/sink-switcher",
+    "on-click-middle": "~/.local/bin/spotify-tui-toggle",
+    "on-scroll-up": "playerctl --player=spotify_player,spotify next",
+    "on-scroll-down": "playerctl --player=spotify_player,spotify previous"
   },
   "custom/media": {
     "format": "{0} {1}",

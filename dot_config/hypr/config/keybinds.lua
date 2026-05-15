@@ -121,10 +121,14 @@ hl.bind(
 )
 hl.bind(
 	mod .. " + CTRL + R",
-	hl.dsp.exec_cmd("systemctl --user restart waybar.service"),
-	{ description = "Restart Waybar" }
+	hl.dsp.exec_cmd([[bash -c "pkill -x qs; sleep 0.2; qs -c noctalia-shell & disown"]]),
+	{ description = "Reload noctalia (hard restart)" }
 )
-hl.bind(mod .. " + N", hl.dsp.exec_cmd("swaync-client -t -sw"), { description = "Toggle notification center" })
+hl.bind(
+	mod .. " + N",
+	hl.dsp.exec_cmd("qs -c noctalia-shell ipc call notifications toggleHistory"),
+	{ description = "Toggle notification center" }
+)
 
 -- ──────────────────────────────────────────────────────────────────────────
 -- Mouse: drag/resize windows
