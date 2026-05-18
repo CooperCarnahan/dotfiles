@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+# Re-run when any staged system-config file changes (one line per file):
+# {{ include "dot_local/share/system-config/etc/systemd/logind.conf.d/lid.conf" | sha256sum }}
+
+set -euo pipefail
+
+STAGING="${HOME}/.local/share/system-config"
+[ -d "$STAGING" ] || { echo "no staging dir at $STAGING — nothing to do"; exit 0; }
+
+reload_logind=0
+changed=0
+
+while IFS= read -r -d '' src; do
+    rel="${src#$STAGING}"
+    dest="$rel"
+    if [ ! -e "$dest" ] || ! cmp -s "$src" "$dest" 2>/dev/null; then
+        echo "→ installing $dest"
+        sudo install -Dm644 "$src" "$dest"
+        changed=1
+        case "$dest" in
+            /etc/systemd/logind.conf.d/*) reload_logind=1 ;;
+        esac
+    fi
+done < <(find "$STAGING" -type f -print0)
+
+[ "$changed" = 0 ] && echo "all system configs already up to date"
+
+if [ "$reload_logind" = 1 ]; then
+    echo "→ reloading systemd-logind (SIGHUP)"
+    sudo systemctl kill -s HUP systemd-logind
+fi

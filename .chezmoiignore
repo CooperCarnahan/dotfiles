@@ -37,6 +37,13 @@ AppData/
 .glzr/
 {{ end }}
 
+{{- if ne .chezmoi.os "linux" }}
+# Linux-only: systemd/logind drop-ins + the installer that copies them to /etc.
+run_onchange_after_install-system-config.sh.tmpl
+.local/share/system-config
+.local/share/system-config/**
+{{- end }}
+
 .claude/settings.local.json
 .claude/projects
 .claude/sessions
