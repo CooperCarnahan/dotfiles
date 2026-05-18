@@ -341,12 +341,20 @@ hl.bind(mod .. " + SPACE", hl.dsp.exec_cmd("1password --quick-access --toggle"))
 -- ──────────────────────────────────────────────────────────────────────────
 -- Push-to-talk (handy). Press triggers, release triggers again (same signal).
 -- ──────────────────────────────────────────────────────────────────────────
-hl.bind("ALT + SPACE", hl.dsp.exec_cmd("pkill -USR2 -n handy"), { description = "Start recording via handy" })
 hl.bind(
 	"ALT + SPACE",
-	hl.dsp.exec_cmd("pkill -USR2 -n handy"),
+	hl.dsp.exec_cmd("handy --toggle-transcription"),
+	{ description = "Start recording via handy" }
+)
+hl.bind(
+	"ALT + SPACE",
+	hl.dsp.exec_cmd("handy --toggle-transcription"),
 	{ release = true, description = "Stop recording via handy" }
 )
 
-hl.bind("F2", hl.dsp.exec_cmd("pkill -USR2 -n handy"), { description = "Start recording via handy" })
-hl.bind("F2", hl.dsp.exec_cmd("pkill -USR2 -n handy"), { release = true, description = "Stop recording via handy" })
+hl.bind("F2", hl.dsp.exec_cmd("handy --toggle-transcription"), { description = "Start recording via handy" })
+hl.bind(
+	"F2",
+	hl.dsp.exec_cmd("handy --toggle-transcription"),
+	{ release = true, description = "Stop recording via handy" }
+)
