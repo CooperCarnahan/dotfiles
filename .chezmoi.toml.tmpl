@@ -6,10 +6,16 @@
 {{- if eq .chezmoi.os "windows" -}}
 {{-   $work = promptBoolOnce . "work" "Is this a work machine?" -}}
 {{- end -}}
+{{- $pushoverUrl := "" -}}
+{{- if and (not $work) (lookPath "op") -}}
+{{-   $pushover := onepasswordDetailsFields "Pushover API Credentials" -}}
+{{-   $pushoverUrl = printf "pover://%s@%s" $pushover.username.value $pushover.credential.value -}}
+{{- end -}}
 
 [data]
     osid = {{ $osid | quote }}
     work = {{ $work }}
+    pushoverUrl = {{ $pushoverUrl | quote }}
 
 [interpreters.ps1]
     command = "powershell"

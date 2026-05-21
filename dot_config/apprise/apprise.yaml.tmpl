@@ -9,13 +9,9 @@ urls:
   - gnome://:
       tag: desk
 {{- end }}
-{{- if .work }}
-  # pover://YOUR_USER_KEY@YOUR_API_TOKEN:
-  #     tag: phone
-{{- else if (lookPath "op") }}
-{{-   $pushover := onepasswordDetailsFields "Pushover API Credentials" }}
-  - pover://{{ $pushover.username.value }}@{{ $pushover.credential.value }}:
+{{- if .pushoverUrl }}
+  - {{ .pushoverUrl }}:
       tag: phone
 {{- else }}
-  # 1Password CLI ('op') not found. Run 'chezmoi apply' again after installing and signing into 1Password.
+  # No Pushover URL configured. Re-run `chezmoi init` to set one.
 {{- end }}
