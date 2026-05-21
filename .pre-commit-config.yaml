@@ -31,9 +31,7 @@ repos:
   - repo: https://github.com/JohnnyMorganz/StyLua
     rev: v2.4.1
     hooks:
-      - id: stylua-system
-        # Use system stylua so we share the user's exact installed version
-        # (mason-managed at /home/cooper/.local/share/nvim/mason/bin/stylua).
+      - id: stylua
 
   - repo: https://github.com/shellcheck-py/shellcheck-py
     rev: v0.10.0.1
@@ -42,3 +40,14 @@ repos:
         # Templated shell scripts have chezmoi template directives that
         # shellcheck can't parse; skip them.
         exclude: '\.tmpl$'
+
+  - repo: local
+    hooks:
+      - id: format-claude-template
+        name: Normalize Claude settings template
+        description: >
+          Enforce Claude Code's canonical output format on the chezmoi source
+          template so `chezmoi diff` only ever shows real content changes.
+        entry: .scripts/format-claude-template.py
+        language: system
+        files: '^dot_claude/settings\.json\.tmpl$'

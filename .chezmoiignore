@@ -1,5 +1,9 @@
 README.md
 
+# Repo-only documentation (design specs, etc.) — not deployed to ~/.
+docs/
+docs/**
+
 **/*.log
 
 **/.git/
