@@ -23,6 +23,16 @@
       "type": "remote",
       "url": "http://localhost:3001/mcp"
     },
+    "codegraph": {
+      "type": "local",
+      "command": [
+        "bunx",
+        "@colbymchenry/codegraph",
+        "serve",
+        "--mcp"
+      ],
+      "enabled": true
+    },
   },
   "agent": {
 {{- if .work }}
@@ -51,8 +61,8 @@
     "context-mode"
   ],
   "permission": {
-{{- if .work }}
+{{- if .work -}}
     "gh_grep": "deny",
-{{- end }}
+{{- end -}}
   },
 }
