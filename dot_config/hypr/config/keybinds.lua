@@ -338,6 +338,27 @@ hl.bind(mod .. " + P", function()
 end)
 hl.bind(mod .. " + SPACE", hl.dsp.exec_cmd("1password --quick-access --toggle"))
 
+-- Teams for Linux: toggle the special workspace if Teams is already running,
+-- otherwise launch it onto the special workspace and toggle.
+hl.bind(mod .. " + T", function()
+	local running = false
+	for _, w in ipairs(hl.get_windows({ class = "com.github.IsmaelMartinez.teams_for_linux" }) or {}) do
+		if w then
+			running = true
+			break
+		end
+	end
+	if running then
+		hl.dispatch(hl.dsp.workspace.toggle_special("teams"))
+	else
+		hl.exec_cmd(
+			"flatpak run com.github.IsmaelMartinez.teams_for_linux",
+			{ workspace = "special:teams silent" }
+		)
+		hl.dispatch(hl.dsp.workspace.toggle_special("teams"))
+	end
+end)
+
 -- ──────────────────────────────────────────────────────────────────────────
 -- Push-to-talk (handy). Press triggers, release triggers again (same signal).
 -- ──────────────────────────────────────────────────────────────────────────
