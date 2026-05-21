@@ -14,10 +14,8 @@ hl.on("hyprland.start", function()
 	-- vicinae launcher daemon (paused 2026-05-15 — trialing noctalia launcher)
 	-- hl.exec_cmd("vicinae server")
 
-	-- input method, polkit
 	-- noctalia-shell replaces waybar (bar) + swaync (notifications) + hyprpaper (wallpaper)
 	-- + nm-applet (network tray) + wob (volume OSD). vicinae remains as launcher.
-	hl.exec_cmd("fcitx5 -d &")
 	hl.exec_cmd("qs -c noctalia-shell")
 	hl.exec_cmd("/usr/lib/polkit-kde-authentication-agent-1 &")
 
