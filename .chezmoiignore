@@ -39,6 +39,13 @@ AppData/
 **/*.ps1
 **/*.bat
 .glzr/
+# Windows-only source dirs. chezmoi materializes a managed dir even when all its
+# files are ignored, so ignore the dirs themselves to avoid empty ~/Documents and
+# ~/scripts on non-Windows. Run scripts live in .chezmoiscripts/ (no target dir).
+Documents
+Documents/**
+scripts
+scripts/**
 {{ end }}
 
 {{- if ne .chezmoi.os "linux" }}
