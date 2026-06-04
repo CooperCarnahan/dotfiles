@@ -1,3 +1,23 @@
+#!/usr/bin/env bash
+# chezmoi modify_ script for ~/.claude/settings.json
+#
+# Claude Code owns this file: it rewrites it in its own key order and appends
+# runtime keys (notif flags, session-accreted permissions) during normal use.
+# A plain whole-file template fights that and makes `chezmoi diff` a wall of
+# reordering noise. Instead this script receives the LIVE file on stdin and
+# merges in only the "stable" keys we want chezmoi to own, preserving Claude's
+# key order and its runtime-mutated keys.
+#
+# Floats (never touched once present): permissions.*, defaultMode,
+# agentPushNotifEnabled, inputNeededNotifEnabled, and any future keys Claude adds.
+# `permissions` is only seeded on a fresh machine (when the file doesn't exist).
+set -euo pipefail
+
+live="$(cat)"
+[ -z "$live" ] && live='{}'
+
+# Canonical desired config. Edit values HERE to change what chezmoi enforces.
+desired="$(cat <<'DESIRED'
 {
   "editorMode": "vim",
   "enabledPlugins": {
@@ -37,32 +57,32 @@
   "hooks": {
     "PreCompact": [
       {
+        "matcher": "",
         "hooks": [
           {
-            "command": "bd prime",
-            "type": "command"
+            "type": "command",
+            "command": "bd prime"
           }
-        ],
-        "matcher": ""
+        ]
       }
     ],
     "SessionStart": [
       {
         "hooks": [
           {
-            "command": "{{ lookPath "node" }} \"{{ .chezmoi.homeDir }}/.claude/hooks/context-mode-cache-heal.mjs\"",
-            "type": "command"
+            "type": "command",
+            "command": "{{ lookPath "node" }} \"{{ .chezmoi.homeDir }}/.claude/hooks/context-mode-cache-heal.mjs\""
           }
         ]
       },
       {
+        "matcher": "",
         "hooks": [
           {
-            "command": "bd prime",
-            "type": "command"
+            "type": "command",
+            "command": "bd prime"
           }
-        ],
-        "matcher": ""
+        ]
       }
     ]
   },
@@ -122,10 +142,20 @@
   },
   "skipAutoPermissionPrompt": true,
   "statusLine": {
-    "command": "bash -c 'cols=$(stty size \u003c/dev/tty 2\u003e/dev/null | awk '\"'\"'{print $2}'\"'\"'); export COLUMNS=$(( ${cols:-120} \u003e 4 ? ${cols:-120} - 4 : 1 )); plugin_dir=$(ls -d \"${CLAUDE_CONFIG_DIR:-$HOME/.claude}\"/plugins/cache/*/claude-hud/*/ 2\u003e/dev/null | awk -F/ '\"'\"'{ print $(NF-1) \"\\t\" $(0) }'\"'\"' | grep -E '\"'\"'^[0-9]+\\.[0-9]+\\.[0-9]+[[:space:]]'\"'\"' | sort -t. -k1,1n -k2,2n -k3,3n -k4,4n | tail -1 | cut -f2-); exec \"{{ lookPath "bun" }}\" --env-file /dev/null \"${plugin_dir}src/index.ts\"'",
+    "command": "bash -c 'cols=$(stty size </dev/tty 2>/dev/null | awk '\"'\"'{print $2}'\"'\"'); export COLUMNS=$(( ${cols:-120} > 4 ? ${cols:-120} - 4 : 1 )); plugin_dir=$(ls -d \"${CLAUDE_CONFIG_DIR:-$HOME/.claude}\"/plugins/cache/*/claude-hud/*/ 2>/dev/null | awk -F/ '\"'\"'{ print $(NF-1) \"\\t\" $(0) }'\"'\"' | grep -E '\"'\"'^[0-9]+\\.[0-9]+\\.[0-9]+[[:space:]]'\"'\"' | sort -t. -k1,1n -k2,2n -k3,3n -k4,4n | tail -1 | cut -f2-); exec \"{{ lookPath "bun" }}\" --env-file /dev/null \"${plugin_dir}src/index.ts\"'",
     "padding": 0,
     "refreshInterval": 10,
     "type": "command"
   },
   "theme": "auto"
 }
+DESIRED
+)"
+
+# Deep-merge stable keys onto the live file (live wins on key ORDER and keeps
+# any keys not in `desired`). `permissions` is excluded from the override so it
+# floats; it is only seeded from `desired` when the live file has none.
+jq -n --argjson live "$live" --argjson desired "$desired" '
+  ($live * ($desired | del(.permissions)))
+  | .permissions = (.permissions // $desired.permissions)
+'
