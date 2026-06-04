@@ -114,11 +114,7 @@ hl.bind("XF86AudioPrev", hl.dsp.exec_cmd("playerctl previous"), { description = 
 -- ──────────────────────────────────────────────────────────────────────────
 hl.bind("XF86MonBrightnessUp", hl.dsp.exec_cmd("brightnessctl s +5%"), { locked = true, repeating = true })
 hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd("brightnessctl s 5%-"), { locked = true, repeating = true })
-hl.bind(
-	mod .. " + CTRL + L",
-	hl.dsp.exec_cmd(os.getenv("HOME") .. "/.config/hypr/scripts/lock"),
-	{ description = "Lock the screen" }
-)
+hl.bind(mod .. " + CTRL + L", hl.dsp.exec_cmd("loginctl lock-session"), { description = "Lock the screen" })
 hl.bind(
 	mod .. " + CTRL + R",
 	hl.dsp.exec_cmd([[bash -c "pkill -x qs; sleep 0.2; qs -c noctalia-shell & disown"]]),
