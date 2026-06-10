@@ -1,3 +1,10 @@
+[settings.github]
+# Reuse gh CLI's token to avoid anonymous GitHub API rate limits during
+# `mise up`/install. mise runs this on demand only when it needs a token (not
+# at shell startup), and strips its own shims from PATH first — so `gh`
+# resolves to the system binary (/usr/bin/gh), not the mise-managed shim.
+credential_command = "gh auth token"
+
 [tools]
 "aqua:dlvhdr/gh-dash" = "latest"
 atuin = "latest"
