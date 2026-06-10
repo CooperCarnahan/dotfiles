@@ -23,3 +23,14 @@ hl.window_rule({
 	match = quakeMatch,
 	animation = "popin",
 })
+
+-- Teams for Linux is launched via flatpak from the mod+T binding. The exec-time
+-- `{ workspace = "special:teams silent" }` hint is PID-tracked and misses on a
+-- cold start (flatpak spawns the real process under a separate tree), so the
+-- first launch lands on the active workspace. This persistent class rule pins
+-- the window regardless of launch timing.
+hl.window_rule({
+	name = "teams-workspace",
+	match = { class = "^(com\\.github\\.IsmaelMartinez\\.teams_for_linux)$" },
+	workspace = "special:teams silent",
+})
