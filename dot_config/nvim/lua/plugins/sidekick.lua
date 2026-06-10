@@ -14,6 +14,11 @@ return {
 				backend = "zellij",
 				enabled = true,
 			},
+			tools = {
+				omp = {
+					cmd = { "omp" },
+				},
+			},
 		},
 	},
 }
