@@ -3,49 +3,30 @@
 # Installed by:
 # version = "0.112.2"
 
-# fzf launchers. Start permissive (hidden + gitignored shown); ctrl-h toggles
-# to a clean view and back. State is encoded in the prompt: "all> " vs "> ".
-# POSIX `[ ]` used in the bind so it works regardless of $SHELL.
-def fzf-pick-file [] {
-  fd --hidden --no-ignore
-    | fzf --height=40% --prompt 'all> ' --preview 'bat -n --color=always {}' --header 'ctrl-h: toggle hidden/ignored' --bind 'ctrl-h:transform:[ "$FZF_PROMPT" = "all> " ] && echo "reload(fd)+change-prompt(> )" || echo "reload(fd --hidden --no-ignore)+change-prompt(all> )"'
-}
-
-def fzf-pick-dir [] {
-  fd --type dir --hidden --no-ignore
-    | fzf --height=40% --prompt 'all> ' --header 'ctrl-h: toggle hidden/ignored' --bind 'ctrl-h:transform:[ "$FZF_PROMPT" = "all> " ] && echo "reload(fd --type dir)+change-prompt(> )" || echo "reload(fd --type dir --hidden --no-ignore)+change-prompt(all> )"'
-}
-
+# Picker keybindings, backed by tv channels. ctrl-t is tv's own smart
+# autocomplete (from its autoload integration); ctrl-r is atuin. Each binding
+# is guarded so escaping the picker (empty selection) is a no-op, not an error.
 $env.config.keybindings ++= [
   {
-    name: fzf_paste
-    modifier: control
-    keycode: char_t
-    mode: vi_normal
-    event: {
-        send: executehostcommand,
-        cmd: "commandline edit --insert (fzf-pick-file | str trim)"
-      }
-  },
-  {
-    name: nvim_fzf
+    name: nvim_tv
     modifier: control
     keycode: char_v
     mode: [vi_normal, vi_insert]
-    event: {
-        send: executehostcommand,
-        cmd: "nvim (fzf-pick-file)"
-      }
+    event: { send: executehostcommand, cmd: "let f = (tv files | str trim); if ($f | is-not-empty) { nvim $f }" }
   }
   {
-    name: cd_fzf
+    name: cd_tv
     modifier: control
     keycode: char_d
     mode: [vi_normal, vi_insert]
-    event: {
-        send: executehostcommand,
-        cmd: "cd (fzf-pick-dir)"
-      }
+    event: { send: executehostcommand, cmd: "let d = (tv dirs | str trim); if ($d | is-not-empty) { cd $d }" }
+  }
+  {
+    name: zoxide_tv
+    modifier: control
+    keycode: char_z
+    mode: [vi_normal, vi_insert]
+    event: { send: executehostcommand, cmd: "let d = (tv zoxide | str trim); if ($d | is-not-empty) { cd $d }" }
   }
 ]
 
@@ -77,9 +58,7 @@ alias cc = cd -
 alias zz = cd -
 alias zp = cd -
 
-def zja [] {
-    zellij attach (zellij list-sessions | ansi strip | fzf)
-}
+alias zja = zellij -l welcome
 
 alias .. = cd ..
 alias ... = cd ../..

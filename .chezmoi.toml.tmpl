@@ -21,6 +21,10 @@
     command = "powershell"
     args = ["-NoLogo", "-NoProfile", "-ExecutionPolicy", "Bypass"]
 
+# Run .nu chezmoi scripts on Windows (Unix uses the script's shebang instead).
+[interpreters.nu]
+    command = "nu"
+
 [merge]
     command = "nvim"
     args = [

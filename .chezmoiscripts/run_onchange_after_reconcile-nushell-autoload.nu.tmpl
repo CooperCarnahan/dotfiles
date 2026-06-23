@@ -1,0 +1,37 @@
+{{ if lookPath "nu" -}}
+#!/usr/bin/env nu
+# Reconcile nushell vendor/autoload.
+#
+# env.nu generates tool init scripts there, each marked with a "# cache-key:"
+# first line. When an integration is renamed or removed, the old file would
+# orphan in this unmanaged dir and double-load (e.g. duplicate atuin history
+# hooks). This prunes every env.nu-owned file by that marker; env.nu then
+# regenerates the current set on the next shell. Foreign files (worktrunk,
+# zbuild, ...) lack the marker and are left untouched.
+#
+# Re-runs whenever env.nu changes (its hash is embedded below):
+# env.nu: {{ include "dot_config/nushell/env.nu.tmpl" | sha256sum }}
+let dir = ($nu.data-dir | path join "vendor" "autoload")
+if ($dir | path exists) {
+  # Ongoing: prune env.nu-owned files by marker (catches any future rename,
+  # since every file env.nu generates now carries this first line).
+  for f in (glob ($dir | path join "*.nu")) {
+    if ((open $f --raw | lines | first | default "") | str starts-with "# cache-key:") {
+      rm --force $f
+      print $"reconcile: removed ($f | path basename)"
+    }
+  }
+  # One-time migration: pre-marker env.nu versions wrote these by raw name
+  # (no marker), and an intermediate step used zz-atuin.nu — the loop above
+  # can't see them. Remove by known name. These names are unambiguously env.nu
+  # tool inits (no foreign owner). Safe to delete this block once every machine
+  # has applied at least once.
+  for name in [tv.nu zoxide.nu starship.nu carapace.nu atuin.nu zz-atuin.nu] {
+    let p = ($dir | path join $name)
+    if ($p | path exists) {
+      rm --force $p
+      print $"reconcile: removed legacy ($name)"
+    }
+  }
+}
+{{ end -}}
