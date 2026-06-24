@@ -1,0 +1,43 @@
+{{- if eq .chezmoi.os "linux" -}}
+{{- /* Debian family: id is debian/ubuntu/raspbian/..., or id_like contains debian. */ -}}
+{{- $deb := false -}}
+{{- if hasKey .chezmoi.osRelease "id" -}}
+{{-   $deb = eq .chezmoi.osRelease.id "debian" -}}
+{{- end -}}
+{{- if and (not $deb) (hasKey .chezmoi.osRelease "idLike") -}}
+{{-   $deb = contains "debian" .chezmoi.osRelease.idLike -}}
+{{- end -}}
+{{- if $deb -}}
+#!/usr/bin/env bash
+# System packages for Debian/Ubuntu-family machines.
+#
+# Philosophy: development *tools* (chezmoi, nu, jq, ripgrep, fd, uv, node, ...)
+# are provisioned by mise from ~/.config/mise/config.toml — NOT apt. This script
+# installs only what mise can't: the C build toolchain and system libraries that
+# some mise tools compile against, plus base CLI utilities. Run `mise install`
+# after this to materialize the tool set.
+#
+# config-version: 1
+set -euo pipefail
+export DEBIAN_FRONTEND=noninteractive
+
+# System packages only — no PPAs, no desktop stack, no mise-managed tools.
+packages=(
+    build-essential
+    pkg-config
+    libssl-dev
+    ca-certificates
+    curl
+    git
+    unzip
+)
+
+echo "--- apt: updating package lists ---"
+sudo apt-get update -y
+
+echo "--- apt: installing system packages ---"
+sudo apt-get install -y --no-install-recommends "${packages[@]}"
+
+echo "--- system packages installed (tools come from 'mise install') ---"
+{{- end -}}
+{{- end -}}

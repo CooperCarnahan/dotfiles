@@ -1,5 +1,5 @@
 {{- if eq .chezmoi.os "linux" -}}
-{{- if or (eq .osid "linux-arch") (eq .osid "linux-cachyos") -}}
+{{- if and (or (eq .osid "linux-arch") (eq .osid "linux-cachyos")) (eq (includeTemplate "is-headless" .) "false") -}}
 #!/usr/bin/env bash
 # Configure GDM as the active display manager and install a systemd drop-in
 # that syncs the user's ~/.config/monitors.xml to /etc/xdg/monitors.xml on

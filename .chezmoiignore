@@ -48,11 +48,34 @@ scripts
 scripts/**
 {{ end }}
 
-{{- if ne .chezmoi.os "linux" }}
-# Linux-only: systemd/logind drop-ins + the installer that copies them to /etc.
-run_onchange_after_install-system-config.sh.tmpl
+{{- if or (ne .chezmoi.os "linux") (eq (includeTemplate "is-headless" .) "true") }}
+# Skip on non-Linux, and on headless boxes (the lid.conf drop-in is laptop-only).
+# NB: .chezmoiignore matches TARGET names — a run_ script's target is its name
+# with the run_* prefix and .tmpl suffix stripped, so ignore "install-system-config.sh".
+install-system-config.sh
 .local/share/system-config
 .local/share/system-config/**
+{{- end }}
+
+{{- if eq (includeTemplate "is-headless" .) "true" }}
+# Headless machine (no desktop / Wayland session): skip GUI-only configs.
+# These are dead files on a box you only reach over SSH.
+.config/hypr
+.config/hypr/**
+.config/hyprdynamicmonitors
+.config/hyprdynamicmonitors/**
+.config/waybar
+.config/waybar/**
+.config/noctalia
+.config/noctalia/**
+.config/swaync
+.config/swaync/**
+.config/wlogout
+.config/wlogout/**
+.config/kitty
+.config/kitty/**
+.config/ghostty
+.config/ghostty/**
 {{- end }}
 
 .claude/settings.local.json

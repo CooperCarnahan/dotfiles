@@ -6,6 +6,13 @@
 {{- if eq .chezmoi.os "windows" -}}
 {{-   $work = promptBoolOnce . "work" "Is this a work machine?" -}}
 {{- end -}}
+{{- /* Desktop vs headless. Default: headless on any Linux that isn't Arch/CachyOS
+       (those are the desktop boxes). Drives .chezmoiignore + desktop packages. */ -}}
+{{- $headlessDefault := false -}}
+{{- if and (eq .chezmoi.os "linux") (hasKey .chezmoi.osRelease "id") -}}
+{{-   $headlessDefault = not (or (eq .chezmoi.osRelease.id "arch") (eq .chezmoi.osRelease.id "cachyos")) -}}
+{{- end -}}
+{{- $headless := promptBoolOnce . "headless" "Is this a headless machine (no desktop / Wayland session)?" $headlessDefault -}}
 {{- $pushoverUrl := "" -}}
 {{- if and (not $work) (lookPath "op") -}}
 {{-   $pushover := onepasswordDetailsFields "Pushover API Credentials" -}}
@@ -15,6 +22,7 @@
 [data]
     osid = {{ $osid | quote }}
     work = {{ $work }}
+    headless = {{ $headless }}
     pushoverUrl = {{ $pushoverUrl | quote }}
 
 [interpreters.ps1]

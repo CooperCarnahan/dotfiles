@@ -1,0 +1,11 @@
+{{- /*
+  Single source of truth for "is this a headless (no desktop) machine?".
+  Returns the string "true" or "false".
+
+  Priority:
+    1. The `headless` config var, if set (prompted once at `chezmoi init`).
+    2. Otherwise a smart default: headless on any Linux that isn't Arch/CachyOS
+       (those are the desktop machines), so a not-yet-reinitialized box still
+       behaves sensibly. Non-Linux (Windows/macOS) defaults to not-headless.
+*/ -}}
+{{- if hasKey . "headless" -}}{{ .headless }}{{- else if and (eq .chezmoi.os "linux") (hasKey .chezmoi.osRelease "id") -}}{{ not (or (eq .chezmoi.osRelease.id "arch") (eq .chezmoi.osRelease.id "cachyos")) }}{{- else -}}false{{- end -}}

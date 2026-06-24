@@ -8,7 +8,9 @@ set -e
 echo "--- Detected supported OS: {{ .osid }} ---"
 
 # --- Configuration ---
-# Packages to install from the official Arch repositories
+# System packages from the official Arch repositories. CLI dev tools (jq,
+# nushell, ripgrep, ...) are provisioned by mise from ~/.config/mise/config.toml,
+# not pacman — keep this list to actual system packages.
 pacman_packages=(
     "base"
     "base-devel"
@@ -17,49 +19,55 @@ pacman_packages=(
     "docker"
     "docker-compose"
     "dtc"
-    "ghostty"
     "git"
-    "gdm"
     "gperf"
-    "hyprlock"
-    "hyprpaper"
-    "hyprshot"
-    "jq"
     "make"
-    "nushell"
     "openssh"
     "ouch"
     "socat"
     "sudo"
-    "swaync"
     "tk"
     "tree"
     "unzip"
-    "waybar"
     "which"
     "wget"
+)
+
+# System packages from the Arch User Repository (AUR).
+aur_packages=(
+    "git-credential-manager-bin"
+    "ov"
+)
+
+{{ if eq (includeTemplate "is-headless" .) "false" -}}
+# Desktop / Wayland stack — skipped on headless machines.
+pacman_packages+=(
+    "ghostty"
+    "gdm"
+    "hyprlock"
+    "hyprpaper"
+    "hyprshot"
+    "swaync"
+    "waybar"
     "wlogout"
     "wtype"
     "xdg-desktop-portal-hyprland"
     "xsensors"
     "zen-browser-bin"
 )
-
-# Packages to install from the Arch User Repository (AUR)
-aur_packages=(
+aur_packages+=(
     "1password"
     "gearlever"
-    "git-credential-manager-bin"
     "gnome-browser-connector"
     "handy-bin"
     "hyprdynamicmonitors-bin"
     "maplemono-nf-unhinted"
-    "ov"
     "tlp"
     "tlpui"
     "vicinae-bin"
     "winboat-bin"
 )
+{{ end -}}
 
 # --- Functions ---
 # A function to check if a command exists
@@ -98,7 +106,7 @@ if ! command_exists "paru"; then
     git clone https://aur.archlinux.org/paru.git
     cd paru
     makepkg -si --noconfirm
-    
+
     # Clean up temporary files
     cd ~
     rm -rf "/tmp/paru"

@@ -152,6 +152,15 @@ desired="$(cat <<'DESIRED'
 DESIRED
 )"
 
+# jq powers the merge below. On a freshly-provisioned machine (before
+# `mise install` has materialized jq) or a non-interactive apply where mise's
+# shims aren't on PATH, fall back to writing the live file unchanged so apply
+# never hard-fails with exit 127. The merge runs on a later apply once jq exists.
+if ! command -v jq >/dev/null 2>&1; then
+    printf '%s' "$live"
+    exit 0
+fi
+
 # Deep-merge stable keys onto the live file (live wins on key ORDER and keeps
 # any keys not in `desired`). `permissions` is excluded from the override so it
 # floats; it is only seeded from `desired` when the live file has none.
