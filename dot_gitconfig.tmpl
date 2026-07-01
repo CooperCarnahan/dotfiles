@@ -102,9 +102,7 @@
 # Per-machine private profiles. Git silently ignores missing include
 # files, so these are no-ops on machines where the file isn't present.
 # Maintained out-of-band (not chezmoi-managed).
-#   work  - work credentials, etc.
 #   local - machine-local overrides (e.g. credential helper on a box
 #           with no Secret Service keyring). Loaded last so it wins.
 [include]
-  path = ~/.config/git/work
   path = ~/.config/git/local
