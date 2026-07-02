@@ -26,6 +26,9 @@ difftastic = "latest"
 eza = "latest"
 fastfetch = "latest"
 fd = "latest"
+# No short registry alias for fish; use the aqua backend. Required by the
+# carapace fish-bridge (e.g. specs/west.yaml), which shells out to `fish`.
+"aqua:fish-shell/fish-shell" = "latest"
 fzf = "latest"
 gh = "latest"
 "github:agent-of-empires/agent-of-empires" = { version = "latest", exe = "aoe-linux-amd64", rename_exe = "aoe" }

@@ -430,6 +430,8 @@ complete -c west -n "__zephyr_west_seen_subcommand_from boards" -l board-dir -xa
 complete -c west -n "__zephyr_west_use_subcommand; and __zephyr_west_check_if_in_workspace" -ra build -d "compile a Zephyr application"
 complete -c west -n "__zephyr_west_seen_subcommand_from build" -ra "(__zephyr_west_complete_directories)"
 complete -c west -n "__zephyr_west_seen_subcommand_from build" -o b -l board -xa "(__zephyr_west_complete_board)"
+complete -c west -n "__zephyr_west_seen_subcommand_from build" -o S -l snippet -x -d "add a snippet by name (repeatable)"
+complete -c west -n "__zephyr_west_seen_subcommand_from build" -l shield -x -d "add a shield by name (repeatable)"
 complete -c west -n "__zephyr_west_seen_subcommand_from build" -o d -l build-dir -xa "(__zephyr_west_complete_directories)" -d "build directory to create or use"
 complete -c west -n "__zephyr_west_seen_subcommand_from build" -o f -l force -d "ignore errors and continue"
 complete -c west -n "__zephyr_west_seen_subcommand_from build" -l sysbuild -d "create multi-domain build system"
