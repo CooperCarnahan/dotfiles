@@ -1,0 +1,15 @@
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+# Bridge west's hand-written fish completion into carapace, so nushell (carapace
+# external completer) gets full west completion WITH descriptions. fish is chosen
+# over bash because west's fish completion carries per-item descriptions (bash is
+# value-only) and carapace's fish bridge is more robust than its bash one. west is
+# not argcomplete/cobra/etc., so a generic shell bridge is required.
+# parsing: disabled = carapace forwards the raw line to fish's completion instead of
+# parsing west's args itself (required for a pure bridge).
+# Prereq: west's fish completion is registered for fish, i.e.
+#   west completion fish > ~/.config/fish/completions/west.fish
+name: west
+description: Zephyr meta-tool
+parsing: disabled
+completion:
+  positionalany: ["$carapace.bridge.Fish([west])"]
