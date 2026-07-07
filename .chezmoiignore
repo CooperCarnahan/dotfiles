@@ -26,8 +26,6 @@ docs/**
 .config/hypr/config/monitors.lua
 
 {{- if eq .chezmoi.os "windows" -}}
-.config/helix
-.config/kitty
 .alias
 .bashrc
 .zshrc
@@ -63,16 +61,10 @@ install-system-config.sh
 .config/hypr/**
 .config/hyprdynamicmonitors
 .config/hyprdynamicmonitors/**
-.config/waybar
-.config/waybar/**
 .config/noctalia
 .config/noctalia/**
-.config/swaync
-.config/swaync/**
 .config/wlogout
 .config/wlogout/**
-.config/kitty
-.config/kitty/**
 .config/ghostty
 .config/ghostty/**
 {{- end }}

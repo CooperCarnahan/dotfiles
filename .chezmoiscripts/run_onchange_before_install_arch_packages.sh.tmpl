@@ -45,10 +45,7 @@ pacman_packages+=(
     "ghostty"
     "gdm"
     "hyprlock"
-    "hyprpaper"
     "hyprshot"
-    "swaync"
-    "waybar"
     "wlogout"
     "wtype"
     "xdg-desktop-portal-hyprland"
@@ -64,7 +61,6 @@ aur_packages+=(
     "maplemono-nf-unhinted"
     "tlp"
     "tlpui"
-    "vicinae-bin"
     "winboat-bin"
 )
 {{ end -}}
@@ -120,8 +116,8 @@ paru -S --noconfirm --needed "${aur_packages[@]}"
 echo "--- Disabling services for replaced daemons ---"
 # CachyOS's cachyos-hyprland-settings pulls in mako, whose user .service unit
 # is DBus-activated. Without disabling, mako would silently acquire the
-# org.freedesktop.Notifications name on first toast and prevent swaync from
-# binding. Safe to run repeatedly (idempotent).
+# org.freedesktop.Notifications name on first toast and prevent noctalia
+# (the notification daemon) from binding. Safe to run repeatedly (idempotent).
 systemctl --user disable --now mako.service 2>/dev/null || true
 
 echo "--- Checking for mise installation ---"
