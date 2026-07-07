@@ -82,17 +82,7 @@ source "$HOME/.zinit/bin/zinit.zsh"
 autoload -Uz _zinit
 (( ${+_comps} )) && _comps[zinit]=_zinit
 
-# Load Zinit Annexes
-zinit light-mode for \
-    zdharma-continuum/zinit-annex-as-monitor \
-    zdharma-continuum/zinit-annex-bin-gem-node \
-    zdharma-continuum/zinit-annex-patch-dl \
-    zdharma-continuum/zinit-annex-rust
-
 # Plugin Loading
-zinit ice wait lucid
-zinit snippet OMZP::git
-
 zinit light Aloxaf/fzf-tab
 
 # Auto-suggestions and History
@@ -102,8 +92,6 @@ zinit lucid for \
 
 # Git Utilities
 zinit load wfxr/forgit
-
-zinit load atuinsh/atuin
 
 # Syntax Highlighting (load last)
 zinit wait lucid for \
@@ -148,24 +136,20 @@ else
     export BAT_THEME=TwoDark
 fi
 
-# SSH Keychain Setup
-if command -v keychain &> /dev/null; then
-  keychain --clear --quiet
-  [ -z "$HOSTNAME" ] && HOSTNAME=`uname -n`
-  [ -f $HOME/.keychain/$HOSTNAME-sh ] && \
-    . $HOME/.keychain/$HOSTNAME-sh
+# Additional Tools (all mise-managed; guard so a cold shell can't error)
+if command -v atuin > /dev/null; then
+    eval "$(atuin init zsh)"
 fi
-
-# Additional Tools
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-eval "$(zoxide init zsh)"
+if command -v zoxide > /dev/null; then
+    eval "$(zoxide init zsh)"
+fi
 
 # Load completions before configuring them
 autoload -U +X bashcompinit && bashcompinit
 
 # Carapace Completion Setup (only if command exists)
 if command -v carapace > /dev/null; then
-    export CARAPACE_BRIDGES='zsh,fish,bash,inshellisense'
+    export CARAPACE_BRIDGES='zsh,fish,bash'
     zstyle ':completion:*' format $'\e[3;37mCompleting %d\e[m'
     source <(carapace _carapace)
 fi
