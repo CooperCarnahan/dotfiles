@@ -23,7 +23,6 @@ pacman_packages=(
     "gperf"
     "make"
     "openssh"
-    "ouch"
     "socat"
     "sudo"
     "tk"
@@ -136,13 +135,8 @@ else
 fi
 
 echo "--- Upgrading packages installed via mise ---"
-read -p "Do you want to upgrade all mise-installed tools automatically? (Y/n): " -r
-echo
-if [[ $REPLY =~ ^[Nn]$ ]]; then
-    mise upgrade --interactive --bump
-else
-    mise upgrade --bump
-fi
+# Always upgrade non-interactively so `chezmoi apply` stays unattended.
+mise upgrade --bump
 mise install
 mise self-update
 

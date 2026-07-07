@@ -12,6 +12,7 @@ credential_command = "gh auth token"
 "github:dlvhdr/gh-dash" = {version = "latest", exe = "gh-dash"}
 "aqua:nushell/nushell" = "latest"
 "aqua:gastownhall/beads" = "latest"
+"aqua:ouch-org/ouch" = "latest"
 atuin = "latest"
 bat = "latest"
 bun = "latest"
@@ -50,6 +51,7 @@ rust = "latest"
 starship = "latest"
 television = "latest"
 tmux = "latest"
+tree-sitter = "latest"
 uv = "latest"
 watchexec = "latest"
 worktrunk = "latest"
@@ -65,4 +67,9 @@ zoxide = "latest"
 "aqua:fish-shell/fish-shell" = "latest"
 "github:agent-of-empires/agent-of-empires" = { version = "latest", exe = "aoe-linux-amd64", rename_exe = "aoe" }
 "github:ogulcancelik/herdr" = "latest"
+{{- end }}
+
+# Windows-only — neovim's clipboard bridge. ubi backend (no registry alias).
+{{ if eq .chezmoi.os "windows" -}}
+"ubi:equalsraf/win32yank" = "latest"
 {{- end }}

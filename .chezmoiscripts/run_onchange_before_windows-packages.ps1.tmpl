@@ -85,9 +85,6 @@ $ScoopPackages = @(
     'unzip'
     'mise'
     'nanazip'
-    'ouch'
-    'tree-sitter'
-    'win32yank'
     # extras bucket
     'extras/glazewm'
     'extras/universal-ctags'
@@ -111,7 +108,11 @@ $env:Path = "$env:USERPROFILE\scoop\shims;$env:Path"
 if (Get-Command mise -ErrorAction SilentlyContinue) {
     mise install
 } else {
-    Write-Warning "mise not found on PATH; run 'mise install' manually, then re-run chezmoi apply."
+    # Hard-fail rather than warn: the file targets in this same apply include
+    # [interpreters.nu] modify-scripts that need `nu` (mise-provided). Proceeding
+    # would half-apply them against a missing interpreter. Stop so the user can
+    # re-run once scoop's mise shim is on PATH.
+    throw "mise not found on PATH after scoop install. Open a new shell (or run 'mise install' manually), then re-run 'chezmoi apply'."
 }
 
 Write-Host "`nWindows package setup completed!" -ForegroundColor Green
