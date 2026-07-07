@@ -2,6 +2,10 @@
   editor = nvim
   excludesfile = ~/.gitignore_global
   pager = delta
+  # perf: fsmonitor daemon + untracked cache make `git status` near-instant
+  # on large repos; no-ops on small ones.
+  fsmonitor = true
+  untrackedCache = true
 
 {{- if eq .chezmoi.os "windows" }}
   sshCommand = C:/Windows/System32/OpenSSH/ssh.exe
@@ -19,10 +23,15 @@
   side-by-side = true
 
 [merge]
-  conflictstyle = merge
+  # zdiff3 adds the common-ancestor block to conflict markers
+  conflictstyle = zdiff3
 
 [diff]
   colorMoved = default
+  algorithm = histogram
+
+[fetch]
+  prune = true
 
 [push]
   autoSetupRemote = true
@@ -33,10 +42,15 @@
 [rebase]
   autoStash = true
   autoSquash = true
+  # rebasing a branch moves any stacked-branch refs that point into it
+  updateRefs = true
+
+[column]
+  ui = auto
 
 [alias]
   brt = "!git for-each-ref refs/heads --color=always --sort -committerdate --format='%(HEAD)%(color:reset);%(color:yellow)%(refname:short)%(color:reset);%(contents:subject);%(color:green)(%(committerdate:relative))%(color:blue);<%(authorname)>' | column -t -s ';'"
-	fpush = push
+  fpush = push --force-with-lease
 
   # Difftastic aliases, so `git dlog` is `git log` with difftastic and so on.
   dlog = -c diff.external=difft log --ext-diff
@@ -67,14 +81,14 @@
 
 [credential]
   helper = {{ lookPath "git-credential-manager.exe" | quote }}
-	useHttpPath = true
+  useHttpPath = true
   {{- else }}
-	program = /opt/1Password/op-ssh-sign
+  program = /opt/1Password/op-ssh-sign
 
 [credential]
-	helper = manager
+  helper = manager
   credentialStore = secretservice
-	useHttpPath = true
+  useHttpPath = true
   {{- end }}
 {{- end }}
 
@@ -98,6 +112,9 @@
 
 [branch]
   sort = -committerdate
+
+[tag]
+  sort = -version:refname
 
 # Per-machine private profiles. Git silently ignores missing include
 # files, so these are no-ops on machines where the file isn't present.
