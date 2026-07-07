@@ -48,9 +48,9 @@ $packages += @(
 if (Get-Command winget -ErrorAction SilentlyContinue) {
     foreach ($pkg in $packages) {
         Write-Host "Installing $pkg..." -ForegroundColor Gray
-        # --no-upgrade: bootstrap ensures presence only. Upgrading installed
-        # apps is a deliberate act (`winget upgrade --all`), not an apply
-        # side effect — and upgrade attempts on running apps fail anyway.
+        # --no-upgrade keeps this install loop fast and present-only; the
+        # dedicated upgrade phase at the tail of this script runs
+        # `winget upgrade --all` once presence is ensured.
         winget install --id $pkg --silent --no-upgrade --accept-source-agreements --accept-package-agreements
     }
 } else {
@@ -115,5 +115,30 @@ if (Get-Command mise -ErrorAction SilentlyContinue) {
     throw "mise not found on PATH after scoop install. Open a new shell (or run 'mise install' manually), then re-run 'chezmoi apply'."
 }
 
+# 4. Upgrade everything, then a system summary — so a `chezmoi update` pass
+# (pull + apply that re-runs this script) completes with a full refresh,
+# mirroring the Arch bootstrap's `mise upgrade` + trailing fastfetch.
+Write-Step "Upgrading installed packages"
+
+# Plain `mise upgrade` (no --bump): upgrades the installed tools to satisfy the
+# chezmoi-managed `latest` pins without rewriting config.toml. mise itself is
+# scoop-managed on Windows, so `scoop update` below bumps it — no `mise
+# self-update`, which would fight scoop's copy.
+mise upgrade
+
+if (Get-Command winget -ErrorAction SilentlyContinue) {
+    winget upgrade --all --silent --accept-source-agreements --accept-package-agreements
+}
+
+if (Get-Command scoop -ErrorAction SilentlyContinue) {
+    scoop update *
+}
+
 Write-Host "`nWindows package setup completed!" -ForegroundColor Green
+
+# fastfetch is mise-provided; guard so a missing binary can't fail the pass
+# (matches the darwin script's guarded trailing fastfetch).
+if (Get-Command fastfetch -ErrorAction SilentlyContinue) {
+    fastfetch
+}
 {{- end }}
