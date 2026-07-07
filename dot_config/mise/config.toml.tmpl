@@ -69,7 +69,5 @@ zoxide = "latest"
 "github:ogulcancelik/herdr" = "latest"
 {{- end }}
 
-# Windows-only — neovim's clipboard bridge. ubi backend (no registry alias).
-{{ if eq .chezmoi.os "windows" -}}
-"ubi:equalsraf/win32yank" = "latest"
-{{- end }}
+# Note: win32yank (neovim's Windows clipboard bridge) is NOT a separate entry —
+# mise's neovim build bundles win32yank.exe in its bin and exposes it on PATH.
