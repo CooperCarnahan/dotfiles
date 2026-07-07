@@ -1,0 +1,11 @@
+{
+  "properties": {
+    "activeConfiguration": {
+      "value": "default"
+    },
+    "keyboardConfigurations": {
+      "value": ["default"]
+    }
+  },
+  "name": "Keyboard Manager"
+}

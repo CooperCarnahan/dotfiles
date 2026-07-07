@@ -1,5 +1,4 @@
 {
-  "PreviousHotkey": "Alt \u002B Space",
   "Hotkey": "Win \u002B Space",
   "UseCentralizedKeyboardHook": false,
   "SearchQueryResultsWithDelay": true,
@@ -13,10 +12,7 @@
   "PTRunNonDelayedSearchInParallel": true,
   "PTRSearchQueryFastResultsWithDelay": false,
   "ShouldUsePinyin": false,
-  "WindowLeft": 960,
-  "WindowTop": 334,
   "MaxResultsToShow": 4,
-  "ActivateTimes": 541,
   "HideWhenDeactivated": true,
   "ClearInputOnLaunch": false,
   "TabSelectsContextButtons": true,
@@ -24,7 +20,6 @@
   "ShowPluginsOverview": 0,
   "TitleFontSize": 16,
   "IgnoreHotkeysOnFullscreen": false,
-  "StartedFromPowerToysRunner": true,
   "GenerateThumbnailsFromFiles": true,
   "LastQueryMode": "Selected"
 }
