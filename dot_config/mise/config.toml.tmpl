@@ -59,11 +59,7 @@ yazi = "latest"
 zellij = "latest"
 zoxide = "latest"
 
-# Unix-only tools — no Windows builds published; `mise install` errors on them.
 {{ if ne .chezmoi.os "windows" -}}
-# No short registry alias for fish; use the aqua backend. Required by the
-# carapace fish-bridge (e.g. specs/west.yaml), which shells out to `fish`.
-# The bridge is disabled on Windows anyway (CARAPACE_BRIDGES='' in env.nu).
 "aqua:fish-shell/fish-shell" = "latest"
 "github:agent-of-empires/agent-of-empires" = { version = "latest", exe = "aoe-linux-amd64", rename_exe = "aoe" }
 "github:ogulcancelik/herdr" = "latest"
