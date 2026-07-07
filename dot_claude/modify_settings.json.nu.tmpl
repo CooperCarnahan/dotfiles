@@ -1,27 +1,39 @@
-#!/usr/bin/env bash
+#!/usr/bin/env nu
 # chezmoi modify_ script for ~/.claude/settings.json
+#
+# The .nu extension is deliberate: [interpreters.nu] in chezmoi.toml runs this
+# via `nu --stdin` on every OS (Windows can't exec a shebang), and chezmoi
+# strips a matching interpreter extension from the target name —
+# settings.json.nu -> settings.json. `--stdin` is what wires the live file
+# into $in.
 #
 # Claude Code owns this file: it rewrites it in its own key order and appends
 # runtime keys (notif flags, session-accreted permissions) during normal use.
 # A plain whole-file template fights that and makes `chezmoi diff` a wall of
 # reordering noise. Instead this script receives the LIVE file on stdin and
-# merges in only the "stable" keys we want chezmoi to own, preserving Claude's
-# key order and its runtime-mutated keys.
+# merges in only the "stable" keys we want chezmoi to own. Nushell records
+# preserve JSON key order, so Claude's key order and its runtime-mutated keys
+# survive the merge and `chezmoi diff` stays quiet.
 #
 # Floats (never touched once present): permissions.*, defaultMode,
 # agentPushNotifEnabled, inputNeededNotifEnabled, and any future keys Claude adds.
 # `permissions` is only seeded on a fresh machine (when the file doesn't exist).
-set -euo pipefail
 
-live="$(cat)"
-[ -z "$live" ] && live='{}'
+# Body lives in main: nu rejects `$in` at script top level ("can't evaluate
+# block in IR mode"); with --stdin, main receives stdin as pipeline input.
+def main [] {
+
+# str trim: treat whitespace-only stdin (not just 0 bytes) as a missing file.
+let raw = ($in | default "" | str trim)
+
+let live = (if ($raw | is-empty) { "{}" } else { $raw }) | from json
 
 # Canonical desired config. Edit values HERE to change what chezmoi enforces.
 # DISABLE_AUTOUPDATER: mise owns the claude binary on every machine; the
 # self-updater must stay off or it installs a parallel "native" copy under
 # $HOME/.local/bin and warns on startup when PATH resolves to mise's copy
 # instead (worst on Windows boxes where Cadence sets HOME=C:\SPB_Data).
-desired="$(cat <<'DESIRED'
+let desired = r#'
 {
   "editorMode": "vim",
   "enabledPlugins": {
@@ -154,22 +166,18 @@ desired="$(cat <<'DESIRED'
   },
   "theme": "auto"
 }
-DESIRED
-)"
+'# | from json
 
-# jq powers the merge below. On a freshly-provisioned machine (before
-# `mise install` has materialized jq) or a non-interactive apply where mise's
-# shims aren't on PATH, fall back to writing the live file unchanged so apply
-# never hard-fails with exit 127. The merge runs on a later apply once jq exists.
-if ! command -v jq >/dev/null 2>&1; then
-    printf '%s' "$live"
-    exit 0
-fi
+# live ⊕ desired (desired wins; live keeps its key order and unknown keys).
+# --strategy overwrite replaces arrays wholesale — the default `table` strategy
+# would element-merge the hooks lists instead.
+let merged = $live | merge deep --strategy overwrite ($desired | reject permissions)
 
-# Deep-merge stable keys onto the live file (live wins on key ORDER and keeps
-# any keys not in `desired`). `permissions` is excluded from the override so it
-# floats; it is only seeded from `desired` when the live file has none.
-jq -n --argjson live "$live" --argjson desired "$desired" '
-  ($live * ($desired | del(.permissions)))
-  | .permissions = (.permissions // $desired.permissions)
-'
+# `permissions` floats: seed from desired only when the live file has none.
+if ($merged | get -o permissions) == null {
+  $merged | upsert permissions $desired.permissions
+} else {
+  $merged
+} | to json --indent 2
+
+}

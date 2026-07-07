@@ -29,9 +29,13 @@
     command = "powershell"
     args = ["-NoLogo", "-NoProfile", "-ExecutionPolicy", "Bypass"]
 
-# Run .nu chezmoi scripts on Windows (Unix uses the script's shebang instead).
+# Run .nu chezmoi scripts (Windows can't exec a shebang; on Unix this makes the
+# target name resolve identically — chezmoi strips a matching interpreter
+# extension, e.g. modify_settings.json.nu -> settings.json). --stdin wires the
+# live file into $in for modify_ scripts; harmless for run_ scripts.
 [interpreters.nu]
     command = "nu"
+    args = ["--stdin"]
 
 [merge]
     command = "nvim"
