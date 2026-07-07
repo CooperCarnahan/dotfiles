@@ -25,7 +25,11 @@ Write-Host "`n[MODE: PERSONAL]" -ForegroundColor Magenta
 Write-Step "Installing packages via WinGet"
 
 $packages = @(
-    "Git.Git"  # scoop bucket adds below need git; Linux bootstrap installs it too
+    # Microsoft.Git, not Git.Git: the machines run the Scalar/VFS-aware fork,
+    # and installing vanilla Git.Git over it is a flavor switch the installer
+    # refuses under --silent (exit 1). The fork is a superset of Git for
+    # Windows and upgrades in-flavor via `winget upgrade`.
+    "Microsoft.Git"  # scoop bucket adds below need git; Linux bootstrap installs it too
     "Microsoft.VisualStudioCode"
     "Microsoft.PowerToys"
 )
@@ -44,7 +48,10 @@ $packages += @(
 if (Get-Command winget -ErrorAction SilentlyContinue) {
     foreach ($pkg in $packages) {
         Write-Host "Installing $pkg..." -ForegroundColor Gray
-        winget install --id $pkg --silent --accept-source-agreements --accept-package-agreements
+        # --no-upgrade: bootstrap ensures presence only. Upgrading installed
+        # apps is a deliberate act (`winget upgrade --all`), not an apply
+        # side effect — and upgrade attempts on running apps fail anyway.
+        winget install --id $pkg --silent --no-upgrade --accept-source-agreements --accept-package-agreements
     }
 } else {
     Write-Warning "WinGet not found. Skipping winget package installs."
