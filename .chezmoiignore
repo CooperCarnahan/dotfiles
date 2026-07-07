@@ -30,7 +30,6 @@ docs/**
 .config/kitty
 .alias
 .bashrc
-.functions
 .zshrc
 .tmux.conf
 !.git*

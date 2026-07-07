@@ -1,51 +1,44 @@
 #!/bin/sh
+# POSIX-shell aliases (bash/zsh). Nushell has its own copies in config.nu —
+# keep the two in sync when touching shared names (v, zj, fdi, lg, gsur, ...).
 
 ###########################
-#    Platform-Specific    #
+#          ls / eza       #
 ###########################
-# MacOS
-if [ $(uname -s) = "Darwin" ]; then
-    alias ls='ls  -G'
-# Linux
+if command -v eza > /dev/null 2>&1; then
+    alias ls='eza -s extension --icons --no-time --no-user --no-permissions --group-directories-first'
+    alias ll='eza -l -s extension --icons'
+    alias lt='eza --tree'
+elif [ "$(uname -s)" = "Darwin" ]; then
+    alias ls='ls -G'
+    alias ll='ls -alG'
 else
     alias ls='ls --color=auto --group-directories-first'
+    alias ll='ls -al --color=auto'
 fi
+alias la='ls -a'
+alias lla='ls -la'
 
 ###########################
 #        Misc.            #
 ###########################
 alias grep='grep --color=auto'
-# Fix tmux color issue in VIM
-# alias tmux="TERM=screen-256color-bce tmux"
 alias python=python3
-
-# Paste using ctrl-v instead of middle-click
-alias xclip="xclip -sel clip"
-
-# Colorls is slow as heck on WSL1
-if command -v exa &> /dev/null; then
-    alias ls='exa -s extension --icons --no-time --no-user --no-permissions --group-directories-first'
-fi
-
-alias la='ls -a'
-alias ll='exa -l -s extension --icons'
-alias lla='ls -la'
-alias lt='ls --tree'
 
 alias v='nvim'
 alias zj='zellij'
+alias fdi='fd -IH'
 
 # Installing bat from apt uses 'batcat' to avoid naming clash
-if command -v batcat &> /dev/null; then
+if command -v batcat > /dev/null 2>&1; then
     alias batcat='bat'
 fi
 
-if command -v bat &> /dev/null; then
+if command -v bat > /dev/null 2>&1; then
     alias cat='bat'
 fi
 
-alias fdi='fd -IH'
-
+# yazi with cwd follow: exit yazi inside a directory, land there in the shell
 function yz() {
 	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
 	yazi "$@" --cwd-file="$tmp"
@@ -72,10 +65,6 @@ alias 6='cd -6'
 alias 7='cd -7'
 alias 8='cd -8'
 alias 9='cd -9'
-# j: jump to directories
-alias j='zd'
-# Open specified frecent file in code
-alias c='f -ie code'
 
 ###########################
 # Dotfile-related Alias'  #
@@ -91,69 +80,17 @@ alias tmuxa='tmux attach-session -t'
 alias tmn='tmux new-session -s'
 alias tmuxn='tmux new-session -s'
 
-# tmuxp
-if command -v tmuxp &> /dev/null; then
-  tl() {
-    local session
-    if [[ -z $1 ]]; then
-      session=$(tmuxp ls | fzf --layout=reverse --info=inline --height=40%)
-    else
-      session=$1
-    fi
-    tmuxp load $session
-  }
-fi
-
-###########################
-#       YADM Alias'       #
-###########################
-alias y='yadm'
-alias yst='yadm status'
-#alias ya='yadm add'
-alias yc='yadm commit'
-alias yp='yadm push'
-alias yl='yadm pull'
-alias yco='yadm checkout'
-alias yd='yadm diff'
-alias ylg='lazygit -w ~ -g ~/.local/share/yadm/repo.git'
-
 ###########################
 #      Git Alias'         #
 ###########################
+# forgit (ga, glo, gd, grb, ...) defines its own aliases when the zsh plugin
+# loads — no need to duplicate them here.
 alias lg='lazygit'
 alias gsur='git submodule update --init --recursive -j 12'
 alias gbsc='git branch --show-current'
 alias grh='git reset --hard'
 alias grho='git reset --hard origin/$(git branch --show-current)'
 alias gcf='git commit --fixup'
-alias ga='forgit::add'
-alias gbd='forgit::branch::delete'
-alias gcb='forgit::checkout::branch'
-alias gcf='forgit::checkout::file'
-alias gclean='forgit::clean'
-alias gco='forgit::checkout::commit'
-alias gcp='forgit::cherry::pick'
-alias gct='forgit::checkout::tag'
-alias gd='forgit::diff'
-alias gfu='forgit::fixup'
-alias gi='forgit::ignore'
-alias glo='forgit::log'
-alias grb='forgit::rebase'
-alias grc='forgit::revert::commit'
-alias grh='forgit::reset::head'
-alias gss='forgit::stash::show'
-
-###########################
-#          Yazi           @
-###########################
-function yy() {
-	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")"
-	yazi "$@" --cwd-file="$tmp"
-	if cwd="$(cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
-		cd -- "$cwd"
-	fi
-	rm -f -- "$tmp"
-}
 
 ###########################
 #      Local Alias'       #

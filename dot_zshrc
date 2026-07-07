@@ -115,7 +115,7 @@ for dir in "${path_dirs[@]}"; do
 done
 
 # Load Additional Configuration Files
-for config_file in ~/.{alias,functions,zshrc.local}; do
+for config_file in ~/.{alias,zshrc.local}; do
     [[ -f "$config_file" ]] && source "$config_file"
 done
 
