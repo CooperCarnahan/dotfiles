@@ -25,6 +25,7 @@ Write-Host "`n[MODE: PERSONAL]" -ForegroundColor Magenta
 Write-Step "Installing packages via WinGet"
 
 $packages = @(
+    "Git.Git"  # scoop bucket adds below need git; Linux bootstrap installs it too
     "Nushell.Nushell"
     "Microsoft.VisualStudioCode"
     "Microsoft.PowerToys"
