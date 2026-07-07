@@ -15,7 +15,9 @@ let dir = ($nu.data-dir | path join "vendor" "autoload")
 if ($dir | path exists) {
   # Ongoing: prune env.nu-owned files by marker (catches any future rename,
   # since every file env.nu generates now carries this first line).
-  for f in (glob ($dir | path join "*.nu")) {
+  # `ls` + filter, not `glob`: on Windows `path join` yields backslashes,
+  # which glob rejects as escape sequences in the pattern.
+  for f in (ls $dir | where name ends-with ".nu" | get name) {
     if ((open $f --raw | lines | first | default "") | str starts-with "# cache-key:") {
       rm --force $f
       print $"reconcile: removed ($f | path basename)"
