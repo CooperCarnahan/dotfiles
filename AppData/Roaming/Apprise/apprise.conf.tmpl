@@ -1,7 +1,8 @@
 windows://
-{{- if (lookPath "op") -}}
-{{- $pushover := onepasswordDetailsFields "Pushover API Credentials" -}}
-pover://{{ $pushover.username.value }}@{{ $pushover.credential.value }}
-{{- else -}}
-# 1Password CLI ('op') not found. Run 'chezmoi apply' again after installing and signing into 1Password.
-{{- end -}}
+{{- if .pushoverUrl }}
+{{ .pushoverUrl }}
+{{- else }}
+# pushoverUrl unset — either a work machine, or 1Password CLI ('op') wasn't
+# available at 'chezmoi init'. Re-run 'chezmoi init' after installing and
+# signing into 1Password to populate it.
+{{- end }}
