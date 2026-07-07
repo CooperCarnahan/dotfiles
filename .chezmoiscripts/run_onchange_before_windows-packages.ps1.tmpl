@@ -126,8 +126,26 @@ Write-Step "Upgrading installed packages"
 # self-update`, which would fight scoop's copy.
 mise upgrade
 
-if (Get-Command winget -ErrorAction SilentlyContinue) {
-    winget upgrade --all --silent --accept-source-agreements --accept-package-agreements
+# winget upgrade is opt-in: across 40+ packages it's slow and triggers repeated
+# UAC elevation prompts. Gate it so unattended/agent runs stay deterministic:
+#   $env:WINGET_UPGRADE = 1|true|yes  -> always run
+#   $env:WINGET_UPGRADE = 0|false|no  -> always skip
+#   unset + real interactive console  -> prompt (default: skip)
+#   unset + non-interactive (agent)   -> skip (never blocks on a prompt)
+$runWingetUpgrade =
+    if     ($env:WINGET_UPGRADE -match '^(1|true|yes)$') { $true }
+    elseif ($env:WINGET_UPGRADE -match '^(0|false|no)$') { $false }
+    elseif (-not [Console]::IsInputRedirected) {
+        (Read-Host "Upgrade all winget apps now? Slow + repeated UAC prompts [y/N]") -match '^(y|yes)$'
+    }
+    else { $false }
+
+if ($runWingetUpgrade) {
+    if (Get-Command winget -ErrorAction SilentlyContinue) {
+        winget upgrade --all --silent --accept-source-agreements --accept-package-agreements
+    }
+} else {
+    Write-Host "Skipping winget upgrade (set `$env:WINGET_UPGRADE=1 to run)." -ForegroundColor Gray
 }
 
 if (Get-Command scoop -ErrorAction SilentlyContinue) {

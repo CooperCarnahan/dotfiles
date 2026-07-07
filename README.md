@@ -103,9 +103,10 @@ flowchart TD
 that pulls changes to them.
 
 - **Dev toolchain (all OS):** `mise upgrade`.
-- **Windows:** whenever the bootstrap re-runs it also **upgrades** everything in a tail phase —
-  `mise upgrade`, `winget upgrade --all`, `scoop update *` — and prints a `fastfetch` summary.
-  `Microsoft.Git` upgrades in-flavor.
+- **Windows:** whenever the bootstrap re-runs it upgrades `mise` and runs `scoop update *`, then
+  prints a `fastfetch` summary. The `winget upgrade --all` step is **opt-in** (slow + repeated UAC
+  prompts): set `$env:WINGET_UPGRADE=1` before apply, or answer the prompt. `Microsoft.Git`
+  upgrades in-flavor.
 - **macOS:** `brew upgrade`. **Arch:** `paru -Syu` (the bootstrap also runs `mise upgrade`).
   **Debian:** `sudo apt-get upgrade`.
 
