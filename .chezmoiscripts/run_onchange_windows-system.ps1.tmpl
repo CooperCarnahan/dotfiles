@@ -15,9 +15,16 @@ Write-Host "`n[MODE: PERSONAL]" -ForegroundColor Magenta
 
 # 1. User Environment Variables
 Write-Step "Setting user environment variables"
+
+# Guard: Cadence's installer hijacks the User HOME var (points it at
+# C:\SPB_Data for its pcbenv), which silently breaks every HOME-reading tool
+# (git global config, git-bash ~, Claude Code, chezmoi-in-bash). Re-assert
+# HOME = USERPROFILE on every apply; Cadence is happy as long as
+# %HOME%\pcbenv exists (it lives at $env:USERPROFILE\pcbenv now).
+[System.Environment]::SetEnvironmentVariable("HOME", $env:USERPROFILE, "User")
 [System.Environment]::SetEnvironmentVariable("XDG_CONFIG_HOME", "$env:USERPROFILE\.config", "User")
 [System.Environment]::SetEnvironmentVariable("ZELLIJ_CONFIG_DIR", "$env:USERPROFILE\.config\zellij", "User")
-Write-Host "XDG_CONFIG_HOME and ZELLIJ_CONFIG_DIR set" -ForegroundColor Gray
+Write-Host "HOME, XDG_CONFIG_HOME and ZELLIJ_CONFIG_DIR set" -ForegroundColor Gray
 
 # mise shims on the User PATH: nushell (the shell itself) is mise-managed, so
 # non-interactive launchers — Windows Terminal, chezmoi's [interpreters.nu],
