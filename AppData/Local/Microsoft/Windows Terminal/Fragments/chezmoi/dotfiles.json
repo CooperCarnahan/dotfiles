@@ -1,0 +1,13 @@
+{
+    "$schema": "https://aka.ms/terminal-profiles-schema",
+    "profiles": [
+        {
+            "guid": "{764c7586-7cc5-46dd-8dae-dbd201e1c63e}",
+            "name": "Nushell",
+            "commandline": "%LOCALAPPDATA%\\mise\\shims\\nu.exe",
+            "icon": "%USERPROFILE%\\.local\\share\\icons\\nushell.ico",
+            "startingDirectory": "%USERPROFILE%",
+            "hidden": false
+        }
+    ]
+}

@@ -167,48 +167,7 @@
                 "face": "Maple Mono NF",
                 "weight": "medium"
             }
-        },
-        "list": 
-        [
-            {
-                "commandline": "%SystemRoot%\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
-                "guid": "{61c54bbd-c2c6-5271-96e7-009a87ff44bf}",
-                "hidden": false,
-                "name": "Windows PowerShell"
-            },
-            {
-                "commandline": "%SystemRoot%\\System32\\cmd.exe",
-                "guid": "{0caa0dad-35be-5f56-a8ff-afceeeaa6101}",
-                "hidden": false,
-                "name": "Command Prompt"
-            },
-            {
-                "guid": "{b453ae62-4e3d-5e58-b989-0a998ec441b8}",
-                "hidden": false,
-                "name": "Azure Cloud Shell",
-                "source": "Windows.Terminal.Azure"
-            },
-            {
-                "commandline": "%LOCALAPPDATA%\\mise\\shims\\nu.exe",
-                "guid": "{764c7586-7cc5-46dd-8dae-dbd201e1c63e}",
-                "hidden": false,
-                "icon": "%USERPROFILE%\\.local\\share\\icons\\nushell.ico",
-                "name": "Nushell",
-                "startingDirectory": "%USERPROFILE%"
-            },
-            {
-                "guid": "{348efc64-71de-5663-863f-1d8a9de6c6ac}",
-                "hidden": false,
-                "name": "archlinux",
-                "source": "Microsoft.WSL"
-            },
-            {
-                "guid": "{ed86afe2-7fbd-556c-a536-07d058239343}",
-                "hidden": false,
-                "name": "Ubuntu",
-                "source": "Microsoft.WSL"
-            }
-        ]
+        }
     },
     "schemes": 
     [
