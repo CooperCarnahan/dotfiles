@@ -92,6 +92,8 @@ install-system-config.sh
 .claude/*.bak
 .claude/*.orig
 .claude/mcp-needs-auth-cache.json
+**/.claude/.cc-writes/
+
 
 # noctalia: track real config, skip runtime/cache state.
 # Source-of-truth is settings.json + plugins.json. Everything else is regenerated.
