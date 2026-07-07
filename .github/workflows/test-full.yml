@@ -1,0 +1,41 @@
+name: test-full
+
+on:
+  schedule:
+    # Weekly, Monday 06:00 UTC — full bootstrap from a fresh image catches
+    # upstream drift (package renames, mise tool breakage, keyring rot).
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+    inputs:
+      distro:
+        description: Distro to test
+        type: choice
+        default: all
+        options: [all, debian, arch]
+
+jobs:
+  full:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        distro: [debian, arch]
+    env:
+      # The full tier's mise install hits GitHub API rate limits unauthenticated.
+      MISE_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        if: github.event_name == 'schedule' || inputs.distro == 'all' || inputs.distro == matrix.distro
+
+      - name: Ensure podman
+        if: github.event_name == 'schedule' || inputs.distro == 'all' || inputs.distro == matrix.distro
+        run: |
+          if ! command -v podman >/dev/null 2>&1; then
+            sudo apt-get update && sudo apt-get install -y podman
+          fi
+          podman --version
+
+      - name: Run full tier
+        if: github.event_name == 'schedule' || inputs.distro == 'all' || inputs.distro == matrix.distro
+        run: tests/podman/run.sh --tier full ${{ matrix.distro }}

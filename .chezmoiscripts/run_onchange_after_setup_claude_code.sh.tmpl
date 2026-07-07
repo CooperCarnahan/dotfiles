@@ -12,6 +12,14 @@
 
 set -uo pipefail
 
+# Test harnesses (tests/podman/) set DOTFILES_TEST=1 — skip the network-heavy
+# plugin/MCP setup there. `command -v claude` below doesn't cover that case:
+# claude IS provisioned by mise, so it's on PATH after a full bootstrap.
+if [ "${DOTFILES_TEST:-0}" = "1" ]; then
+    echo "DOTFILES_TEST set — skipping Claude Code post-install setup"
+    exit 0
+fi
+
 # Bail out gracefully on systems without claude on PATH yet.
 if ! command -v claude >/dev/null 2>&1; then
     echo "claude CLI not found on PATH — skipping Claude Code post-install setup"

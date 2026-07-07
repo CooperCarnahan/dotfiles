@@ -1,0 +1,48 @@
+# Two-stage test image:
+#   base  — a "fresh system" userland for the full bootstrap tier. Only what a
+#           minimal cloud/container image ships plus bats (assertion runner —
+#           pulls only bash, so it doesn't mask real bootstrap dependencies).
+#   smoke — base plus chezmoi/mise/nushell baked into cached layers so the
+#           smoke tier skips the per-run tooling downloads.
+FROM archlinux:latest AS base
+
+ARG USERNAME=tester
+
+# Refresh the keyring first: archlinux:latest snapshots go stale and the main
+# -Syu (and the full tier's in-script pacman runs) fail signature checks otherwise.
+RUN pacman -Sy --noconfirm --needed archlinux-keyring \
+    && pacman -Syu --noconfirm --needed \
+        bash \
+        bats \
+        ca-certificates \
+        curl \
+        git \
+        sudo \
+        unzip \
+        xz \
+    && pacman -Scc --noconfirm
+
+RUN useradd -m -s /bin/bash "$USERNAME" \
+    && printf '%s ALL=(ALL) NOPASSWD:ALL\n' "$USERNAME" >/etc/sudoers.d/90-dotfiles-test \
+    && chmod 0440 /etc/sudoers.d/90-dotfiles-test
+
+USER "$USERNAME"
+WORKDIR "/home/$USERNAME"
+
+FROM base AS smoke
+
+ARG USERNAME=tester
+
+RUN sh -c "$(curl -fsLS get.chezmoi.io)" -- -b "/home/$USERNAME/.local/bin"
+
+# The optional build secret (wired by run.sh) authenticates mise's GitHub API
+# calls; an empty file means unauthenticated, which still works when not
+# rate-limited.
+RUN --mount=type=secret,id=mise_github_token,uid=1000 \
+    token="$(cat /run/secrets/mise_github_token 2>/dev/null || true)" \
+    && { [ -z "$token" ] || export MISE_GITHUB_TOKEN="$token"; } \
+    && curl -fsSL https://mise.run | sh \
+    && "/home/$USERNAME/.local/bin/mise" use --global aqua:nushell/nushell@latest \
+    && "/home/$USERNAME/.local/bin/mise" install
+
+ENV PATH="/home/$USERNAME/.local/share/mise/shims:/home/$USERNAME/.local/bin:$PATH"
