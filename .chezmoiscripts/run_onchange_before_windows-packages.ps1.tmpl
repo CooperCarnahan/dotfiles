@@ -37,6 +37,7 @@ $packages = @(
 {{- if not .work }}
 # Personal-only winget packages
 $packages += @(
+    "glzr-io.glazewm"
     "NordSecurity.NordVPN"
     "AgileBits.1Password"
     "AgileBits.1Password.CLI"
@@ -86,7 +87,6 @@ $ScoopPackages = @(
     'mise'
     'nanazip'
     # extras bucket
-    'extras/glazewm'
     'extras/universal-ctags'
     'extras/clipboard'
     # nerd-fonts bucket
