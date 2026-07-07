@@ -77,7 +77,3 @@ alias gl = git pull
 alias gp = git push
 alias gco = git checkout
 alias gst = git status
-
-# mise (activation must run after env.nu so the pre_prompt hook is set up
-# in the same scope as the prompt)
-use ($nu.default-config-dir | path join mise.nu)
