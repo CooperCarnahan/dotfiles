@@ -61,7 +61,9 @@ auto_switch = false
 # Named punctuation such as minus, comma, ampersand, plus, and backtick is also accepted.
 # Most reliable direct bindings are ctrl+letter, function keys, and explicit modified chords.
 # alt+..., cmd/super, and punctuation-with-modifiers may depend on your terminal/tmux setup.
-prefix = "ctrl+a"
+# ctrl+s (not the default ctrl+b or tmux's ctrl+a) so herdr can run inside a
+# tmux session without prefix collisions.
+prefix = "ctrl+s"
 
 # Prefix-mode actions
 # help = "prefix+?"
