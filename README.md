@@ -10,9 +10,12 @@ Cross-platform [chezmoi](https://chezmoi.io) dotfiles for Windows, macOS, and Li
 - **[mise](https://mise.jdx.dev) installs the entire dev CLI toolchain** — `nu`, `jq`,
   ripgrep, node, uv, `claude`, and ~50 more, from `dot_config/mise/config.toml.tmpl`.
 
-The bootstrap scripts under `.chezmoiscripts/` run in chezmoi's `before` phase: they install
-the system packages, install mise, then run `mise install` — so the toolchain exists before
-any file targets (some are `nu` scripts that need mise's `nu`) are applied.
+The bootstrap scripts under `.chezmoiscripts/` split across chezmoi's script phases: the
+`before` scripts install the system packages and mise, and ensure `nu` exists (some file
+targets are `nu` scripts that need mise's `nu` during the apply). On Linux the full toolchain
+then materializes in the `after` phase (`run_onchange_after_install_mise_toolchain`) — it
+can't happen earlier, because `mise install` needs `~/.config/mise/config.toml`, which the
+file phase itself puts in place.
 
 > The `chezmoi = "latest"` entry in the mise config is a **managed convenience copy**, not the
 > binary that bootstraps the machine. The initial chezmoi below is what does the first apply.
@@ -56,8 +59,9 @@ chezmoi init --apply CooperCarnahan
 ## How the bootstrap runs
 
 Every platform follows the same skeleton — only the package-install node swaps by OS, and all
-branches reconverge at `mise install`. This diagram is the ground truth for script ordering
-(the nodes are the actual script basenames in `.chezmoiscripts/`):
+branches reconverge at `mise install` (in the BEFORE phase on Windows/macOS; on Linux in the
+AFTER phase, once the file phase has applied the mise config). This diagram is the ground
+truth for script ordering (the nodes are the actual script basenames in `.chezmoiscripts/`):
 
 ```mermaid
 flowchart TD
@@ -77,24 +81,40 @@ flowchart TD
       Ba --> Rn["curl https://mise.run | sh"]
       Bd --> Rn
       Bm --> Rn
-      Bw --> Mi["mise install"]
-      Rn --> Mi
+      Bw --> Mi["mise install (Windows/macOS)"]
+      Rn -->|macOS| Mi
+      Rn -->|Linux| NuE["ensure nu only<br/>mise use -g nushell"]
       Mi --> Tc["toolchain: nu · chezmoi(copy) · claude · uv · ~50 tools"]
     end
 
     Tc --> Main["MAIN phase — apply file targets<br/>modify_*.nu run via [interpreters.nu] (need nu)"]
+    NuE --> Main
     Main --> Sys["windows-system.ps1 (Windows)<br/>HOME · XDG · PATH · dark/dev mode"]
 
     subgraph AFTER["AFTER phase — hooks"]
       direction TB
+      Tl["after_install_mise_toolchain.sh (Linux)<br/>mise install → uv apprise<br/>(arch: mise upgrade + fastfetch)"]
       Cc["after_setup_claude_code.sh<br/>(non-Windows) plugins + MCP"]
       Nu["after_reconcile-nushell-autoload.nu<br/>(needs nu)"]
       Gd["after_setup_gdm.sh + install-system-config.sh<br/>(Linux desktop only)"]
     end
+    Main --> Tl
     Main --> Cc
     Main --> Nu
     Main --> Gd
 ```
+
+## Testing
+
+Podman-based bootstrap tests for Arch and Debian live in `tests/podman/`
+(see [its README](tests/podman/README.md)):
+
+```sh
+tests/podman/run.sh                     # smoke tier: template render + apply asserts (~2 min)
+tests/podman/run.sh --tier full debian  # full tier: the real fresh-system bootstrap
+```
+
+CI runs the smoke tier on every push/PR and the full tier weekly.
 
 ## Keeping a machine current
 

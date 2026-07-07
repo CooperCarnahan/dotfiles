@@ -134,23 +134,21 @@ else
     echo "mise is already installed"
 fi
 
-echo "--- Upgrading packages installed via mise ---"
-# Always upgrade non-interactively so `chezmoi apply` stays unattended.
-mise upgrade --bump
-mise install
-mise self-update
-
-echo "--- Installing Apprise via uv ---"
-if ! command_exists "apprise"; then
-    uv tool install apprise --python 3.12
-    echo "Apprise installed successfully"
-else
-    echo "Apprise is already installed"
+echo "--- Ensuring nushell for the chezmoi file phase ---"
+# modify_*.nu scripts and [interpreters.nu] need `nu` DURING the file phase,
+# before the managed mise config lands. `mise use -g` writes a stub global
+# config (immediately overwritten by the file phase) and installs nushell; the
+# ~/.local/bin symlink makes `nu` resolvable wherever chezmoi itself is.
+# The full toolchain (mise install/upgrade, apprise) materializes in the AFTER
+# phase (run_onchange_after_install_mise_toolchain) once the real mise config
+# has been applied — on a fresh box it doesn't exist yet here.
+if ! command_exists "nu"; then
+    mise use --global aqua:nushell/nushell@latest
+    mkdir -p "$HOME/.local/bin"
+    ln -sf "$(mise which nu)" "$HOME/.local/bin/nu"
 fi
 
-echo "--- All packages installed successfully! ---"
-
-fastfetch
+echo "--- System packages installed successfully! ---"
 
 {{- else -}}
 echo "Unsupported OS: {{ .osid }}. Skipping package installation."

@@ -1,0 +1,45 @@
+{{- if eq .chezmoi.os "linux" -}}
+{{- /* Same family detection as the before_install scripts. */ -}}
+{{- $arch := or (eq .osid "linux-arch") (eq .osid "linux-cachyos") -}}
+{{- $deb := false -}}
+{{- if hasKey .chezmoi.osRelease "id" -}}
+{{-   $deb = eq .chezmoi.osRelease.id "debian" -}}
+{{- end -}}
+{{- if and (not $deb) (hasKey .chezmoi.osRelease "idLike") -}}
+{{-   $deb = contains "debian" .chezmoi.osRelease.idLike -}}
+{{- end -}}
+{{- if or $arch $deb -}}
+#!/usr/bin/env bash
+# Materialize the mise toolchain AFTER the file phase has applied the real
+# ~/.config/mise/config.toml. The before_install scripts can't do this on a
+# fresh machine: they run before the config lands, so `mise install` there
+# would be a no-op — and uv (needed for apprise) wouldn't exist yet.
+#
+# Re-runs whenever the toolchain manifest changes:
+# mise-config-hash: {{ include "dot_config/mise/config.toml.tmpl" | sha256sum }}
+set -euo pipefail
+
+export PATH="$HOME/.local/share/mise/shims:$HOME/.local/bin:$PATH"
+
+echo "--- Installing mise-managed tools ---"
+mise install
+{{ if $arch }}
+echo "--- Upgrading packages installed via mise ---"
+# Always upgrade non-interactively so `chezmoi apply` stays unattended.
+mise upgrade --bump
+mise self-update
+{{ end }}
+echo "--- Installing Apprise via uv ---"
+if ! command -v apprise >/dev/null 2>&1; then
+    uv tool install apprise --python 3.12
+    echo "Apprise installed successfully"
+else
+    echo "Apprise is already installed"
+fi
+
+echo "--- mise toolchain installed ---"
+{{ if $arch }}
+fastfetch
+{{ end }}
+{{- end -}}
+{{- end -}}

@@ -14,9 +14,11 @@
 # Philosophy: development *tools* (chezmoi, nu, jq, ripgrep, fd, uv, node, ...)
 # are provisioned by mise from ~/.config/mise/config.toml — NOT apt. This script
 # installs only what mise can't: the C build toolchain and system libraries that
-# some mise tools compile against, plus base CLI utilities. mise itself is then
-# bootstrapped here and `mise install` materializes the tool set — matching the
-# arch/darwin scripts so a fresh Debian box has the full toolchain after apply.
+# some mise tools compile against, plus base CLI utilities. mise itself is
+# bootstrapped here; the full tool set materializes in the AFTER phase
+# (run_onchange_after_install_mise_toolchain) once the file phase has applied
+# the real mise config — running `mise install` here on a fresh box is a no-op
+# because ~/.config/mise/config.toml doesn't exist yet.
 #
 # config-version: 1
 set -euo pipefail
@@ -47,14 +49,17 @@ if ! command -v mise >/dev/null 2>&1; then
     export PATH="$HOME/.local/bin:$PATH"
 fi
 
-echo "--- Installing mise-managed tools ---"
-mise install
-
-echo "--- Installing Apprise via uv ---"
-if ! command -v apprise >/dev/null 2>&1; then
-    uv tool install apprise --python 3.12
+echo "--- Ensuring nushell for the chezmoi file phase ---"
+# modify_*.nu scripts and [interpreters.nu] need `nu` DURING the file phase,
+# before the managed mise config lands. `mise use -g` writes a stub global
+# config (immediately overwritten by the file phase) and installs nushell; the
+# ~/.local/bin symlink makes `nu` resolvable wherever chezmoi itself is.
+if ! command -v nu >/dev/null 2>&1; then
+    mise use --global aqua:nushell/nushell@latest
+    mkdir -p "$HOME/.local/bin"
+    ln -sf "$(mise which nu)" "$HOME/.local/bin/nu"
 fi
 
-echo "--- system packages + mise toolchain installed ---"
+echo "--- system packages installed ---"
 {{- end -}}
 {{- end -}}
