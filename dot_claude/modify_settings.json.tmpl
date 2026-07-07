@@ -17,6 +17,10 @@ live="$(cat)"
 [ -z "$live" ] && live='{}'
 
 # Canonical desired config. Edit values HERE to change what chezmoi enforces.
+# DISABLE_AUTOUPDATER: mise owns the claude binary on every machine; the
+# self-updater must stay off or it installs a parallel "native" copy under
+# $HOME/.local/bin and warns on startup when PATH resolves to mise's copy
+# instead (worst on Windows boxes where Cadence sets HOME=C:\SPB_Data).
 desired="$(cat <<'DESIRED'
 {
   "editorMode": "vim",
@@ -28,6 +32,7 @@ desired="$(cat <<'DESIRED'
     "superpowers@claude-plugins-official": true
   },
   "env": {
+    "DISABLE_AUTOUPDATER": "1",
     "GIT_AUTHOR_EMAIL": "noreply@anthropic.com",
     "GIT_AUTHOR_NAME": "Claude",
     "GIT_COMMITTER_EMAIL": "noreply@anthropic.com",
