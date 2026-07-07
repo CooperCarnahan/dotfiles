@@ -79,7 +79,7 @@
     ],
     "copyFormatting": "none",
     "copyOnSelect": false,
-    "defaultProfile": "{47302f9c-1ac4-566c-aa3e-8cf29889d6ab}",
+    "defaultProfile": "{764c7586-7cc5-46dd-8dae-dbd201e1c63e}",
     "keybindings": 
     [
         {
@@ -189,10 +189,12 @@
                 "source": "Windows.Terminal.Azure"
             },
             {
-                "guid": "{47302f9c-1ac4-566c-aa3e-8cf29889d6ab}",
+                "commandline": "%LOCALAPPDATA%\\mise\\shims\\nu.exe",
+                "guid": "{764c7586-7cc5-46dd-8dae-dbd201e1c63e}",
                 "hidden": false,
+                "icon": "%USERPROFILE%\\.local\\share\\icons\\nushell.ico",
                 "name": "Nushell",
-                "source": "nu"
+                "startingDirectory": "%USERPROFILE%"
             },
             {
                 "guid": "{348efc64-71de-5663-863f-1d8a9de6c6ac}",

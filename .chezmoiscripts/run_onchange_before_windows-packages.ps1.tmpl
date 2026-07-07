@@ -26,7 +26,6 @@ Write-Step "Installing packages via WinGet"
 
 $packages = @(
     "Git.Git"  # scoop bucket adds below need git; Linux bootstrap installs it too
-    "Nushell.Nushell"
     "Microsoft.VisualStudioCode"
     "Microsoft.PowerToys"
 )
@@ -94,6 +93,18 @@ $ScoopPackages = @(
 foreach ($Package in $ScoopPackages) {
     Write-Host "Installing $Package..." -ForegroundColor Gray
     scoop install $Package
+}
+
+# 3. mise-managed tools. Must happen in this before_ script: chezmoi's
+# [interpreters.nu] modify scripts need `nu` (mise-provided on every OS) before
+# file targets are applied — same ordering the arch/darwin bootstraps use.
+Write-Step "Installing mise-managed tools"
+Refresh-SessionEnvironment
+$env:Path = "$env:USERPROFILE\scoop\shims;$env:Path"
+if (Get-Command mise -ErrorAction SilentlyContinue) {
+    mise install
+} else {
+    Write-Warning "mise not found on PATH; run 'mise install' manually, then re-run chezmoi apply."
 }
 
 Write-Host "`nWindows package setup completed!" -ForegroundColor Green

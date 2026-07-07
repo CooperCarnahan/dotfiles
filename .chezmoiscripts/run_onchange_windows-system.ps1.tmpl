@@ -19,6 +19,18 @@ Write-Step "Setting user environment variables"
 [System.Environment]::SetEnvironmentVariable("ZELLIJ_CONFIG_DIR", "$env:USERPROFILE\.config\zellij", "User")
 Write-Host "XDG_CONFIG_HOME and ZELLIJ_CONFIG_DIR set" -ForegroundColor Gray
 
+# mise shims on the User PATH: nushell (the shell itself) is mise-managed, so
+# non-interactive launchers — Windows Terminal, chezmoi's [interpreters.nu],
+# zellij — must resolve `nu` without a shell having run `mise activate`.
+# This is mise's documented Windows setup; Linux gets the same effect from
+# `mise activate bash` in the bashrc launcher.
+$MiseShims = "$env:LOCALAPPDATA\mise\shims"
+$UserPath = [System.Environment]::GetEnvironmentVariable("Path", "User")
+if ($UserPath -notlike "*$MiseShims*") {
+    [System.Environment]::SetEnvironmentVariable("Path", "$MiseShims;$UserPath", "User")
+    Write-Host "mise shims added to User PATH" -ForegroundColor Gray
+}
+
 # 2. Windows System Settings
 Write-Step "Applying Windows system settings"
 
