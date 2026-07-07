@@ -97,10 +97,22 @@ alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo
 
 # misc. path stuff
 export PATH="$HOME/.local/bin":"$PATH"
+export PATH="$HOME/go/bin":"$PATH"
+export PATH="/usr/local/go/bin":"$PATH"
 
 if [ -f "$HOME/.alias" ]; then
   . "$HOME/.alias"
 fi
+
+# bash is only a launcher: hand off to nushell (the actual interactive shell)
+# BEFORE any tool init — everything below this line runs only in the fallback
+# bash session you land in after exiting nu, so the normal path pays zero
+# eval-"$(tool init)" subprocess spawns.
+if command -v nu >/dev/null; then
+  nu --experimental-options=native-clip
+fi
+
+# ─── Fallback bash session (after exiting nu) ────────────────────────────────
 
 # enable programmable completion features (you don't need to enable
 # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
@@ -118,27 +130,17 @@ if command -v mise >/dev/null; then
 fi
 
 if command -v carapace >/dev/null; then
-  export CARAPACE_BRIDGES='zsh,fish,bash,inshellisense' # optional
+  export CARAPACE_BRIDGES='zsh,fish,bash'
   source <(carapace _carapace)
 fi
-
-# cargo
-if [ -f "$HOME/.cargo/env" ]; then
-  . "$HOME/.cargo/env"
-fi
-
-# go
-export PATH="$HOME/go/bin":"$PATH"
-export PATH="/usr/local/go/bin":"$PATH"
 
 # starship prompt
 if command -v starship >/dev/null; then
   eval "$(starship init bash)"
 fi
 
-# atuin
-if [ -f "$HOME/.atuin/bin/env" ]; then
-  . "$HOME/.atuin/bin/env"
+# atuin (mise-managed; the old ~/.atuin/bin standalone-installer path is gone)
+if command -v atuin >/dev/null; then
   eval "$(atuin init bash)"
 fi
 
@@ -146,7 +148,5 @@ fi
 if command -v zoxide >/dev/null; then
   eval "$(zoxide init bash)"
 fi
-
-nu --experimental-options=native-clip
 
 if command -v wt >/dev/null 2>&1; then eval "$(command wt config shell init bash)"; fi
