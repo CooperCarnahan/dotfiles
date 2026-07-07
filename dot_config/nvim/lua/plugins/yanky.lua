@@ -1,5 +1,9 @@
 return {
 	"gbprod/yanky.nvim",
+	keys = {
+		-- Also cycle backward with ]p (]P still does the indented linewise put)
+		{ "]p", "<Plug>(YankyCycleBackward)", desc = "Cycle Backward Through Yank History" },
+	},
 	opts = {
 		-- your configuration comes here
 		-- or leave it empty to use the default settings

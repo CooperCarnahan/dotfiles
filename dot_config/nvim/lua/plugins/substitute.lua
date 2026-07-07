@@ -4,7 +4,9 @@ local M = {
 }
 
 function M.config()
-	require("substitute").setup()
+	require("substitute").setup({
+		on_substitute = require("yanky.integration").substitute(),
+	})
 	vim.keymap.set("n", "r", "<cmd>lua require('substitute').operator()<cr>", { noremap = true })
 	vim.keymap.set("n", "rr", "<cmd>lua require('substitute').line()<cr>", { noremap = true })
 	vim.keymap.set("n", "R", "<cmd>lua require('substitute').eol()<cr>", { noremap = true })
