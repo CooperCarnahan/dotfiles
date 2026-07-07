@@ -85,14 +85,6 @@ let desired = r#'
     ],
     "SessionStart": [
       {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "{{ lookPath "node" | replace "\\" "/" }} \"{{ .chezmoi.homeDir }}/.claude/hooks/context-mode-cache-heal.mjs\""
-          }
-        ]
-      },
-      {
         "matcher": "",
         "hooks": [
           {
