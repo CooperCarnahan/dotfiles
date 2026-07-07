@@ -56,9 +56,9 @@ install-system-config.sh
 .local/share/system-config/**
 {{- end }}
 
-{{- if or (eq .chezmoi.os "darwin") (eq (includeTemplate "is-headless" .) "true") }}
-# Skip Linux-GUI (Wayland/Hyprland) configs where they can never run:
-# headless boxes reached over SSH, and macOS.
+{{- if or (ne .chezmoi.os "linux") (eq (includeTemplate "is-headless" .) "true") }}
+# Skip Linux-GUI (Wayland/Hyprland) configs everywhere they can never run:
+# any non-Linux OS, and headless Linux boxes reached over SSH.
 .config/hypr
 .config/hypr/**
 .config/hyprdynamicmonitors
