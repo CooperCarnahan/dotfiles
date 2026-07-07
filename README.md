@@ -98,15 +98,16 @@ flowchart TD
 
 ## Keeping a machine current
 
-`chezmoi apply` **provisions** (ensures packages are present); it does not force-upgrade them —
-the package scripts are `run_onchange_`, so they only re-run when their contents change. Refresh
-deliberately:
+`chezmoi apply` **provisions** (ensures packages are present). The package scripts are
+`run_onchange_`, so they only re-run when their contents change — e.g. a `chezmoi update`
+that pulls changes to them.
 
-- **Dev toolchain (all OS):** `mise upgrade` (or `mise upgrade --bump`).
-- **Windows GUI apps:** they self-update (VSCode, Zen, 1Password, Claude). For an explicit
-  refresh: `winget upgrade --all --silent` (or the `Update-WingetApps` PowerShell helper).
+- **Dev toolchain (all OS):** `mise upgrade`.
+- **Windows:** whenever the bootstrap re-runs it also **upgrades** everything in a tail phase —
+  `mise upgrade`, `winget upgrade --all`, `scoop update *` — and prints a `fastfetch` summary.
   `Microsoft.Git` upgrades in-flavor.
-- **macOS:** `brew upgrade`. **Arch:** `paru -Syu`. **Debian:** `sudo apt-get upgrade`.
+- **macOS:** `brew upgrade`. **Arch:** `paru -Syu` (the bootstrap also runs `mise upgrade`).
+  **Debian:** `sudo apt-get upgrade`.
 
 ## Layout
 
