@@ -14,8 +14,9 @@
 # Philosophy: development *tools* (chezmoi, nu, jq, ripgrep, fd, uv, node, ...)
 # are provisioned by mise from ~/.config/mise/config.toml — NOT apt. This script
 # installs only what mise can't: the C build toolchain and system libraries that
-# some mise tools compile against, plus base CLI utilities. Run `mise install`
-# after this to materialize the tool set.
+# some mise tools compile against, plus base CLI utilities. mise itself is then
+# bootstrapped here and `mise install` materializes the tool set — matching the
+# arch/darwin scripts so a fresh Debian box has the full toolchain after apply.
 #
 # config-version: 1
 set -euo pipefail
@@ -38,6 +39,22 @@ sudo apt-get update -y
 echo "--- apt: installing system packages ---"
 sudo apt-get install -y --no-install-recommends "${packages[@]}"
 
-echo "--- system packages installed (tools come from 'mise install') ---"
+echo "--- Checking for mise installation ---"
+if ! command -v mise >/dev/null 2>&1; then
+    echo "mise not found. Installing mise..."
+    curl https://mise.run | sh
+    # Add mise to PATH for the current session so `mise install` below resolves.
+    export PATH="$HOME/.local/bin:$PATH"
+fi
+
+echo "--- Installing mise-managed tools ---"
+mise install
+
+echo "--- Installing Apprise via uv ---"
+if ! command -v apprise >/dev/null 2>&1; then
+    uv tool install apprise --python 3.12
+fi
+
+echo "--- system packages + mise toolchain installed ---"
 {{- end -}}
 {{- end -}}
