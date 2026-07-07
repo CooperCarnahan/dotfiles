@@ -1,5 +1,4 @@
-{{- if eq .chezmoi.os "linux" -}}
-{{- if or (eq .osid "linux-arch") (eq .osid "linux-cachyos") -}}
+{{- if ne .chezmoi.os "windows" -}}
 #!/usr/bin/env bash
 # Post-install setup for Claude Code:
 #   - Register plugin marketplaces (so `claude plugin install` can find plugins)
@@ -7,9 +6,9 @@
 #   - Register MCP servers
 #
 # Runs `after` package install so the `claude` CLI is on PATH (provisioned via
-# mise from run_onchange_install_arch_packages.sh.tmpl). Idempotent — every
-# step swallows "already exists" errors via `|| true`. chezmoi re-runs this
-# script whenever its content changes (run_onchange_ hash).
+# mise on every unix platform). Idempotent — every step swallows "already
+# exists" errors via `|| true`. chezmoi re-runs this script whenever its
+# content changes (run_onchange_ hash).
 
 set -uo pipefail
 
@@ -49,5 +48,4 @@ if ! claude mcp list 2>/dev/null | grep -q "^debugmcp:"; then
 fi
 
 echo "--- Claude Code setup complete ---"
-{{- end -}}
 {{- end -}}

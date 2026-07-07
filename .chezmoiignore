@@ -54,9 +54,9 @@ install-system-config.sh
 .local/share/system-config/**
 {{- end }}
 
-{{- if eq (includeTemplate "is-headless" .) "true" }}
-# Headless machine (no desktop / Wayland session): skip GUI-only configs.
-# These are dead files on a box you only reach over SSH.
+{{- if or (eq .chezmoi.os "darwin") (eq (includeTemplate "is-headless" .) "true") }}
+# Skip Linux-GUI (Wayland/Hyprland) configs where they can never run:
+# headless boxes reached over SSH, and macOS.
 .config/hypr
 .config/hypr/**
 .config/hyprdynamicmonitors

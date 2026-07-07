@@ -75,6 +75,10 @@
   program = {{ lookPath "op-ssh-sign.exe" | quote }}
 {{- else if eq .chezmoi.os "darwin" }}
   program = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign"
+
+[credential]
+  # op-ssh-sign above only covers signing; HTTPS auth needs a helper too
+  helper = osxkeychain
 {{- else if eq .chezmoi.os "linux" }}
   {{- if (.chezmoi.kernel.osrelease | lower | contains "microsoft") }}
   program = {{ lookPath "op-ssh-sign.exe" | quote }}

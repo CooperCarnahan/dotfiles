@@ -1,0 +1,85 @@
+{{- if eq .chezmoi.os "darwin" -}}
+#!/bin/bash
+set -e
+
+echo "--- Detected macOS ---"
+
+# --- Configuration ---
+# CLI dev tools (jq, nushell, ripgrep, ...) are provisioned by mise from
+# ~/.config/mise/config.toml, not brew — keep these lists to system packages
+# and GUI apps, mirroring the arch script's split.
+brew_formulas=(
+    "ctags"
+    "dfu-util"
+    "dtc"
+    "gperf"
+    "make"
+    "ouch"
+    "socat"
+    "tree"
+    "wget"
+)
+
+brew_casks=(
+    "1password"
+    "1password-cli"
+    "ghostty"
+    "zen-browser"
+)
+
+# --- Functions ---
+command_exists () {
+    command -v "$1" >/dev/null 2>&1
+}
+
+# --- Script Execution ---
+
+echo "--- Checking for Homebrew installation ---"
+if ! command_exists "brew"; then
+    echo "Homebrew not found. Installing (this pulls in the Xcode CLT if needed)..."
+    NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    # brew lands outside the default PATH on both apple silicon and intel
+    if [ -x /opt/homebrew/bin/brew ]; then
+        eval "$(/opt/homebrew/bin/brew shellenv)"
+    elif [ -x /usr/local/bin/brew ]; then
+        eval "$(/usr/local/bin/brew shellenv)"
+    fi
+fi
+
+echo "--- Installing/updating packages via Homebrew ---"
+brew update
+brew install "${brew_formulas[@]}"
+brew install --cask "${brew_casks[@]}"
+
+echo "--- Checking for mise installation ---"
+if ! command_exists "mise"; then
+    echo "mise not found. Installing mise..."
+    curl https://mise.run | sh
+    if [ $? -ne 0 ]; then
+        echo "Error: Failed to install mise"
+        exit 1
+    fi
+    # Add mise to PATH for current session
+    export PATH="$HOME/.local/bin:$PATH"
+    echo "mise installed successfully"
+else
+    echo "mise is already installed"
+fi
+
+echo "--- Installing tools managed by mise ---"
+mise install
+
+echo "--- Installing Apprise via uv ---"
+if ! command_exists "apprise"; then
+    uv tool install apprise --python 3.12
+    echo "Apprise installed successfully"
+else
+    echo "Apprise is already installed"
+fi
+
+echo "--- All packages installed successfully! ---"
+
+# mise puts fastfetch on PATH, but don't let a missing binary fail the script
+# (set -e + trailing &&-list would exit nonzero)
+if command_exists "fastfetch"; then fastfetch; fi
+{{- end -}}
