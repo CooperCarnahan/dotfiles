@@ -29,10 +29,17 @@ install git (and everything else) during the first apply.
 ### macOS / Linux
 
 ```sh
+export PATH="$HOME/.local/share/mise/shims:$HOME/.local/bin:$PATH"
 sh -c "$(curl -fsSL https://chezmoi.io/get)" -- init --apply CooperCarnahan
 ```
 
 Installs chezmoi to `~/.local/bin`, clones `github.com/CooperCarnahan/dotfiles`, and applies.
+
+The `PATH` export matters on a *fresh* box: the file phase runs `modify_*.nu` scripts
+through `[interpreters.nu]`, so the chezmoi process itself must be able to resolve `nu`
+(provisioned mid-apply by the before-script into mise shims + a `~/.local/bin` symlink).
+A login shell won't have either dir on PATH yet, because they didn't exist at login.
+This is exactly the invocation the podman full-tier test validates.
 
 - **macOS:** the darwin script installs Homebrew (which pulls in the Xcode Command Line Tools,
   and thus `git`), brew formulas/casks, mise, then the toolchain. No prompts.
