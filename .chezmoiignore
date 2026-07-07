@@ -4,6 +4,12 @@ README.md
 docs/
 docs/**
 
+# Repo-only test harness + CI workflows — not deployed to ~/.
+tests/
+tests/**
+.github/
+.github/**
+
 **/*.log
 
 **/.git/

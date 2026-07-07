@@ -1,0 +1,33 @@
+name: test-smoke
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        distro: [debian, arch]
+    env:
+      # The image build's `mise use nushell` hits the GitHub API — authenticate
+      # to dodge per-IP rate limits on shared runners (run.sh feeds this into
+      # the build as a secret).
+      MISE_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+
+      # podman is preinstalled on ubuntu-24.04 runner images; cheap fallback.
+      - name: Ensure podman
+        run: |
+          if ! command -v podman >/dev/null 2>&1; then
+            sudo apt-get update && sudo apt-get install -y podman
+          fi
+          podman --version
+
+      - name: Run smoke tier
+        run: tests/podman/run.sh --tier smoke ${{ matrix.distro }}
