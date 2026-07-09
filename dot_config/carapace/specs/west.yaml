@@ -6,8 +6,12 @@
 # not argcomplete/cobra/etc., so a generic shell bridge is required.
 # parsing: disabled = carapace forwards the raw line to fish's completion instead of
 # parsing west's args itself (required for a pure bridge).
-# Prereq: west's fish completion is registered for fish, i.e.
-#   west completion fish > ~/.config/fish/completions/west.fish
+# Prereqs — the bridge runs fish sandboxed (fish --no-config) and does NOT see
+# ~/.config/fish/completions on its own:
+#   1. west completion fish > ~/.config/carapace/bridge/fish/completions/west.fish
+#   2. ~/.config/carapace/bridge/fish/config.fish must put that dir on
+#      fish_complete_path (fish 4.8 made __fish_config_dir read-only, which broke
+#      carapace <=1.7.3's own sandbox-dir mechanism; the config.fish hook still works).
 name: west
 description: Zephyr meta-tool
 parsing: disabled
