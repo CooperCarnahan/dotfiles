@@ -1,0 +1,12 @@
+{{- /* chezmoi:modify-template */ -}}
+{{- /*
+  Claude rewrites this file and accumulates runtime state. Chezmoi owns the
+  stable desired keys, while permissions and all unknown keys float once the
+  application has created them. The shared helper returns the original bytes
+  whenever the merge is already semantically satisfied.
+*/ -}}
+{{- includeTemplate "modify-json-merge" (dict
+      "stdin" .chezmoi.stdin
+      "desired" (includeTemplate "claude-settings.json" .)
+      "floatKeys" (list "permissions")
+    ) -}}

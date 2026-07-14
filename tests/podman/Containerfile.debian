@@ -42,7 +42,7 @@ RUN --mount=type=secret,id=mise_github_token,uid=1000 \
     token="$(cat /run/secrets/mise_github_token 2>/dev/null || true)" \
     && { [ -z "$token" ] || export MISE_GITHUB_TOKEN="$token"; } \
     && curl -fsSL https://mise.run | sh \
-    && "/home/$USERNAME/.local/bin/mise" use --global aqua:nushell/nushell@latest \
+    && "/home/$USERNAME/.local/bin/mise" use --global aqua:nushell/nushell@latest jq@latest \
     && "/home/$USERNAME/.local/bin/mise" install
 
 ENV PATH="/home/$USERNAME/.local/share/mise/shims:/home/$USERNAME/.local/bin:$PATH"

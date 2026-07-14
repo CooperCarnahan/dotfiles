@@ -1,39 +1,3 @@
-#!/usr/bin/env nu
-# chezmoi modify_ script for ~/.claude/settings.json
-#
-# The .nu extension is deliberate: [interpreters.nu] in chezmoi.toml runs this
-# via `nu --stdin` on every OS (Windows can't exec a shebang), and chezmoi
-# strips a matching interpreter extension from the target name —
-# settings.json.nu -> settings.json. `--stdin` is what wires the live file
-# into $in.
-#
-# Claude Code owns this file: it rewrites it in its own key order and appends
-# runtime keys (notif flags, session-accreted permissions) during normal use.
-# A plain whole-file template fights that and makes `chezmoi diff` a wall of
-# reordering noise. Instead this script receives the LIVE file on stdin and
-# merges in only the "stable" keys we want chezmoi to own. Nushell records
-# preserve JSON key order, so Claude's key order and its runtime-mutated keys
-# survive the merge and `chezmoi diff` stays quiet.
-#
-# Floats (never touched once present): permissions.*, defaultMode,
-# agentPushNotifEnabled, inputNeededNotifEnabled, and any future keys Claude adds.
-# `permissions` is only seeded on a fresh machine (when the file doesn't exist).
-
-# Body lives in main: nu rejects `$in` at script top level ("can't evaluate
-# block in IR mode"); with --stdin, main receives stdin as pipeline input.
-def main [] {
-
-# str trim: treat whitespace-only stdin (not just 0 bytes) as a missing file.
-let raw = ($in | default "" | str trim)
-
-let live = (if ($raw | is-empty) { "{}" } else { $raw }) | from json
-
-# Canonical desired config. Edit values HERE to change what chezmoi enforces.
-# DISABLE_AUTOUPDATER: mise owns the claude binary on every machine; the
-# self-updater must stay off or it installs a parallel "native" copy under
-# $HOME/.local/bin and warns on startup when PATH resolves to mise's copy
-# instead (worst on Windows boxes where Cadence sets HOME=C:\SPB_Data).
-let desired = r#'
 {
   "editorMode": "vim",
   "enabledPlugins": {
@@ -157,19 +121,4 @@ let desired = r#'
     "type": "command"
   },
   "theme": "auto"
-}
-'# | from json
-
-# live ⊕ desired (desired wins; live keeps its key order and unknown keys).
-# --strategy overwrite replaces arrays wholesale — the default `table` strategy
-# would element-merge the hooks lists instead.
-let merged = $live | merge deep --strategy overwrite ($desired | reject permissions)
-
-# `permissions` floats: seed from desired only when the live file has none.
-if ($merged | get -o permissions) == null {
-  $merged | upsert permissions $desired.permissions
-} else {
-  $merged
-} | to json --indent 2
-
 }

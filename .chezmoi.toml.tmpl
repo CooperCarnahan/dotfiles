@@ -34,10 +34,7 @@
     command = "powershell"
     args = ["-NoLogo", "-NoProfile", "-ExecutionPolicy", "Bypass"]
 
-# Run .nu chezmoi scripts (Windows can't exec a shebang; on Unix this makes the
-# target name resolve identically — chezmoi strips a matching interpreter
-# extension, e.g. modify_settings.json.nu -> settings.json). --stdin wires the
-# live file into $in for modify_ scripts; harmless for run_ scripts.
+# Nushell is used only by AFTER-phase scripts, after mise has provisioned it.
 [interpreters.nu]
     command = "nu"
     args = ["--stdin"]
@@ -51,6 +48,14 @@
         "{{ `{{ .Target }}` }}"
     ]
     pager = "less -R"
+
+# Canonicalize JSON only for display. Native modify templates preserve the live
+# bytes on semantic no-ops; when a managed value really changes, this prevents
+# object-key ordering from obscuring that change in difftastic's output.
+[[textconv]]
+    pattern = "**/*.json"
+    command = "jq"
+    args = ["--sort-keys", "."]
 
 [merge]
     command = "nvim"

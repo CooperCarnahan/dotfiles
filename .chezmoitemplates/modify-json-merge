@@ -1,0 +1,27 @@
+{{- /*
+  Shared body for native chezmoi modify templates over app-owned JSON.
+
+  The caller passes the live file as "stdin" and a rendered JSON object as
+  "desired". Desired values win in a recursive object merge; arrays and scalars
+  are replaced. Optional "floatKeys" remain application-owned once present.
+
+  The semantic equality check is important: if all managed values already
+  match, emit the original bytes instead of reserializing the object. This
+  preserves the application's key order and makes order-only rewrites a no-op.
+*/ -}}
+{{- $raw := .stdin -}}
+{{- $live := $raw | default "{}" | fromJson -}}
+{{- $desired := .desired | fromJson -}}
+{{- if hasKey . "floatKeys" -}}
+  {{- range .floatKeys -}}
+    {{- if hasKey $live . -}}
+      {{- $_ := unset $desired . -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- $merged := mergeOverwrite (deepCopy $live) $desired -}}
+{{- if deepEqual $live $merged -}}
+{{ $raw }}
+{{- else -}}
+{{ $merged | toPrettyJson }}
+{{- end -}}

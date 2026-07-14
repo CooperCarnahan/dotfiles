@@ -64,6 +64,34 @@ load helpers/common
     [ ! -e "$HOME/.github" ]
 }
 
+@test "claude settings.json native modifier seeds managed keys" {
+    [ -f "$HOME/.claude/settings.json" ]
+    run jq -e '.editorMode == "vim" and .model == "opus" and (.permissions.allow | length) > 0' \
+        "$HOME/.claude/settings.json"
+    [ "$status" -eq 0 ]
+}
+
+@test "claude modifier preserves runtime state and exact bytes on semantic no-op" {
+    settings="$HOME/.claude/settings.json"
+    tmp=$(mktemp)
+
+    jq '.runtimeTest = {keep: true} | .permissions = {allow: ["sentinel"]}' \
+        "$settings" > "$tmp"
+    mv "$tmp" "$settings"
+    before=$(sha256sum "$settings" | cut -d' ' -f1)
+
+    chez apply --force --refresh-externals=never --exclude scripts
+    after=$(sha256sum "$settings" | cut -d' ' -f1)
+    [ "$after" = "$before" ]
+    jq -e '.runtimeTest.keep == true and .permissions.allow == ["sentinel"]' "$settings"
+
+    jq '.editorMode = "emacs"' "$settings" > "$tmp"
+    mv "$tmp" "$settings"
+    chez apply --force --refresh-externals=never --exclude scripts
+    jq -e '.editorMode == "vim" and .runtimeTest.keep == true and .permissions.allow == ["sentinel"]' \
+        "$settings"
+}
+
 @test "second apply is idempotent" {
     # --exclude scripts in both tiers: full's scripts already ran once, and
     # file-state idempotency is the contract being tested.

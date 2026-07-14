@@ -19,9 +19,10 @@ repos:
         # that some parsers can't handle.
         exclude: '\.tmpl$'
       - id: check-json
-        # GLZR's executable_*.vbs.tmpl files contain JSON-like blocks but are
-        # full templates; exclude.
-        exclude: '\.tmpl$'
+        # Native modify templates keep the target's .json suffix so chezmoi maps
+        # them correctly, but their source is Go-template code rather than JSON.
+        # The Claude desired object is also templated before it becomes JSON.
+        exclude: '(\.tmpl$|^\.chezmoitemplates/claude-settings\.json$|(^|/)modify_[^/]+\.json$)'
       - id: check-toml
         exclude: '\.tmpl$'
       - id: check-merge-conflict
