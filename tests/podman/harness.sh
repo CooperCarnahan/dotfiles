@@ -4,9 +4,10 @@
 #
 #   smoke — tooling (chezmoi/mise/nushell) is baked into the image; applies the
 #           source with run scripts excluded and asserts on rendered output.
-#   full  — starts from a fresh-system image; installs chezmoi the way a real
-#           bootstrap does, then applies WITH run scripts so the actual
-#           package-install path is exercised end-to-end.
+#   full  — starts from a fresh-system image; installs mise and seeds chezmoi
+#           through it (the README one-liner), then applies WITH
+#           run scripts so the actual package-provisioning path
+#           (mise bootstrap packages + AUR script) is exercised end-to-end.
 set -euo pipefail
 
 usage() {
@@ -34,8 +35,8 @@ esac
 
 repo=/src/dotfiles
 
-# Shims first so mise-provisioned tools (critically `nu`, needed by chezmoi's
-# [interpreters.nu] for modify_*.nu scripts) resolve as soon as they exist.
+# Shims first so mise-provisioned tools used by after hooks resolve as soon as
+# they exist.
 # The dir may not exist yet in the full tier — harmless.
 export PATH="$HOME/.local/share/mise/shims:$HOME/.local/bin:$PATH"
 
@@ -44,8 +45,10 @@ export PATH="$HOME/.local/share/mise/shims:$HOME/.local/bin:$PATH"
 export DOTFILES_TEST=1
 
 if ! command -v chezmoi >/dev/null 2>&1; then
-    # Full tier: a real bootstrap's first step is installing chezmoi itself.
-    sh -c "$(curl -fsLS get.chezmoi.io)" -- -b "$HOME/.local/bin"
+    # Full tier: reproduce the README one-liner — install mise, then seed only
+    # chezmoi. Native modify templates have no pre-file-phase dependencies.
+    curl -fsSL https://mise.run | sh
+    mise use -g chezmoi
 fi
 
 # Generate the config through the REAL .chezmoi.toml.tmpl path: osid comes from

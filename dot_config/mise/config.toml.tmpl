@@ -21,8 +21,8 @@ cargo-binstall = "latest"
 ccache = "latest"
 chezmoi = "latest"
 claude = "latest"
-codex = "latest"
 cmake = "latest"
+codex = "latest"
 croc = "latest"
 delta = "latest"
 difftastic = "latest"
@@ -45,6 +45,7 @@ node = "latest"
 "npm:@colbymchenry/codegraph" = "latest"
 "npm:context-mode" = "latest"
 opencode = "latest"
+"pipx:apprise" = "latest"
 pitchfork = "latest"
 prek = "latest"
 ripgrep = "latest"
@@ -52,6 +53,7 @@ rust = "latest"
 starship = "latest"
 television = "latest"
 tmux = "latest"
+topgrade = "latest"
 tree-sitter = "latest"
 uv = "latest"
 watchexec = "latest"
@@ -64,4 +66,96 @@ zoxide = "latest"
 "aqua:fish-shell/fish-shell" = "latest"
 "github:agent-of-empires/agent-of-empires" = { version = "latest", exe = "aoe-linux-amd64", rename_exe = "aoe" }
 "github:ogulcancelik/herdr" = "latest"
+{{- end }}
+
+[tasks.bootstrap]
+description = "Converge this machine: packages + tools + dotfiles"
+run = "chezmoi apply"
+
+[tasks.update]
+description = "Update dotfiles, system packages, and tools with Topgrade"
+confirm = "Run the full Topgrade update? This can take a while."
+run = "topgrade"
+
+[tasks.update-unattended]
+description = "Update everything non-interactively with Topgrade"
+run = "topgrade --yes --no-ask-retry"
+
+{{- /* Unix family detection, same idiom as run_onchange_after_install_mise_toolchain. */ -}}
+{{- $arch := or (eq .osid "linux-arch") (eq .osid "linux-cachyos") -}}
+{{- $deb := false -}}
+{{- if hasKey .chezmoi.osRelease "id" -}}
+{{-   $deb = eq .chezmoi.osRelease.id "debian" -}}
+{{- end -}}
+{{- if and (not $deb) (hasKey .chezmoi.osRelease "idLike") -}}
+{{-   $deb = contains "debian" .chezmoi.osRelease.idLike -}}
+{{- end -}}
+{{- $darwin := eq .chezmoi.os "darwin" -}}
+{{- if or $arch $deb $darwin }}
+
+# System packages (OS/build packages + GUI apps), applied by
+# `mise bootstrap packages apply --yes` in run_onchange_after_install_mise_toolchain.
+# AUR packages can't live here (mise has no AUR backend) — they stay in
+# run_onchange_after_setup_aur_packages. Windows (winget/scoop) is likewise
+# script-driven. Entries are template-gated per OS family rather than relying on
+# mise's own manager filtering, because mise's `brew` manager also runs on Linux —
+# ungated brew: entries would drag Linuxbrew onto arch/debian boxes.
+[bootstrap.packages]
+{{ if $arch -}}
+"pacman:base" = "latest"
+"pacman:base-devel" = "latest"
+"pacman:ctags" = "latest"
+"pacman:dfu-util" = "latest"
+"pacman:docker" = "latest"
+"pacman:docker-compose" = "latest"
+"pacman:dtc" = "latest"
+"pacman:git" = "latest"
+"pacman:gperf" = "latest"
+"pacman:make" = "latest"
+"pacman:openssh" = "latest"
+"pacman:socat" = "latest"
+"pacman:sudo" = "latest"
+"pacman:tk" = "latest"
+"pacman:tree" = "latest"
+"pacman:unzip" = "latest"
+"pacman:which" = "latest"
+"pacman:wget" = "latest"
+{{ if eq (includeTemplate "is-headless" .) "false" -}}
+# Desktop / Wayland stack — skipped on headless machines.
+"pacman:ghostty" = "latest"
+"pacman:gdm" = "latest"
+"pacman:hyprlock" = "latest"
+"pacman:hyprshot" = "latest"
+"pacman:wlogout" = "latest"
+"pacman:wtype" = "latest"
+"pacman:xdg-desktop-portal-hyprland" = "latest"
+"pacman:xsensors" = "latest"
+"pacman:zen-browser-bin" = "latest"
+{{ end -}}
+{{ end -}}
+{{ if $deb -}}
+"apt:build-essential" = "latest"
+"apt:pkg-config" = "latest"
+"apt:libssl-dev" = "latest"
+"apt:ca-certificates" = "latest"
+"apt:curl" = "latest"
+"apt:git" = "latest"
+"apt:unzip" = "latest"
+{{ end -}}
+{{ if $darwin -}}
+# mise's brew backend needs no preinstalled Homebrew (it creates /opt/homebrew
+# itself, one sudo prompt on a brew-less mac).
+"brew:ctags" = "latest"
+"brew:dfu-util" = "latest"
+"brew:dtc" = "latest"
+"brew:gperf" = "latest"
+"brew:make" = "latest"
+"brew:socat" = "latest"
+"brew:tree" = "latest"
+"brew:wget" = "latest"
+"brew-cask:1password" = "latest"
+"brew-cask:1password-cli" = "latest"
+"brew-cask:ghostty" = "latest"
+"brew-cask:zen-browser" = "latest"
+{{ end -}}
 {{- end }}

@@ -92,6 +92,17 @@ load helpers/common
         "$settings"
 }
 
+@test "topgrade config makes updates one-way through chezmoi" {
+    config="$HOME/.config/topgrade.toml"
+    [ -f "$config" ]
+    grep -F 'first = ["chezmoi"]' "$config"
+    grep -F 'disable = ["self_update"]' "$config"
+
+    mise_config="$HOME/.config/mise/config.toml"
+    grep -F 'confirm = "Run the full Topgrade update? This can take a while."' "$mise_config"
+    grep -F 'run = "topgrade --yes --no-ask-retry"' "$mise_config"
+}
+
 @test "second apply is idempotent" {
     # --exclude scripts in both tiers: full's scripts already ran once, and
     # file-state idempotency is the contract being tested.

@@ -10,9 +10,11 @@
 
 set -euo pipefail
 
-# Bail until the package installer has put gdm in place.
+# Bail until the package installer has put gdm in place. gdm is installed by
+# `mise bootstrap packages apply` in run_onchange_after_install_mise_toolchain,
+# which sorts before this script — so on a fresh box it's already present here.
 if ! command -v gdm >/dev/null 2>&1; then
-    echo "skipping gdm setup: gdm not installed yet (rerun chezmoi apply after install_arch_packages)"
+    echo "skipping gdm setup: gdm not installed yet (rerun chezmoi apply after the mise toolchain script)"
     exit 0
 fi
 
@@ -35,5 +37,4 @@ fi
 
 # Enable gdm at boot. Idempotent.
 sudo systemctl enable gdm.service >/dev/null
-{{- end -}}
 {{- end -}}

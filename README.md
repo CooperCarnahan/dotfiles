@@ -5,39 +5,60 @@ Cross-platform [chezmoi](https://chezmoi.io) dotfiles for Windows, macOS, and Li
 
 ## Design
 
-- **The system package manager installs only OS/build packages and GUI apps.**
-  On Windows that's winget + scoop; macOS Homebrew; Arch pacman/paru; Debian apt.
-- **[mise](https://mise.jdx.dev) installs the entire dev CLI toolchain** — `nu`, `jq`,
-  ripgrep, node, uv, `claude`, and ~50 more, from `dot_config/mise/config.toml.tmpl`.
+- **[mise](https://mise.jdx.dev) is the package authority on unix.** One manifest —
+  `dot_config/mise/config.toml.tmpl` — declares both the dev CLI toolchain (`[tools]`: `nu`,
+  ripgrep, node, uv, `claude`, and ~50 more) and the system packages
+  (`[bootstrap.packages]`: pacman/apt/brew/brew-cask — OS/build packages and GUI apps).
+- **Scripts cover only what mise can't:** AUR packages via paru
+  (`run_onchange_after_setup_aur_packages`) and the whole Windows layer (winget + scoop —
+  mise has no backends for those).
+- **[Topgrade](https://github.com/topgrade-rs/topgrade) owns updates.** It runs chezmoi first,
+  then upgrades the system package manager, mise tools, and the other managers it detects.
+  Chezmoi only provisions declared state and never calls Topgrade, so the flow cannot recurse.
 
-The bootstrap scripts under `.chezmoiscripts/` run in chezmoi's `before` phase: they install
-the system packages, install mise, then run `mise install` — so the toolchain exists before
-any file targets (some are `nu` scripts that need mise's `nu`) are applied.
+App-owned JSON configs (`~/.claude/settings.json`, Windows PowerToys/Terminal) use native
+`chezmoi:modify-template` merges. They preserve unknown/runtime keys and emit the original
+bytes when the managed values already match, so application key ordering creates neither
+diff noise nor apply churn. No external interpreter is required during the file phase.
 
-> The `chezmoi = "latest"` entry in the mise config is a **managed convenience copy**, not the
-> binary that bootstraps the machine. The initial chezmoi below is what does the first apply.
+On unix the bootstrap runs almost entirely in the `after` phase
+(`run_onchange_after_install_mise_toolchain`): `mise bootstrap packages apply` installs the
+system packages, then `mise install` materializes the toolchain — neither can happen earlier,
+because both read `~/.config/mise/config.toml`, which the file phase itself puts in place.
+(Windows keeps its mise install in the `before` script, driven by scoop.)
 
 ## First run on a new machine
 
-The only manual prerequisite is chezmoi itself. chezmoi clones this repo with its **built-in
-git**, so a system `git` is *not* required for the initial clone — the bootstrap scripts
-install git (and everything else) during the first apply.
+The only manual prerequisite is mise; chezmoi comes through it. Chezmoi clones this repo with
+its **built-in git**, so a system `git` is *not* required for the initial clone — `mise
+bootstrap packages apply` installs git (and everything else) during the first apply.
 
 ### macOS / Linux
 
 ```sh
-sh -c "$(curl -fsSL https://chezmoi.io/get)" -- init --apply CooperCarnahan
+curl https://mise.run | sh
+export PATH="$HOME/.local/share/mise/shims:$HOME/.local/bin:$PATH"
+mise use -g chezmoi
+chezmoi init --apply CooperCarnahan
 ```
 
-Installs chezmoi to `~/.local/bin`, clones `github.com/CooperCarnahan/dotfiles`, and applies.
+`mise use -g` installs chezmoi and writes a minimal `~/.config/mise/config.toml`; the file
+phase replaces it with this repo's full manifest.
 
-- **macOS:** the darwin script installs Homebrew (which pulls in the Xcode Command Line Tools,
-  and thus `git`), brew formulas/casks, mise, then the toolchain. No prompts.
+The `PATH` export makes the newly installed chezmoi shim visible immediately. A login shell
+will not have that directory yet on a fresh box because it did not exist at login. This is the
+same invocation the Podman full-tier test validates.
+
+- **macOS:** no Homebrew install needed — mise's `brew`/`brew-cask` backends install formulas
+  and casks directly (one sudo prompt to create `/opt/homebrew` on a brew-less mac). No
+  chezmoi prompts. If you'll compile anything (cargo builds, etc.), run
+  `xcode-select --install` first — nothing in the bootstrap pulls the CLT anymore.
 - **Arch / CachyOS:** prompts **"Is this a headless machine?"** (defaults to `false` on
-  Arch/CachyOS). Installs pacman + AUR (via paru) packages, mise, toolchain, and — on non-headless
-  boxes — the Wayland desktop stack + GDM.
-- **Debian / Ubuntu:** treated as a headless server. Installs the apt build toolchain, mise,
-  then the toolchain. (No desktop packages.)
+  Arch/CachyOS). The pacman set — plus, on non-headless boxes, the Wayland desktop stack +
+  GDM — applies via `mise bootstrap packages` in the `after` phase; AUR packages follow via
+  paru in `setup_aur_packages`.
+- **Debian / Ubuntu:** treated as a headless server. The apt build toolchain applies via
+  `mise bootstrap packages` in the `after` phase. (No desktop packages.)
 
 ### Windows
 
@@ -55,67 +76,90 @@ chezmoi init --apply CooperCarnahan
 
 ## How the bootstrap runs
 
-Every platform follows the same skeleton — only the package-install node swaps by OS, and all
-branches reconverge at `mise install`. This diagram is the ground truth for script ordering
-(the nodes are the actual script basenames in `.chezmoiscripts/`):
+Every platform follows the same skeleton: the file phase uses dependency-free native
+modifiers and writes the mise/Topgrade manifests, then the after phase provisions packages
+and tools. Windows installs its application packages and mise in the before phase so those
+applications exist before their configs are applied. Fastfetch is a plain, lexically last
+after hook, so it is the actual completion summary.
 
 ```mermaid
 flowchart TD
-    A["Manual: install chezmoi<br/>winget twpayne.chezmoi · chezmoi.io/get"]
+    A["Manual: install mise → chezmoi<br/>curl mise.run · mise use -g chezmoi<br/>(Windows: winget twpayne.chezmoi)"]
     A --> B["chezmoi init --apply CooperCarnahan<br/>built-in git clones the repo"]
     B --> C{{".chezmoi.toml.tmpl prompts"}}
     C -->|Windows| Pw["work?"]
     C -->|Linux| Pl["headless?"]
     C -->|macOS| Pm["no prompts"]
 
-    subgraph BEFORE["BEFORE phase — provision system, then mise"]
+    subgraph BEFORE["BEFORE phase"]
       direction TB
-      Pw --> Bw["windows-packages.ps1<br/>winget: Microsoft.Git, VSCode, PowerToys (+apps)<br/>scoop: mise, fonts, glazewm"]
-      Pl -->|arch / cachyos| Ba["install_arch_packages.sh<br/>pacman: git, base-devel… · paru: AUR"]
-      Pl -->|debian / ubuntu| Bd["install_debian_packages.sh<br/>apt: build-essential, git, curl…"]
-      Pm --> Bm["install_darwin_packages.sh<br/>brew: Xcode CLT ⇒ git · formulas + casks"]
-      Ba --> Rn["curl https://mise.run | sh"]
-      Bd --> Rn
-      Bm --> Rn
-      Bw --> Mi["mise install"]
-      Rn --> Mi
-      Mi --> Tc["toolchain: nu · chezmoi(copy) · claude · uv · ~50 tools"]
+      Pw --> Bw["windows-packages.ps1<br/>winget: Microsoft.Git, VSCode, PowerToys (+apps)<br/>scoop: mise, fonts, utilities · mise install"]
     end
 
-    Tc --> Main["MAIN phase — apply file targets<br/>modify_*.nu run via [interpreters.nu] (need nu)"]
+    Bw --> Main
+    Pl --> Main
+    Pm --> Main
+    Main["FILE phase — apply targets<br/>native modify templates merge app-owned JSON<br/>writes mise + Topgrade configuration"]
     Main --> Sys["windows-system.ps1 (Windows)<br/>HOME · XDG · PATH · dark/dev mode"]
 
-    subgraph AFTER["AFTER phase — hooks"]
+    subgraph AFTER["AFTER phase — packages + toolchain + hooks"]
       direction TB
+      Tl["after_install_mise_toolchain.sh (unix)<br/>install mise → bootstrap packages apply → mise install → uv apprise"]
+      Nu["after_reconcile-nushell-autoload.nu<br/>(needs nu — mise-provided, now present)"]
+      Aur["after_setup_aur_packages.sh (arch)<br/>paru bootstrap · AUR pkgs · mako disable"]
       Cc["after_setup_claude_code.sh<br/>(non-Windows) plugins + MCP"]
-      Nu["after_reconcile-nushell-autoload.nu<br/>(needs nu)"]
       Gd["after_setup_gdm.sh + install-system-config.sh<br/>(Linux desktop only)"]
+      Ff["zz-fastfetch.nu<br/>final summary on every apply"]
     end
-    Main --> Cc
-    Main --> Nu
-    Main --> Gd
+    Main --> Tl
+    Tl --> Nu
+    Nu --> Aur
+    Aur --> Cc
+    Cc --> Gd
+    Gd --> Ff
 ```
+
+## Testing
+
+Podman-based bootstrap tests for Arch and Debian live in `tests/podman/`
+(see [its README](tests/podman/README.md)):
+
+```sh
+tests/podman/run.sh                     # smoke tier: template render + apply asserts (~2 min)
+tests/podman/run.sh --tier full debian  # full tier: the real fresh-system bootstrap
+```
+
+CI runs the smoke tier on every push/PR and the full tier weekly.
 
 ## Keeping a machine current
 
-`chezmoi apply` **provisions** (ensures packages are present). The package scripts are
-`run_onchange_`, so they only re-run when their contents change — e.g. a `chezmoi update`
-that pulls changes to them.
+`chezmoi apply` only **provisions**: it ensures declared packages and tools are present and
+applies configuration. It does not upgrade already-installed software. Editing
+`[bootstrap.packages]` or `[tools]` changes the manifest hash and re-runs provisioning.
 
-- **Dev toolchain (all OS):** `mise upgrade`.
-- **Windows:** whenever the bootstrap re-runs it upgrades `mise` and runs `scoop update *`, then
-  prints a `fastfetch` summary. The `winget upgrade --all` step is **opt-in** (slow + repeated UAC
-  prompts): set `$env:WINGET_UPGRADE=1` before apply, or answer the prompt. `Microsoft.Git`
-  upgrades in-flavor.
-- **macOS:** `brew upgrade`. **Arch:** `paru -Syu` (the bootstrap also runs `mise upgrade`).
-  **Debian:** `sudo apt-get upgrade`.
+Run `mise run update` to update the machine; it asks for confirmation before starting the
+potentially lengthy Topgrade pass. The managed Topgrade config runs chezmoi first, then the
+detected system and language package managers. Because chezmoi never calls Topgrade, this
+one-way flow cannot recurse. Calling `topgrade` directly skips the wrapper confirmation. For
+unattended agents or scripts:
+
+```sh
+mise run update-unattended
+```
+
+This passes `--yes --no-ask-retry`. On Arch/CachyOS, Topgrade is configured to use `paru`, so
+repository and AUR packages participate in one full transaction rather than a partial upgrade.
+`mise bootstrap` remains a local converge command: packages, tools, then `chezmoi apply`
+without fetching or upgrading anything.
 
 ## Layout
 
 | Path | Purpose |
 |---|---|
-| `.chezmoi.toml.tmpl` | Prompts (work/headless), `[data]`, `.ps1`/`.nu` interpreters, merge tool |
+| `.chezmoi.toml.tmpl` | Prompts, data, interpreters, structural diff + JSON normalization |
 | `.chezmoiscripts/` | Per-OS `run_onchange_*` bootstrap scripts (system packages + mise) |
+| `.chezmoitemplates/` | Desired JSON plus the native semantic merge helper |
 | `.chezmoiignore` | OS/role-gated ignore rules |
 | `.chezmoiversion` | Minimum chezmoi version (uses `promptBoolOnce`, `includeTemplate`, `lookPath`) |
 | `dot_config/mise/config.toml.tmpl` | The dev toolchain manifest |
+| `dot_config/topgrade.toml.tmpl` | One-way update orchestration and per-OS manager policy |

@@ -1,0 +1,18 @@
+[misc]
+# Apply the latest dotfile declarations before package managers and mise run.
+# Chezmoi only provisions; it never invokes Topgrade, so this cannot recurse.
+first = ["chezmoi"]
+
+# Topgrade itself is mise-owned and is updated by the mise step.
+disable = ["self_update"]
+
+[mise]
+# Respect the chezmoi-managed "latest" declarations without rewriting them.
+bump = false
+
+{{- if or (eq .osid "linux-arch") (eq .osid "linux-cachyos") }}
+[linux]
+# A full paru transaction updates repository and AUR packages together, avoiding
+# Arch partial upgrades.
+arch_package_manager = "paru"
+{{- end }}

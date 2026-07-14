@@ -28,7 +28,7 @@ $packages = @(
     # Microsoft.Git, not Git.Git: the machines run the Scalar/VFS-aware fork,
     # and installing vanilla Git.Git over it is a flavor switch the installer
     # refuses under --silent (exit 1). The fork is a superset of Git for
-    # Windows and upgrades in-flavor via `winget upgrade`.
+    # Windows, and Topgrade's winget step upgrades it in-flavor.
     "Microsoft.Git"  # scoop bucket adds below need git; Linux bootstrap installs it too
     "Microsoft.VisualStudioCode"
     "Microsoft.PowerToys"
@@ -49,9 +49,7 @@ $packages += @(
 if (Get-Command winget -ErrorAction SilentlyContinue) {
     foreach ($pkg in $packages) {
         Write-Host "Installing $pkg..." -ForegroundColor Gray
-        # --no-upgrade keeps this install loop fast and present-only; the
-        # dedicated upgrade phase at the tail of this script runs
-        # `winget upgrade --all` once presence is ensured.
+        # --no-upgrade keeps apply present-only; Topgrade owns all upgrades.
         winget install --id $pkg --silent --no-upgrade --accept-source-agreements --accept-package-agreements
     }
 } else {
@@ -99,64 +97,17 @@ foreach ($Package in $ScoopPackages) {
     scoop install $Package
 }
 
-# 3. mise-managed tools. Must happen in this before_ script: chezmoi's
-# [interpreters.nu] modify scripts need `nu` (mise-provided on every OS) before
-# file targets are applied — same ordering the arch/darwin bootstraps use.
+# 3. Materialize the declared mise toolchain. This remains in the before phase
+# because Windows application packages are provisioned here before their config
+# targets are applied.
 Write-Step "Installing mise-managed tools"
 Refresh-SessionEnvironment
 $env:Path = "$env:USERPROFILE\scoop\shims;$env:Path"
 if (Get-Command mise -ErrorAction SilentlyContinue) {
     mise install
 } else {
-    # Hard-fail rather than warn: the file targets in this same apply include
-    # [interpreters.nu] modify-scripts that need `nu` (mise-provided). Proceeding
-    # would half-apply them against a missing interpreter. Stop so the user can
-    # re-run once scoop's mise shim is on PATH.
     throw "mise not found on PATH after scoop install. Open a new shell (or run 'mise install' manually), then re-run 'chezmoi apply'."
 }
 
-# 4. Upgrade everything, then a system summary — so a `chezmoi update` pass
-# (pull + apply that re-runs this script) completes with a full refresh,
-# mirroring the Arch bootstrap's `mise upgrade` + trailing fastfetch.
-Write-Step "Upgrading installed packages"
-
-# Plain `mise upgrade` (no --bump): upgrades the installed tools to satisfy the
-# chezmoi-managed `latest` pins without rewriting config.toml. mise itself is
-# scoop-managed on Windows, so `scoop update` below bumps it — no `mise
-# self-update`, which would fight scoop's copy.
-mise upgrade
-
-# winget upgrade is opt-in: across 40+ packages it's slow and triggers repeated
-# UAC elevation prompts. Gate it so unattended/agent runs stay deterministic:
-#   $env:WINGET_UPGRADE = 1|true|yes  -> always run
-#   $env:WINGET_UPGRADE = 0|false|no  -> always skip
-#   unset + real interactive console  -> prompt (default: skip)
-#   unset + non-interactive (agent)   -> skip (never blocks on a prompt)
-$runWingetUpgrade =
-    if     ($env:WINGET_UPGRADE -match '^(1|true|yes)$') { $true }
-    elseif ($env:WINGET_UPGRADE -match '^(0|false|no)$') { $false }
-    elseif (-not [Console]::IsInputRedirected) {
-        (Read-Host "Upgrade all winget apps now? Slow + repeated UAC prompts [y/N]") -match '^(y|yes)$'
-    }
-    else { $false }
-
-if ($runWingetUpgrade) {
-    if (Get-Command winget -ErrorAction SilentlyContinue) {
-        winget upgrade --all --silent --accept-source-agreements --accept-package-agreements
-    }
-} else {
-    Write-Host "Skipping winget upgrade (set `$env:WINGET_UPGRADE=1 to run)." -ForegroundColor Gray
-}
-
-if (Get-Command scoop -ErrorAction SilentlyContinue) {
-    scoop update *
-}
-
-Write-Host "`nWindows package setup completed!" -ForegroundColor Green
-
-# fastfetch is mise-provided; guard so a missing binary can't fail the pass
-# (matches the darwin script's guarded trailing fastfetch).
-if (Get-Command fastfetch -ErrorAction SilentlyContinue) {
-    fastfetch
-}
+Write-Host "`nWindows package provisioning completed!" -ForegroundColor Green
 {{- end }}

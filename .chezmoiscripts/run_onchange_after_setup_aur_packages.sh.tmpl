@@ -1,0 +1,49 @@
+{{- if or (eq .osid "linux-arch") (eq .osid "linux-cachyos") -}}
+#!/bin/bash
+# AUR packages + paru bootstrap. mise's [bootstrap.packages] has no AUR backend
+# (AUR needs a helper + source builds), so this survives the mise migration as
+# a script. Runs in the AFTER phase, alphabetically after
+# run_onchange_after_install_mise_toolchain — which has already applied the
+# pacman set (base-devel, git, sudo) that makepkg/paru need.
+set -e
+
+aur_packages=(
+    "git-credential-manager-bin"
+    "ov"
+)
+
+{{ if eq (includeTemplate "is-headless" .) "false" -}}
+# Desktop apps — skipped on headless machines.
+aur_packages+=(
+    "1password"
+    "gearlever"
+    "gnome-browser-connector"
+    "handy-bin"
+    "hyprdynamicmonitors-bin"
+    "maplemono-nf-unhinted"
+    "tlp"
+    "tlpui"
+    "winboat-bin"
+)
+{{ end -}}
+
+if ! command -v paru >/dev/null 2>&1; then
+    echo "--- Bootstrapping paru from the AUR ---"
+    tmpdir=$(mktemp -d)
+    git clone https://aur.archlinux.org/paru.git "$tmpdir/paru"
+    (cd "$tmpdir/paru" && makepkg -si --noconfirm)
+    rm -rf "$tmpdir"
+fi
+
+echo "--- Installing/updating AUR packages via paru ---"
+paru -S --noconfirm --needed "${aur_packages[@]}"
+
+echo "--- Disabling services for replaced daemons ---"
+# CachyOS's cachyos-hyprland-settings pulls in mako, whose user .service unit
+# is DBus-activated. Without disabling, mako would silently acquire the
+# org.freedesktop.Notifications name on first toast and prevent noctalia
+# (the notification daemon) from binding. Safe to run repeatedly (idempotent).
+systemctl --user disable --now mako.service 2>/dev/null || true
+
+echo "--- AUR packages installed successfully! ---"
+{{- end -}}

@@ -1,0 +1,44 @@
+{{- /* Unix family detection. .osid is set for every OS in .chezmoi.toml.tmpl. */ -}}
+{{- $arch := or (eq .osid "linux-arch") (eq .osid "linux-cachyos") -}}
+{{- $deb := false -}}
+{{- if hasKey .chezmoi.osRelease "id" -}}
+{{-   $deb = eq .chezmoi.osRelease.id "debian" -}}
+{{- end -}}
+{{- if and (not $deb) (hasKey .chezmoi.osRelease "idLike") -}}
+{{-   $deb = contains "debian" .chezmoi.osRelease.idLike -}}
+{{- end -}}
+{{- $darwin := eq .chezmoi.os "darwin" -}}
+{{- if or $arch $deb $darwin -}}
+#!/usr/bin/env bash
+# Materialize the mise toolchain AND system packages AFTER the file phase has
+# applied the real ~/.config/mise/config.toml. This is the single home for
+# package provisioning on unix: the manifest declares both dev tools ([tools])
+# and system packages ([bootstrap.packages] — pacman/apt/brew), so nothing can
+# run earlier — a fresh box has no mise config until the file phase writes it.
+# Re-runs whenever the toolchain manifest changes:
+# mise-config-hash: {{ include "dot_config/mise/config.toml.tmpl" | sha256sum }}
+set -euo pipefail
+
+export PATH="$HOME/.local/share/mise/shims:$HOME/.local/bin:$PATH"
+
+echo "--- Checking for mise installation ---"
+if ! command -v mise >/dev/null 2>&1; then
+    echo "mise not found. Installing mise..."
+    curl https://mise.run | sh
+fi
+
+echo "--- Applying system packages via mise bootstrap ---"
+# `mise bootstrap packages` needs a 2026.6+ mise. Updating software is
+# Topgrade's responsibility, so apply fails clearly instead of self-updating a
+# stale mise. `--update` refreshes package indexes required for fresh installs;
+# it does not perform a full package upgrade.
+if ! mise bootstrap packages --help >/dev/null 2>&1; then
+    echo "error: mise 2026.6 or newer is required (run topgrade, then retry chezmoi apply)" >&2
+    exit 1
+fi
+mise bootstrap packages apply --yes --update
+
+echo "--- Installing mise-managed tools ---"
+mise install
+echo "--- mise toolchain installed ---"
+{{- end -}}

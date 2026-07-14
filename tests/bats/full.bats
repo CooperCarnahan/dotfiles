@@ -1,8 +1,13 @@
 #!/usr/bin/env bats
-# Bootstrap-specific assertions — full tier only. Verifies the real
-# run_onchange_before_install_* scripts materialized a working system.
+# Bootstrap-specific assertions — full tier only. Verifies `mise bootstrap
+# packages apply` + the AUR script materialized a working system.
 
 load helpers/common
+
+@test "bootstrap packages converged" {
+    run mise bootstrap packages status --missing
+    [ "$status" -eq 0 ]
+}
 
 @test "mise toolchain materialized" {
     run mise ls --installed
@@ -29,13 +34,8 @@ load helpers/common
     dpkg -s build-essential
 }
 
-@test "apprise installed via uv tool" {
+@test "apprise installed via mise pipx backend" {
     command -v apprise
-}
-
-@test "zellij plugin externals fetched" {
-    [ -s "$HOME/.config/zellij/plugins/zellij_forgot.wasm" ]
-    [ -s "$HOME/.config/zellij/plugins/zellaude.wasm" ]
 }
 
 @test "claude setup skipped under DOTFILES_TEST" {

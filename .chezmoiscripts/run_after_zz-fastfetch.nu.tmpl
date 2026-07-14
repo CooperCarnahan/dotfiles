@@ -1,0 +1,5 @@
+# A plain after hook runs after every apply. Its target name sorts after all
+# install/reconcile/setup hooks, making this the actual completion summary.
+if (which fastfetch | is-not-empty) {
+    fastfetch
+}
