@@ -63,7 +63,7 @@ auto_switch = false
 # alt+..., cmd/super, and punctuation-with-modifiers may depend on your terminal/tmux setup.
 # ctrl+s (not the default ctrl+b or tmux's ctrl+a) so herdr can run inside a
 # tmux session without prefix collisions.
-prefix = "ctrl+s"
+prefix = "ctrl+a"
 
 # Prefix-mode actions
 # help = "prefix+?"
