@@ -1,5 +1,14 @@
+{{ if lookPath "nu" -}}
 # A plain after hook runs after every apply. Its target name sorts after all
 # install/reconcile/setup hooks, making this the actual completion summary.
+#
+# Guarded on `nu`: chezmoi hands this to [interpreters.nu] (`nu --stdin`) whenever
+# it renders non-empty. On a fresh Windows box the after phase runs before mise's
+# shims reach the process PATH — windows-system.ps1 persists them with
+# SetEnvironmentVariable(..., "User"), which cannot mutate the running chezmoi
+# process — so `nu` is unresolvable and the apply dies here. Rendering empty makes
+# chezmoi skip the script instead.
 if (which fastfetch | is-not-empty) {
     fastfetch
 }
+{{ end -}}

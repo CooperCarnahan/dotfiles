@@ -31,6 +31,15 @@ $packages = @(
     # Windows, and Topgrade's winget step upgrades it in-flavor.
     "Microsoft.Git"  # scoop bucket adds below need git; Linux bootstrap installs it too
     "Microsoft.VisualStudioCode"
+    # Must precede PowerToys — this foreach installs in array order. PowerToys'
+    # winget manifest declares no Dependencies and ships as a `burn` bootstrapper;
+    # under --silent at user scope its chained Windows App Runtime install can be
+    # skipped without failing. PowerToys then installs but its WinAppSDK modules
+    # (Keyboard Manager, CmdPal) never start, so managed remaps — e.g. the
+    # Caps->Ctrl entry in AppData/.../Keyboard Manager/default.json — silently
+    # never apply. Pin matches Microsoft.WindowsAppSDK 2.0.1 in PowerToys'
+    # Directory.Packages.props; re-check that file when bumping PowerToys.
+    "Microsoft.WindowsAppRuntime.2.0"
     "Microsoft.PowerToys"
 )
 
