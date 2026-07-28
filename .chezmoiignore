@@ -10,6 +10,10 @@ tests/**
 .github/
 .github/**
 
+# Repo-only scratch state for multi-step agent workflows — not deployed to ~/.
+.superpowers/
+.superpowers/**
+
 **/*.log
 
 **/.git/

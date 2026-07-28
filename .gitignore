@@ -1,0 +1,3 @@
+# Scratch state for multi-step agent workflows (progress ledgers, task briefs,
+# review packages). Regenerable; recoverable from git log if lost.
+.superpowers/
