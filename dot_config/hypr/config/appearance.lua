@@ -52,6 +52,17 @@ hl.config({
 		direct_scanout = true,
 	},
 
+	-- Hand XWayland clients the native pixel grid instead of upscaling their
+	-- output by the monitor scale (1.5 here). Without this, anything on XWayland
+	-- renders at logical size and gets stretched — the classic HiDPI blur.
+	-- Clients must then do their own scaling: winboat's FreeRDP windows are
+	-- covered by scaleDesktop in ~/.winboat/winboat.config.json. Any future X11
+	-- app that can't scale itself will appear small and needs GDK_SCALE/
+	-- QT_SCALE_FACTOR in config/autostart.lua.
+	xwayland = {
+		force_zero_scaling = true,
+	},
+
 	dwindle = {
 		special_scale_factor = 0.8,
 		preserve_split = true,
