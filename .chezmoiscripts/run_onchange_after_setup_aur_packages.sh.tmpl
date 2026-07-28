@@ -43,7 +43,12 @@ echo "--- Disabling services for replaced daemons ---"
 # (the notification daemon) from binding. Safe to run repeatedly (idempotent).
 systemctl --user disable --now mako.service 2>/dev/null || true
 
+{{ if eq (includeTemplate "is-headless" .) "false" -}}
 echo "--- Setting up monitor profile daemon ---"
+# Headless-guarded: creating ~/.config/hypr on a headless box would violate the
+# .chezmoiignore gate that keeps Wayland configs off servers, and break the
+# smoke test that asserts it never appears.
+
 # hyprland.lua does a bare require("monitors"), but hyprmoncfg only writes that
 # file when it first applies a profile — so a fresh machine would fail its config
 # load before hyprmoncfgd ever runs. Seed an empty (valid Lua) file to break the
@@ -53,10 +58,28 @@ echo "--- Setting up monitor profile daemon ---"
 mkdir -p "$HOME/.config/hypr"
 [ -f "$HOME/.config/hypr/monitors.lua" ] || : > "$HOME/.config/hypr/monitors.lua"
 
-# hyprmoncfg ships hyprmoncfgd but does not enable it. Nothing else would start
-# it on a fresh machine, leaving monitor profiles inert and hotplug unhandled.
-# Safe to run repeatedly (idempotent).
-systemctl --user enable --now hyprmoncfgd.service 2>/dev/null || true
+# hyprmoncfg ships hyprmoncfgd but does not enable it, so nothing would start it
+# on a fresh machine and monitor profiles would sit inert.
+#
+# Upstream's unit is `After=graphical-session.target` but `WantedBy=default.target`.
+# After= only orders units inside one transaction — it does not pull the target in
+# or hold the unit back — so the documented `systemctl --user enable` starts the
+# daemon at login, before Hyprland exists. Its --hypr-config/--monitors-conf
+# defaults resolve differently with no compositor running (monitors.conf instead
+# of monitors.lua), and Restart=on-failure can burn the start-limit budget and
+# park it in `failed` before the session comes up.
+#
+# Bind it to the graphical session instead — the same wiring hypridle uses here.
+# daemon-reload first: paru installed this unit moments ago in this same script.
+systemctl --user daemon-reload 2>/dev/null || true
+systemctl --user disable hyprmoncfgd.service 2>/dev/null || true
+if ! systemctl --user add-wants graphical-session.target hyprmoncfgd.service; then
+    echo "WARN: could not wire hyprmoncfgd to graphical-session.target —"
+    echo "      monitor profiles will not auto-apply. Check: systemctl --user status hyprmoncfgd"
+fi
+# Only meaningful when a graphical session is already up; harmless otherwise.
+systemctl --user start hyprmoncfgd.service 2>/dev/null || true
+{{ end -}}
 
 echo "--- AUR packages installed successfully! ---"
 {{- end -}}
