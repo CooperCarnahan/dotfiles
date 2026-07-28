@@ -1,0 +1,108 @@
+{
+  "name": "office",
+  "created_at": "2026-07-28T17:33:57.078113123Z",
+  "updated_at": "2026-07-28T17:33:57.07840261Z",
+  "outputs": [
+    {
+      "key": "hp inc.|hp z27k g3|cn432218ry",
+      "match_key": "hp inc.|hp z27k g3|cn432218ry",
+      "name": "DP-10",
+      "description": "HP Inc. HP Z27k G3 CN432218RY",
+      "make": "HP Inc.",
+      "model": "HP Z27k G3",
+      "serial": "CN432218RY",
+      "enabled": true,
+      "mode": "3840x2160@60.00Hz",
+      "width": 3840,
+      "height": 2160,
+      "refresh": 60,
+      "x": 6240,
+      "y": 0,
+      "scale": 1.5,
+      "transform": 0,
+      "bitdepth": 8,
+      "cm": "srgb",
+      "sdr_brightness": 1,
+      "sdr_saturation": 1,
+      "sdr_min_luminance": 0.2,
+      "sdr_max_luminance": 80,
+      "min_luminance": 0
+    },
+    {
+      "key": "hp inc.|hp z27k g3|cn4322194x",
+      "match_key": "hp inc.|hp z27k g3|cn4322194x",
+      "name": "DP-9",
+      "description": "HP Inc. HP Z27k G3 CN4322194X",
+      "make": "HP Inc.",
+      "model": "HP Z27k G3",
+      "serial": "CN4322194X",
+      "enabled": true,
+      "mode": "3840x2160@60.00Hz",
+      "width": 3840,
+      "height": 2160,
+      "refresh": 60,
+      "x": 4800,
+      "y": -560,
+      "scale": 1.5,
+      "transform": 3,
+      "bitdepth": 8,
+      "cm": "srgb",
+      "sdr_brightness": 1,
+      "sdr_saturation": 1,
+      "sdr_min_luminance": 0.2,
+      "sdr_max_luminance": 80,
+      "min_luminance": 0
+    },
+    {
+      "key": "samsung display corp.|0x41b3|0x0000ff01",
+      "match_key": "samsung display corp.|0x41b3|0x0000ff01",
+      "name": "eDP-1",
+      "description": "Samsung Display Corp. 0x41B3 0x0000FF01",
+      "make": "Samsung Display Corp.",
+      "model": "0x41B3",
+      "serial": "0x0000FF01",
+      "enabled": false,
+      "mode": "2880x1800@120.00Hz",
+      "width": 2880,
+      "height": 1800,
+      "refresh": 120,
+      "x": 1760,
+      "y": 1520,
+      "scale": 1.5,
+      "transform": 0,
+      "bitdepth": 8,
+      "cm": "srgb",
+      "sdr_brightness": 1,
+      "sdr_saturation": 1,
+      "sdr_min_luminance": 0.2,
+      "sdr_max_luminance": 80,
+      "min_luminance": 0
+    }
+  ],
+  "workspaces": {
+    "enabled": true,
+    "strategy": "manual",
+    "max_workspaces": 9,
+    "group_size": 3,
+    "monitor_order": [
+      "samsung display corp.|0x41b3|0x0000ff01",
+      "hp inc.|hp z27k g3|cn4322194x",
+      "hp inc.|hp z27k g3|cn432218ry"
+    ],
+    "rules": [
+      {
+        "workspace": "1",
+        "output_key": "hp inc.|hp z27k g3|cn432218ry",
+        "output_name": "DP-10",
+        "persistent": true
+      },
+      {
+        "workspace": "2",
+        "output_key": "hp inc.|hp z27k g3|cn4322194x",
+        "output_name": "DP-9",
+        "persistent": true
+      }
+    ]
+  },
+  "exec": ""
+}
