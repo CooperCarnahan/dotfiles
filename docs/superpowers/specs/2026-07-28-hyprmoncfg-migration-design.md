@@ -95,9 +95,13 @@ during matching.
 | Profile | Hardware | Provenance | Key confidence |
 |---|---|---|---|
 | `office` | `hp inc.\|hp z27k g3\|cn4322194x` + `...\|cn432218ry`, eDP-1 disabled | `hyprmoncfg save` against live hardware | exact |
-| `docked-home` | `aoc\|u2790b\|0x0001947d` + `...\|0x0001895e`, eDP-1 disabled | Captured earlier via `save`; exact fields already recorded | exact |
-| `undocked` | `samsung display corp.\|0x41b3\|0x0000ff01` only | `save` after undocking, or authored from these known fields | exact |
-| `peytonville` | Samsung LS32D70xE + eDP-1 disabled | Hand-authored JSON | **serial exact, make/model split inferred** |
+| `docked-home` | `aoc\|u2790b\|0x0001947d` + `...\|0x0001895e`, eDP-1 disabled | Hand-authored from Appendix A | exact |
+| `undocked` | `samsung display corp.\|0x41b3\|0x0000ff01` only | `save` after undocking, or authored from Appendix A | exact |
+| `peytonville` | Samsung LS32D70xE + eDP-1 disabled | Hand-authored from Appendix A | **serial exact, make/model split inferred** |
+
+All values required to author these profiles are recorded in Appendix A. This matters
+because step 6 deletes the HDM templates, which are otherwise the only durable record of
+that geometry.
 
 ### The peytonville inference
 
@@ -173,3 +177,53 @@ fixed in place on site.
   could fail hyprmoncfg's apply-verification. Worth investigating separately.
 - **Upstreaming Lua support to hyprdynamicmonitors.** Moot once HDM is removed.
 - **hyprmon.** Never installed; nothing to remove.
+
+## Appendix A — recorded authoring values
+
+Captured 2026-07-28 from live hardware and from the HDM templates before their removal.
+Hardware keys are `make|model|serial` as `hyprctl` reports the discrete fields.
+
+### office — captured live, authoritative
+
+| Output | Key | Settings |
+|---|---|---|
+| eDP-1 | `Samsung Display Corp.\|0x41B3\|0x0000FF01` | disabled |
+| DP-9 | `HP Inc.\|HP Z27k G3\|CN4322194X` | 3840x2160@60, pos 4800x-560, scale 1.5, transform 3 |
+| DP-10 | `HP Inc.\|HP Z27k G3\|CN432218RY` | 3840x2160@60, pos 6240x0, scale 1.5, transform 0 |
+
+Produced by `save` directly, so these are reference values only. Note DP-9 is rotated
+(transform 3) — earlier assumptions about which office display is rotated were wrong.
+
+### docked-home — from HDM template plus live capture
+
+| Output | Key | Settings |
+|---|---|---|
+| laptop | `Samsung Display Corp.\|0x41B3\|0x0000FF01` | disabled |
+| AOC left | `AOC\|U2790B\|0x0001947D` | 3840x2160@60, pos 2160x450, scale 1.5, transform 0 |
+| AOC right | `AOC\|U2790B\|0x0001895E` | 3840x2160**@30**, pos 720x-110, scale 1.5, transform 1 |
+
+Workspace rules: workspace 1 → `0x0001947D`, workspace 2 → `0x0001895E`, both persistent.
+
+**The @30 is deliberate.** The HDM template requested 60Hz, but the display demonstrably
+runs at 30Hz — likely DisplayPort bandwidth at 4K with rotation. Authoring 60Hz would make
+hyprmoncfg request a mode Hyprland then falls back from, and `waitForAppliedProfile` compares
+applied state against the profile, so the apply could fail verification and revert. Record
+the mode that actually holds; investigate the bandwidth question separately.
+
+### undocked — from HDM template
+
+| Output | Key | Settings |
+|---|---|---|
+| eDP-1 | `Samsung Display Corp.\|0x41B3\|0x0000FF01` | 2880x1800@120, pos 1760x1520, scale 1.5, transform 0 |
+
+Position is inherited from a docked capture and is arbitrary for a sole display. Prefer
+capturing this profile with `save` while genuinely undocked.
+
+### peytonville — from HDM template, key inferred
+
+| Output | Key | Settings |
+|---|---|---|
+| laptop | `Samsung Display Corp.\|0x41B3\|0x0000FF01` | disabled |
+| Samsung 4K | `Samsung Electric Company\|LS32D70xE\|HCNX801439` (inferred) | 3840x2160@60, pos 0x0, scale 1.0, transform 0 |
+
+Scale is 1.0 here, unlike every other profile — carry it across verbatim.
