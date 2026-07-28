@@ -30,10 +30,10 @@ tests/**
 # Loaded via [include] from .gitconfig. Maintained out-of-band; never tracked.
 .config/git/work
 
-# hyprdynamicmonitors writes this at runtime based on the matched profile.
-# Templates live under .config/hyprdynamicmonitors/hyprconfigs/; the rendered
-# output is machine state, not dotfile content.
-.config/hypr/config/monitors.lua
+# hyprmoncfg rewrites this on every profile apply, from the matched JSON profile
+# and the currently connected hardware. It is machine state, not dotfile content,
+# and differs per machine — committing it would conflict across machines.
+.config/hypr/monitors.lua
 
 # Only .config/hyprmoncfg/profiles/*.json is tracked — that is the source of
 # truth hyprmoncfg and hyprmoncfgd actually read. These .conf/.lua sidecars are

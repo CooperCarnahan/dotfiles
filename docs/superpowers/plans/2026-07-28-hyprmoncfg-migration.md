@@ -476,10 +476,18 @@ Expected: same three monitors as Task 1 Step 1 — eDP-1 `off`, both HP displays
 This exercises the include-chain verification, the Lua writer, and apply-verification together.
 
 ```bash
-hyprmoncfg apply office
+hyprmoncfg apply office --confirm-timeout 0
 ```
 
-Expected: success, no `is not included by` error. That error would mean Step 3/5 did not take effect.
+Expected: `Applied profile "office"`, exit code 0, and no `is not included by` error. That
+error would mean Step 3/5 did not take effect.
+
+**`--confirm-timeout 0` is required for non-interactive use.** Discovered during execution:
+bare `hyprmoncfg apply` prompts `Keep this configuration? [y/N] (auto-revert in 10s)`. With
+no TTY on stdin it reads EOF and exits non-zero, printing usage — even though it already
+wrote the config and applied it successfully. The flag disables the confirmation so the
+command is deterministic. Interactively, answering the prompt is the safer choice, since
+auto-revert protects against a layout that leaves you with no usable display.
 
 - [ ] **Step 8: Verify hyprmoncfg now owns the generated file**
 
