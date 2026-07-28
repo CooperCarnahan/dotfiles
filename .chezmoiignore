@@ -35,11 +35,14 @@ tests/**
 # output is machine state, not dotfile content.
 .config/hypr/config/monitors.lua
 
-# hyprmoncfg regenerates these .conf/.lua sidecars next to each profile on every
-# save. They are fallback exports, not source — the .json IS the source of truth
-# that hyprmoncfg and hyprmoncfgd read, and it is tracked. Tracking the sidecars
-# too would churn forever: hyprmoncfg emits 2-space Lua, the StyLua pre-commit
-# hook rewrites it to tabs, and the next save undoes that.
+# Only .config/hyprmoncfg/profiles/*.json is tracked — that is the source of
+# truth hyprmoncfg and hyprmoncfgd actually read. These .conf/.lua sidecars are
+# regenerated exports, kept solely as snippets for someone abandoning hyprmoncfg.
+# Deliberately untracked (upstream suggests committing the whole directory):
+#   - no value here: .conf is legacy hyprlang, unusable by this Lua config, and
+#     docked-home has no sidecars at all since it was hand-authored off-site
+#   - .lua additionally churned forever — hyprmoncfg emits 2-space indentation,
+#     the StyLua hook rewrote it to tabs, and the next save undid that
 .config/hyprmoncfg/profiles/*.conf
 .config/hyprmoncfg/profiles/*.lua
 

@@ -351,7 +351,17 @@ chezmoi add ~/.config/hyprmoncfg
 ls -1 /home/cooper/.local/share/chezmoi/dot_config/hyprmoncfg/profiles/
 ```
 
-Expected: the three `.json` files plus their `.conf`/`.lua` sidecars.
+Expected: the three `.json` files only.
+
+**Amended during execution (user decision).** `chezmoi add` initially pulled in the
+generated `.conf`/`.lua` sidecars too, and the StyLua pre-commit hook then rewrote the
+`.lua` files to tabs while hyprmoncfg keeps regenerating them with 2-space indentation —
+permanent `chezmoi status` drift. The sidecars are now `.chezmoiignore`d.
+
+This deviates from upstream's suggestion to commit the whole directory. The user judged the
+sidecars worthless for this setup: `.conf` is legacy hyprlang that a Lua config cannot
+source, `docked-home` has no sidecars at all (hand-authored off-site), and the `.json` is
+the only file hyprmoncfg and hyprmoncfgd actually read.
 
 - [ ] **Step 3: Confirm no unrelated files are staged**
 
