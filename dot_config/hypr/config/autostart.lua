@@ -20,7 +20,7 @@ hl.on("hyprland.start", function()
 	hl.exec_cmd("/usr/lib/polkit-kde-authentication-agent-1 &")
 
 	-- workspace-pinned launches (new Lua API: rules table instead of [..] prefix)
-	-- workspace_rule() bindings live in hyprdynamicmonitors templates per profile.
+	-- workspace_rule() bindings come from whichever hyprmoncfg profile matched.
 	hl.exec_cmd(programs.terminal, { workspace = "1" })
 	hl.exec_cmd(programs.browser, { workspace = "2 silent" })
 	hl.exec_cmd("ghostty --title=quake-terminal", { workspace = "special:quake silent" })

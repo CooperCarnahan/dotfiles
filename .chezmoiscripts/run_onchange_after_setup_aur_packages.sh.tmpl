@@ -19,7 +19,7 @@ aur_packages+=(
     "gearlever"
     "gnome-browser-connector"
     "handy-bin"
-    "hyprdynamicmonitors-bin"
+    "hyprmoncfg"
     "maplemono-nf-unhinted"
     "winboat-bin"
 )
@@ -42,6 +42,21 @@ echo "--- Disabling services for replaced daemons ---"
 # org.freedesktop.Notifications name on first toast and prevent noctalia
 # (the notification daemon) from binding. Safe to run repeatedly (idempotent).
 systemctl --user disable --now mako.service 2>/dev/null || true
+
+echo "--- Setting up monitor profile daemon ---"
+# hyprland.lua does a bare require("monitors"), but hyprmoncfg only writes that
+# file when it first applies a profile — so a fresh machine would fail its config
+# load before hyprmoncfgd ever runs. Seed an empty (valid Lua) file to break the
+# chicken-and-egg; the daemon overwrites it on first apply.
+# It must stay a bare require: hyprmoncfg verifies inclusion by parsing
+# hyprland.lua and does not recognise pcall(require, ...).
+mkdir -p "$HOME/.config/hypr"
+[ -f "$HOME/.config/hypr/monitors.lua" ] || : > "$HOME/.config/hypr/monitors.lua"
+
+# hyprmoncfg ships hyprmoncfgd but does not enable it. Nothing else would start
+# it on a fresh machine, leaving monitor profiles inert and hotplug unhandled.
+# Safe to run repeatedly (idempotent).
+systemctl --user enable --now hyprmoncfgd.service 2>/dev/null || true
 
 echo "--- AUR packages installed successfully! ---"
 {{- end -}}

@@ -82,8 +82,8 @@ install-system-config.sh
 # any non-Linux OS, and headless Linux boxes reached over SSH.
 .config/hypr
 .config/hypr/**
-.config/hyprdynamicmonitors
-.config/hyprdynamicmonitors/**
+.config/hyprmoncfg
+.config/hyprmoncfg/**
 .config/noctalia
 .config/noctalia/**
 .config/wlogout

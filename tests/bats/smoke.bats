@@ -56,7 +56,7 @@ load helpers/common
     [ ! -e "$HOME/.config/ghostty" ]
     [ ! -e "$HOME/.config/noctalia" ]
     [ ! -e "$HOME/.config/wlogout" ]
-    [ ! -e "$HOME/.config/hyprdynamicmonitors" ]
+    [ ! -e "$HOME/.config/hyprmoncfg" ]
 }
 
 @test "repo infrastructure not deployed to HOME" {
