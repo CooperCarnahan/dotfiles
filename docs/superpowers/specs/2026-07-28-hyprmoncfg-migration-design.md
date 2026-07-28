@@ -88,7 +88,7 @@ runtime `Monitor.HardwareKey()` and profile-side `outputMatchKeyFromFields()` bo
 connector changes — the same dock already presents the home displays as `DP-8`/`DP-10` and
 the office displays as `DP-9`/`DP-10`.
 
-Exactly four profiles. No backups, experiments, or duplicates may remain in the profiles
+Exactly three profiles. No backups, experiments, or duplicates may remain in the profiles
 directory: `hyprmoncfgd` scores **every** `*.json` in it, and stale files silently compete
 during matching.
 
@@ -96,24 +96,27 @@ during matching.
 |---|---|---|---|
 | `office` | `hp inc.\|hp z27k g3\|cn4322194x` + `...\|cn432218ry`, eDP-1 disabled | `hyprmoncfg save` against live hardware | exact |
 | `docked-home` | `aoc\|u2790b\|0x0001947d` + `...\|0x0001895e`, eDP-1 disabled | Hand-authored from Appendix A | exact |
-| `undocked` | `samsung display corp.\|0x41b3\|0x0000ff01` only | `save` after undocking, or authored from Appendix A | exact |
-| `peytonville` | Samsung LS32D70xE + eDP-1 disabled | Hand-authored from Appendix A | **serial exact, make/model split inferred** |
+| `undocked` | `samsung display corp.\|0x41b3\|0x0000ff01` only | `save` after undocking | exact |
 
 All values required to author these profiles are recorded in Appendix A. This matters
 because step 6 deletes the HDM templates, which are otherwise the only durable record of
 that geometry.
 
-### The peytonville inference
+Every key in this migration is exact. Nothing is inferred.
 
-Only HDM's concatenated description is available: `Samsung Electric Company LS32D70xE HCNX801439`.
-The serial is unambiguous (last token). The make/model split is inferred as
-make `Samsung Electric Company`, model `LS32D70xE`. The same inference applied to the HP
-displays was confirmed correct once that hardware was live, which raises confidence but does
-not prove this case.
+### peytonville is deliberately deferred
 
-Failure mode is benign and self-correcting: a wrong key means the profile does not
-auto-match, not that anything breaks. On site, `hyprmoncfg save peytonville` followed by
-`chezmoi re-add ~/.config/hyprmoncfg` corrects it permanently.
+The Samsung LS32D70xE location is used rarely, and its hardware is not reachable now. Its
+key would have to be inferred from HDM's concatenated description
+(`Samsung Electric Company LS32D70xE HCNX801439`) — the serial is unambiguous as the last
+token, but the make/model split is a guess.
+
+Rather than ship the migration's only inferred value, the profile is not created. On the
+next visit, `hyprmoncfg save peytonville` captures it exactly from live hardware, followed
+by `chezmoi re-add ~/.config/hyprmoncfg`. Its geometry is preserved in Appendix A as a
+cross-check, since the HDM template that held it is deleted in step 6.
+
+Until then that location has no auto-switching. This is an accepted trade, not an oversight.
 
 ## chezmoi changes
 
@@ -136,8 +139,8 @@ Ordered so nothing is destroyed before its replacement is proven.
 
 1. `hyprmoncfg save office` against live hardware. Verify the generated Lua parses
    (`luac -p`) and contains the expected monitors and workspace rules.
-2. Author `docked-home`, `undocked`, and `peytonville` JSON in the profiles directory.
-   Confirm exactly four `*.json` files exist.
+2. Author `docked-home` from Appendix A, and capture `undocked` with `save` while
+   genuinely undocked. Confirm exactly three `*.json` files exist.
 3. Stop and disable `hyprdynamicmonitors.service` and `hyprdynamicmonitors-prepare.service`.
 4. Change `hyprland.lua` to `require("monitors")`, apply `office`, and confirm displays and
    workspace pins survive a reload.
@@ -153,8 +156,8 @@ Before step 3, no rollback is needed — HDM still owns the config and nothing h
 After step 6, rollback is a `git revert` in the chezmoi repository plus reinstalling the AUR
 package. The `.go.tmpl` templates remain recoverable from git history permanently.
 
-A mis-keyed `peytonville` is not a rollback scenario; it degrades to "no auto-match" and is
-fixed in place on site.
+The deferred `peytonville` profile is not a rollback scenario; that location simply has no
+auto-switching until it is captured on site.
 
 ## Verification
 
@@ -163,7 +166,7 @@ fixed in place on site.
 - Workspaces 1 and 2 land on the intended displays
 - A physical undock/redock triggers the daemon and applies the correct profile
 - `chezmoi status` is clean and `chezmoi apply --dry-run` shows no unintended changes
-- Exactly four `*.json` files in `~/.config/hyprmoncfg/profiles/`
+- Exactly three `*.json` files in `~/.config/hyprmoncfg/profiles/`
 
 ## Out of scope
 
@@ -219,11 +222,16 @@ the mode that actually holds; investigate the bandwidth question separately.
 Position is inherited from a docked capture and is arbitrary for a sole display. Prefer
 capturing this profile with `save` while genuinely undocked.
 
-### peytonville — from HDM template, key inferred
+### peytonville — NOT created; recorded for future recreation
+
+Deferred by decision (see "peytonville is deliberately deferred"). These values are preserved
+only because step 6 deletes the HDM template that held them. Use them to sanity-check the
+profile captured on site, not to author one now.
 
 | Output | Key | Settings |
 |---|---|---|
 | laptop | `Samsung Display Corp.\|0x41B3\|0x0000FF01` | disabled |
-| Samsung 4K | `Samsung Electric Company\|LS32D70xE\|HCNX801439` (inferred) | 3840x2160@60, pos 0x0, scale 1.0, transform 0 |
+| Samsung 4K | description `Samsung Electric Company LS32D70xE HCNX801439` | 3840x2160@60, pos 0x0, scale 1.0, transform 0 |
 
-Scale is 1.0 here, unlike every other profile — carry it across verbatim.
+Scale is 1.0 here, unlike every other profile. The make/model split is intentionally left
+unresolved — `save` will determine it from live hardware.
