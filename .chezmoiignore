@@ -35,6 +35,14 @@ tests/**
 # output is machine state, not dotfile content.
 .config/hypr/config/monitors.lua
 
+# hyprmoncfg regenerates these .conf/.lua sidecars next to each profile on every
+# save. They are fallback exports, not source — the .json IS the source of truth
+# that hyprmoncfg and hyprmoncfgd read, and it is tracked. Tracking the sidecars
+# too would churn forever: hyprmoncfg emits 2-space Lua, the StyLua pre-commit
+# hook rewrites it to tabs, and the next save undoes that.
+.config/hyprmoncfg/profiles/*.conf
+.config/hyprmoncfg/profiles/*.lua
+
 {{- /* NB: no `-}}` on this tag — it would chomp the newline and glue the
        first pattern onto the previous line, silently un-ignoring it. */ -}}
 {{- if eq .chezmoi.os "windows" }}
