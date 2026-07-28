@@ -600,13 +600,34 @@ In `/home/cooper/.local/share/chezmoi/.chezmoiignore`, delete these two lines fr
 .config/hyprdynamicmonitors/**
 ```
 
+- [ ] **Step 5b: Remove the package from the AUR bootstrap list**
+
+Discovered during execution and NOT in the original plan. Without this, the next
+`chezmoi apply` on this or any other machine silently reinstalls the tool being removed.
+
+In `/home/cooper/.local/share/chezmoi/.chezmoiscripts/run_onchange_after_setup_aur_packages.sh.tmpl`,
+remove the `hyprdynamicmonitors-bin` entry and add `hyprmoncfg` in its place, keeping the
+list alphabetically sorted:
+
+```
+    "handy-bin"
+-   "hyprdynamicmonitors-bin"
++   "hyprmoncfg"
+    "maplemono-nf-unhinted"
+```
+
+⚠️ That file has an unrelated uncommitted change belonging to the user (removal of `tlp`
+and `tlpui`). Leave it in the working tree and do NOT include it in this task's commit —
+stage the file only if the two changes can be separated; otherwise ask.
+
 - [ ] **Step 6: Verify no references remain**
 
 ```bash
 grep -rn 'hyprdynamicmonitors' /home/cooper/.local/share/chezmoi --exclude-dir=.git --exclude-dir=docs || echo "NO REFERENCES"
 ```
 
-Expected: `NO REFERENCES`. Matches under `docs/` are historical spec text and are expected to remain.
+Expected: `NO REFERENCES`. Matches under `docs/` are historical spec text and are expected
+to remain. This grep is what catches the AUR-list entry if Step 5b was skipped.
 
 - [ ] **Step 7: Verify chezmoi is consistent**
 
