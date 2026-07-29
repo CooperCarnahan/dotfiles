@@ -1,3 +1,14 @@
 # Scratch state for multi-step agent workflows (progress ledgers, task briefs,
 # review packages). Regenerable; recoverable from git log if lost.
 .superpowers/
+
+# Zebar build output: source maps are never needed at runtime and are large (five of
+# them, 1.1-1.4MB each, had accumulated). Note check-added-large-files only inspects
+# NEWLY ADDED files, so the 512kb hook passed on them indefinitely once committed.
+#
+# The hashed bundles under dist/assets/ ARE tracked deliberately, so zebar works without
+# a node toolchain at bootstrap. But Vite emits a fresh content hash per build and never
+# removes the old ones, so stale bundles accumulate silently -- 26 of 32 assets were
+# orphaned before this was cleaned. Clear dist/assets/ before rebuilding, and keep only
+# what dist/*.html actually references.
+dot_glzr/zebar/zebar-glazewm/dist/assets/*.map
