@@ -18,6 +18,37 @@
 {{-   end -}}
 {{-   $headless = promptBoolOnce . "headless" "Is this a headless machine (no desktop / Wayland session)?" $headlessDefault -}}
 {{- end -}}
+{{- /* Windows-only opt-ins. Both are read by consumers via `dig` with a false/empty
+       default, so a machine that has not re-run `chezmoi init` since these were added
+       degrades to "feature off" rather than failing on a missing map key. */ -}}
+{{- /* Tweaks and app removal are SEPARATE consents. They differ in kind: tweaks change
+       telemetry, services and Explorer defaults, while removal uninstalls software. A
+       work machine may reasonably want neither, one, or both. Keeping them separate also
+       sidesteps a Win11Debloat trap: -RunDefaults calls AddParameter 'Apps' 'Default',
+       which OVERWRITES any -Apps list, so "apply the defaults" and "keep Teams/To Do"
+       cannot be expressed through that flag at all. */ -}}
+{{- $windowsTweaks := false -}}
+{{- $removeApps := false -}}
+{{- $sshServer := false -}}
+{{- $sshAuthorizedKey := "" -}}
+{{- if eq .chezmoi.os "windows" -}}
+{{-   $windowsTweaks = promptBoolOnce . "windowsTweaks" "Apply Windows tweaks (disable telemetry, ads, suggestions; fix Explorer defaults)?" (not $work) -}}
+{{-   $removeApps = promptBoolOnce . "removeApps" "Remove preinstalled apps (Bing, Copilot, Solitaire, third-party games)?" (not $work) -}}
+{{- /* Opening an inbound listener is security-relevant and varies per machine, so it
+       defaults to off rather than following `work`. NB: a template comment must be
+       `{{- /*` exactly -- extra spaces after the trim marker make the lexer parse it as
+       an action instead ("unexpected / in command"). */ -}}
+{{-   $sshServer = promptBoolOnce . "sshServer" "Enable the OpenSSH server on this machine (inbound SSH)?" false -}}
+{{-   if $sshServer -}}
+{{- /* `fail`, not the silent lookPath skip used by pushoverUrl below: a silently empty
+       Pushover URL costs a notification, a silently empty authorized_keys locks you out
+       of the machine you just enabled SSH on. */ -}}
+{{-     if not (lookPath "op") -}}
+{{-       fail "sshServer requires the 1Password CLI. Run 'winget install AgileBits.1Password.CLI', sign in, then re-run 'chezmoi init'." -}}
+{{-     end -}}
+{{-     $sshAuthorizedKey = onepasswordRead "op://Personal/SSH Key - Inter-Computer/public key" -}}
+{{-   end -}}
+{{- end -}}
 {{- $pushoverUrl := "" -}}
 {{- if and (not $work) (lookPath "op") -}}
 {{-   $pushover := onepasswordDetailsFields "Pushover API Credentials" -}}
@@ -29,6 +60,10 @@
     work = {{ $work }}
     headless = {{ $headless }}
     pushoverUrl = {{ $pushoverUrl | quote }}
+    windowsTweaks = {{ $windowsTweaks }}
+    removeApps = {{ $removeApps }}
+    sshServer = {{ $sshServer }}
+    sshAuthorizedKey = {{ $sshAuthorizedKey | quote }}
 
 [interpreters.ps1]
     command = "powershell"

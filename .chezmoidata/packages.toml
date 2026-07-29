@@ -1,0 +1,239 @@
+# Windows package manifest.
+#
+# Linux/macOS packages deliberately do NOT live here: dot_config/mise/config.toml.tmpl
+# `[bootstrap.packages]` is already a real manifest that `mise bootstrap packages apply`
+# consumes, and it is a deployed artifact rather than data. Generating it from here would
+# sever mise from the file it reads. Windows is the only platform with no manifest at all,
+# which is what this file fixes.
+#
+# Entries with no `tags` apply everywhere. `tags = ["personal"]` means non-work machines
+# only. Consumers must test with `hasKey` — a bare `.tags` on an untagged entry is a hard
+# template error, not a nil.
+
+# --- winget ------------------------------------------------------------------
+# ORDER IS LOAD-BEARING: the install loop walks this array in order.
+
+[[windows.winget]]
+# Microsoft.Git, not Git.Git: the machines run the Scalar/VFS-aware fork, and installing
+# vanilla Git.Git over it is a flavor switch the installer refuses under --silent
+# (exit 1). The fork is a superset of Git for Windows, and Topgrade's winget step
+# upgrades it in-flavor.
+# NB: scoop bucket adds below need git; Linux bootstrap installs it too.
+id = "Microsoft.Git"
+
+[[windows.winget]]
+# PowerShell 7. Not load-bearing for the bootstrap — Windows PowerShell 5.1 is always
+# present, is what [interpreters.ps1] uses, and is what Win11Debloat requires. Installed
+# because Documents/PowerShell/Microsoft.PowerShell_profile.ps1 (mise + starship + zoxide)
+# is deployed and has never had a shell to load it.
+id = "Microsoft.PowerShell"
+
+[[windows.winget]]
+id = "Microsoft.VisualStudioCode"
+
+[[windows.winget]]
+# Must precede PowerToys. PowerToys' winget manifest declares no Dependencies and ships as
+# a `burn` bootstrapper; under --silent at user scope its chained Windows App Runtime
+# install can be skipped without failing. PowerToys then installs but its WinAppSDK
+# modules (Keyboard Manager, CmdPal) never start, so managed remaps — e.g. the Caps->Ctrl
+# entry in AppData/.../Keyboard Manager/default.json — silently never apply. Pin matches
+# Microsoft.WindowsAppSDK 2.0.1 in PowerToys' Directory.Packages.props; re-check that file
+# when bumping PowerToys.
+id = "Microsoft.WindowsAppRuntime.2.0"
+
+[[windows.winget]]
+id = "Microsoft.PowerToys"
+
+[[windows.winget]]
+id = "Refactoring.Tolaria"
+
+[[windows.winget]]
+id = "glzr-io.glazewm"
+tags = ["personal"]
+
+[[windows.winget]]
+id = "NordSecurity.NordVPN"
+tags = ["personal"]
+
+[[windows.winget]]
+# Mesh VPN — personal only, alongside NordVPN. Work machines are managed and should not
+# get an unmanaged overlay network.
+id = "Tailscale.Tailscale"
+tags = ["personal"]
+
+[[windows.winget]]
+id = "AgileBits.1Password"
+tags = ["personal"]
+
+[[windows.winget]]
+# Also the source of the `op` CLI that .chezmoi.toml.tmpl reads secrets through. Note the
+# ordering caveat: this installs during apply, AFTER init has already resolved op-backed
+# values, so a fresh machine opting into sshServer must install it manually first.
+id = "AgileBits.1Password.CLI"
+tags = ["personal"]
+
+[[windows.winget]]
+id = "Anthropic.Claude"
+tags = ["personal"]
+
+[[windows.winget]]
+id = "Zen-Team.Zen-Browser"
+tags = ["personal"]
+
+# --- Microsoft Store ---------------------------------------------------------
+# Packages with no winget-community manifest. Installed with --source msstore.
+
+[[windows.msstore]]
+# Raycast is Store-distributed and absent from winget-pkgs; this is its Store product ID
+# (resolved from ray.so/download-windows -> get.microsoft.com/installer/download/...).
+id = "9PFXXSHC64H3"
+name = "Raycast"
+
+# --- scoop -------------------------------------------------------------------
+
+[[windows.scoop]]
+id = "aria2"
+
+[[windows.scoop]]
+id = "gzip"
+
+[[windows.scoop]]
+id = "unzip"
+
+[[windows.scoop]]
+id = "mise"
+
+[[windows.scoop]]
+id = "nanazip"
+
+[[windows.scoop]]
+id = "extras/universal-ctags"
+
+[[windows.scoop]]
+id = "extras/clipboard"
+
+[[windows.scoop]]
+id = "nerd-fonts/CascadiaCode-NF"
+
+[[windows.scoop]]
+id = "nerd-fonts/Maple-Mono-NF"
+
+[windows.scoop_buckets]
+names = ["extras", "nerd-fonts"]
+
+# --- Win11Debloat ------------------------------------------------------------
+# Single source of truth for the pinned release. Rendered into BOTH .chezmoiexternal.toml
+# and the debloat wrapper script, so bumping the version changes the wrapper's rendered
+# content and therefore forces its run_onchange_ hash to change.
+#
+# The checksum matters: this code runs elevated, and a git tag is mutable. GitHub's
+# generated tag tarballs are not contractually byte-stable — if one is regenerated, apply
+# fails loudly on mismatch rather than silently executing changed code with admin rights.
+[windows.win11debloat]
+version = "2026.07.11"
+sha256 = "248c8a8079cc0d338e69bc00e7760853ce3c340ffcf2ff55b0c8f7c04b00fc66"
+
+# Explicit removal list, passed as -Apps. This is Win11Debloat's default selection
+# (84 apps, as of 2026.07.11) MINUS the two we keep:
+#
+#   MSTeams          Microsoft Teams (New)
+#   Microsoft.Todos  Microsoft To Do
+#
+# An explicit list rather than the bare -RemoveApps default, because the default
+# selection is all-or-nothing and both keepers are in it. Re-installing them via winget
+# instead does NOT work: packages install in the BEFORE phase and debloat runs in the
+# AFTER phase, so winget would install them and Win11Debloat would remove them minutes
+# later in the same apply.
+#
+# `MicrosoftTeams` (Teams Old) stays on the removal list -- it is discontinued and
+# non-functional; keeping it only leaves a dead icon.
+#
+# Tradeoff of owning this list: new Microsoft preinstalls are NOT picked up automatically
+# when Raphire adds them. Re-diff against the upstream Default-Settings wiki when bumping
+# `version` above.
+remove_apps = [
+    # --- Microsoft apps ---
+    "Microsoft.3DBuilder",                            # 3D Builder
+    "Microsoft.Microsoft3DViewer",                    # 3D Viewer
+    "Microsoft.WindowsAlarms",                        # Alarms & Clock
+    "Microsoft.BingFinance",                          # Bing Finance
+    "Microsoft.BingFoodAndDrink",                     # Bing Food And Drink
+    "Microsoft.BingHealthAndFitness",                 # Bing Health And Fitness
+    "Microsoft.BingNews",                             # Bing News
+    "Microsoft.BingSports",                           # Bing Sports
+    "Microsoft.BingTranslator",                       # Bing Translator
+    "Microsoft.BingTravel",                           # Bing Travel
+    "Microsoft.BingWeather",                          # Bing Weather
+    "Clipchamp.Clipchamp",                            # Clipchamp
+    "Microsoft.Windows.AIHub",                        # Copilot+ AI Hub
+    "Microsoft.549981C3F5F10",                        # Cortana
+    "Microsoft.Windows.DevHome",                      # Dev Home
+    "MicrosoftCorporationII.MicrosoftFamily",         # Family Safety
+    "Microsoft.WindowsFeedbackHub",                   # Feedback Hub
+    "Microsoft.Getstarted",                           # Get Started
+    "Microsoft.Messaging",                            # Messaging
+    "Microsoft.MicrosoftJournal",                     # Microsoft Journal
+    "Microsoft.News",                                 # Microsoft News
+    "Microsoft.PCManager",                            # Microsoft PC Manager
+    "MicrosoftTeams",                                 # Microsoft Teams (Old, discontinued)
+    "Microsoft.MixedReality.Portal",                  # Mixed Reality Portal
+    "Microsoft.ZuneVideo",                            # Movies & TV
+    "Microsoft.NetworkSpeedTest",                     # Network Speed Test
+    "Microsoft.MicrosoftOfficeHub",                   # Office Hub
+    "Microsoft.OneConnect",                           # One Connect
+    "Microsoft.Office.OneNote",                       # OneNote
+    "Microsoft.PowerAutomateDesktop",                 # Power Automate
+    "Microsoft.MicrosoftPowerBIForWindows",           # Power BI
+    "Microsoft.Print3D",                              # Print 3D
+    "MicrosoftCorporationII.QuickAssist",             # Quick Assist
+    "Microsoft.SkypeApp",                             # Skype (UWP)
+    "Microsoft.MicrosoftSolitaireCollection",         # Solitaire Collection
+    "Microsoft.WindowsSoundRecorder",                 # Sound Recorder
+    "Microsoft.MicrosoftStickyNotes",                 # Sticky Notes
+    "Microsoft.Office.Sway",                          # Sway
+    "Microsoft.WindowsMaps",                          # Windows Maps
+    "Microsoft.XboxApp",                              # Xbox Console Companion
+    # --- Third-party preinstalls ---
+    "ACGMediaPlayer",                                 # ACG Media Player
+    "ActiproSoftwareLLC",                             # Actipro Software
+    "AdobeSystemsIncorporated.AdobePhotoshopExpress", # Adobe Photoshop Express
+    "Amazon.com.Amazon",                              # Amazon
+    "Asphalt8Airborne",                               # Asphalt 8
+    "AutodeskSketchBook",                             # Autodesk SketchBook
+    "king.com.BubbleWitch3Saga",                      # Bubble Witch 3
+    "CaesarsSlotsFreeCasino",                         # Caesars Slots
+    "king.com.CandyCrushSaga",                        # Candy Crush Saga
+    "king.com.CandyCrushSodaSaga",                    # Candy Crush Soda
+    "COOKINGFEVER",                                   # Cooking Fever
+    "CyberLinkMediaSuiteEssentials",                  # CyberLink Media Suite
+    "DisneyMagicKingdoms",                            # Disney Magic Kingdoms
+    "Disney.37853FC22B2CE",                           # Disney+
+    "DrawboardPDF",                                   # Drawboard PDF
+    "Duolingo-LearnLanguagesforFree",                 # Duolingo
+    "EclipseManager",                                 # Eclipse Manager
+    "FACEBOOK.FACEBOOK",                              # Facebook
+    "FarmVille2CountryEscape",                        # FarmVille 2
+    "Flipboard",                                      # Flipboard
+    "HiddenCity",                                     # Hidden City
+    "HULULLC.HULUPLUS",                               # Hulu
+    "iHeartRadio",                                    # iHeartRadio
+    "Facebook.Instagram",                             # Instagram
+    "LinkedInforWindows",                             # LinkedIn
+    "Sidia.LiveWallpaper",                            # Live Wallpaper
+    "MarchofEmpires",                                 # March of Empires
+    "XP9CXNGPPJ97XX",                                 # Microsoft Copilot
+    "4DF9E0F8.Netflix",                               # Netflix
+    "NYTCrossword",                                   # NYT Crossword
+    "OneCalendar",                                    # One Calendar
+    "PandoraMediaInc",                                # Pandora
+    "PhototasticCollage",                             # Phototastic Collage
+    "PicsArt-PhotoStudio",                            # PicsArt
+    "PolarrPhotoEditorAcademicEdition",               # Polarr Photo Editor
+    "AmazonVideo.PrimeVideo",                         # Prime Video
+    "flaregamesGmbH.RoyalRevolt",                     # Royal Revolt
+    "SlingTV",                                        # Sling TV
+    "SpotifyAB.SpotifyMusic",                         # Spotify
+    "BytedancePte.Ltd.TikTok",                        # TikTok
+    "TuneInRadio",                                    # TuneIn Radio
+    "WinZipUniversal",                                # WinZip
+]

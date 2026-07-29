@@ -60,13 +60,22 @@ AppData/
 **/*.bat
 .glzr/
 # Windows-only source dirs. chezmoi materializes a managed dir even when all its
-# files are ignored, so ignore the dirs themselves to avoid empty ~/Documents and
-# ~/scripts on non-Windows. Run scripts live in .chezmoiscripts/ (no target dir).
+# files are ignored, so ignore the dir itself to avoid an empty ~/Documents on
+# non-Windows. Run scripts live in .chezmoiscripts/ (no target dir).
 Documents
 Documents/**
-scripts
-scripts/**
 {{ end }}
+
+{{- if eq .chezmoi.os "windows" }}
+# Win11Debloat writes these inside its own external at runtime; none ship in the pinned
+# archive. `exact` is already false on that external so unmanaged files are left alone --
+# this is belt-and-braces against drift reports.
+AppData/Local/Win11Debloat/Logs
+AppData/Local/Win11Debloat/Logs/**
+AppData/Local/Win11Debloat/Backups
+AppData/Local/Win11Debloat/Backups/**
+AppData/Local/Win11Debloat/Config/LastUsedSettings.json
+{{- end }}
 
 {{- if or (ne .chezmoi.os "linux") (eq (includeTemplate "is-headless" .) "true") }}
 # Skip on non-Linux, and on headless boxes (the lid.conf drop-in is laptop-only).

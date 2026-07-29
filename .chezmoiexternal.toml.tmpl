@@ -1,0 +1,19 @@
+{{- /* Win11Debloat, pinned. Fetched when EITHER Windows policy is enabled -- tweaks and
+       app removal are independent consents but share one invocation of the tool.
+
+       Version + checksum come from .chezmoidata/packages.toml so there is exactly one
+       place to bump. checksum.sha256 is not optional here: a git tag is mutable and this
+       code runs ELEVATED, so "pinned to a tag" alone guarantees nothing. No
+       refreshPeriod for the same reason -- pinned content has nothing to refresh to. */ -}}
+{{- $wantDebloat := or (dig "windowsTweaks" false .) (dig "removeApps" false .) -}}
+{{- if and (eq .chezmoi.os "windows") $wantDebloat -}}
+{{- $w := .windows.win11debloat -}}
+["AppData/Local/Win11Debloat"]
+    type = "archive"
+    url = "https://github.com/Raphire/Win11Debloat/archive/refs/tags/{{ $w.version }}.tar.gz"
+    checksum.sha256 = "{{ $w.sha256 }}"
+    {{- /* Archive root is Win11Debloat-<version>/ */}}
+    stripComponents = 1
+    {{- /* exact stays false: Win11Debloat creates Logs/, Backups/ and
+           Config/LastUsedSettings.json at runtime (none ship in the archive). */}}
+{{- end -}}

@@ -1,0 +1,145 @@
+{{- $tweaks := dig "windowsTweaks" false . -}}
+{{- $removeApps := dig "removeApps" false . -}}
+{{- if and (eq .chezmoi.os "windows") (or $tweaks $removeApps) -}}
+{{- $w := .windows.win11debloat -}}
+{{- /* AFTER phase so the .chezmoiexternal archive is guaranteed extracted (externals
+       apply during the file phase). Target name windows-debloat.ps1 sorts before
+       zz-fastfetch.nu, so the completion banner still runs last. */ -}}
+$ErrorActionPreference = 'Stop'
+$ProgressPreference = 'SilentlyContinue'
+
+# Pinned release fingerprint, rendered from .chezmoidata/packages.toml. Its presence here
+# is what makes a version bump change this script's content and therefore re-trigger the
+# run_onchange_ hash -- the external's files changing would otherwise go unnoticed.
+# win11debloat: {{ $w.version }} sha256={{ $w.sha256 }}
+# policy: tweaks={{ $tweaks }} removeApps={{ $removeApps }}
+
+Write-Host "`n==> Running Win11Debloat {{ $w.version }}" -ForegroundColor Cyan
+
+$W11D = Join-Path $env:LOCALAPPDATA "Win11Debloat\Win11Debloat.ps1"
+if (-not (Test-Path -LiteralPath $W11D)) {
+    throw "Win11Debloat not found at $W11D - the chezmoi external did not apply."
+}
+
+# Windows build number, used to replicate the version guards upstream applies to its own
+# default set. Explicit switches bypass the MinVersion/MaxVersion filtering that the
+# -Config JSON path gets for free (Scripts/Helpers/ImportConfigToParams.ps1), so without
+# this we would apply tweaks upstream deliberately excludes on this build.
+$Build = [int](Get-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion" -Name CurrentBuildNumber).CurrentBuildNumber
+Write-Host "Windows build $Build" -ForegroundColor Gray
+
+$W11DArgs = @('-Silent', '-CreateRestorePoint')
+# NB: -CreateRestorePoint is best-effort. Under -Silent, a failure to create one prints
+# "Continuing without restore point" and proceeds rather than aborting.
+
+{{ if $tweaks -}}
+# --- Tweaks -------------------------------------------------------------------
+# Upstream's own recommended defaults (Config/DefaultSettings.json), minus:
+#   EnableDarkMode  - not in upstream defaults anyway; owned by run_windows-system.ps1
+#   HideChat        - Max=22621, applied below only on older builds
+#   Hide3dObjects   - Max=21999 (Windows 10 only), applied below only on older builds
+# plus the Explorer/taskbar defaults upstream does NOT include but we want.
+$W11DArgs += @(
+    '-DisableTelemetry'
+    '-DisableSuggestions'
+    '-DisableEdgeAds'
+    '-DisableLockscreenTips'
+    '-DisableBing'
+    '-DisableWidgets'
+    '-DisableDesktopSpotlight'
+    # Not in upstream defaults; these are the reason this work started.
+    '-EnableEndTask'          # End Task on taskbar right-click
+    '-ShowKnownFileExt'
+    '-ShowHiddenFolders'
+    '-ExplorerToThisPC'
+    '-HideDupliDrive'
+)
+
+# Win11 22H2+ only (upstream MinVersion 22621).
+if ($Build -ge 22621) {
+    $W11DArgs += @(
+        '-DisableStoreSearchSuggestions'
+        '-DisableCopilot'
+        '-DisableRecall'
+        '-DisableClickToDo'
+        '-DisableAISvcAutoStart'
+    )
+}
+# Upstream MaxVersion 22621 - the Chat/Meet Now icon does not exist on newer builds.
+if ($Build -le 22621) { $W11DArgs += '-HideChat' }
+# Upstream MaxVersion 21999 - the 3D Objects folder is Windows 10 only.
+if ($Build -le 21999) { $W11DArgs += '-Hide3dObjects' }
+# Upstream MinVersion 26200 (25H2+).
+if ($Build -ge 26200) { $W11DArgs += '-DisableDragTray' }
+# Upstream MinVersion 22000, and upstream additionally gates this on the hardware actually
+# supporting Modern Standby; mirror that rather than writing the policy blindly.
+if ($Build -ge 22000 -and (powercfg /a 2>$null | Select-String -SimpleMatch 'Standby (S0 Low Power Idle)' -Quiet)) {
+    $W11DArgs += '-DisableModernStandbyNetworking'
+}
+{{ end -}}
+
+{{ if $removeApps -}}
+# --- App removal --------------------------------------------------------------
+# Explicit list (upstream default selection minus Teams New + To Do). NOT -RunDefaults:
+# that calls AddParameter 'Apps' 'Default', which overwrites -Apps and would remove the
+# two apps we keep.
+$W11DArgs += @(
+    '-RemoveApps'
+    '-Apps'
+    '{{ join "," $w.remove_apps }}'
+)
+{{ end -}}
+
+# -NoRestartExplorer deliberately omitted: letting Win11Debloat restart Explorer is what
+# makes these tweaks visible immediately rather than at next sign-out.
+
+$PsExe = Join-Path $env:SystemRoot "System32\WindowsPowerShell\v1.0\powershell.exe"
+# powershell.exe, not pwsh: Win11Debloat hard-exits under PowerShell 7 because the Appx
+# module (Get-AppxPackage/Remove-AppxPackage) and Get-ComputerRestorePoint do not load
+# there. Elevate here rather than letting the script self-elevate -- its unelevated path
+# calls Read-Host, which -Silent does NOT suppress, and would hang chezmoi apply
+# indefinitely with no visible prompt.
+try {
+    $Proc = Start-Process -FilePath $PsExe -Verb RunAs -Wait -PassThru -ArgumentList (
+        @('-NoLogo', '-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', "`"$W11D`"") + $W11DArgs
+    )
+} catch [System.ComponentModel.Win32Exception] {
+    throw "Elevation was declined; Win11Debloat did not run."
+}
+
+# Every path below throws rather than warns. chezmoi records a run_onchange_ script as
+# successfully run based on this process's exit status, so a warn-and-continue (or a
+# cancelled UAC leaving $Proc null) would be stored as success and NEVER retried.
+if ($null -eq $Proc) { throw "Win11Debloat could not be started." }
+if ($Proc.ExitCode -ne 0) { throw "Win11Debloat exited with $($Proc.ExitCode)." }
+
+# Postconditions. Upstream has paths that print an error and then use a bare `Exit` (see
+# Scripts/CLI/AwaitKeyToExit.ps1), which does not set a failure code -- so a zero exit is
+# NOT proof the requested changes landed. Verify one representative registry value per
+# enabled policy area.
+function Assert-Tweak {
+    param([string]$Path, [string]$Name, $Expected, [string]$What)
+    $actual = (Get-ItemProperty -Path $Path -Name $Name -ErrorAction SilentlyContinue).$Name
+    if ($actual -ne $Expected) {
+        throw "Win11Debloat reported success but $What did not apply ($Name=$actual, expected $Expected). Not recording this run."
+    }
+}
+
+{{ if $tweaks -}}
+Assert-Tweak "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\TaskbarDeveloperSettings" `
+    'TaskbarEndTask' 1 'End Task on taskbar right-click'
+Assert-Tweak "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" `
+    'HideFileExt' 0 'show known file extensions'
+Assert-Tweak "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" `
+    'Hidden' 1 'show hidden files and folders'
+{{ end -}}
+{{ if $removeApps -}}
+# Spot-check one app from the removal list. Appx removal is per-user and best-effort
+# upstream, so this catches a wholesale no-op rather than an individual stubborn package.
+if (Get-AppxPackage -Name 'Microsoft.BingNews' -ErrorAction SilentlyContinue) {
+    throw "Win11Debloat reported success but Microsoft.BingNews is still installed. Not recording this run."
+}
+{{ end -}}
+
+Write-Host "Win11Debloat completed" -ForegroundColor Green
+{{- end }}

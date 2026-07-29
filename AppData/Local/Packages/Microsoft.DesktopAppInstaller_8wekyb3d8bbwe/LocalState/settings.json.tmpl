@@ -1,0 +1,5 @@
+{{- /* Body lives in .chezmoitemplates/winget-settings.json so the BEFORE-phase package
+       script can seed identical content before its first winget run. Without that, the
+       very first install on a fresh machine runs before this file-phase target exists and
+       therefore ignores the user-scope preference. */ -}}
+{{ includeTemplate "winget-settings.json" . }}

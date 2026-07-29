@@ -64,15 +64,69 @@ same invocation the Podman full-tier test validates.
 
 ```powershell
 winget install twpayne.chezmoi
+
+# Only if enabling the OpenSSH server — init reads the SSH key from 1Password.
+winget install AgileBits.1Password AgileBits.1Password.CLI
+
 chezmoi init --apply CooperCarnahan
 ```
 
-- Prompts **"Is this a work machine?"** — `true` skips the personal apps (1Password, NordVPN,
-  Claude, Zen).
-- The before-script installs `Microsoft.Git` + apps via winget, then Scoop, then mise, then the
-  toolchain.
+Git is not a prerequisite: chezmoi clones with its built-in git, and `Microsoft.Git`
+installs during the first apply.
+
+Four prompts, all asked once at `init` and persisted to `[data]`:
+
+- **"Is this a work machine?"** — `true` skips the personal apps (1Password, NordVPN,
+  Tailscale, Claude, Zen, GlazeWM).
+- **"Apply Windows tweaks…?"** — defaults to `not work`. Disables telemetry, ads,
+  suggestions, Bing/Copilot/Recall; enables End Task on taskbar right-click, known file
+  extensions, hidden files; opens Explorer to This PC.
+- **"Remove preinstalled apps…?"** — defaults to `not work`. Uninstalls 82 apps
+  (upstream's curated selection **minus Teams (New) and To Do**).
+- **"Enable the OpenSSH server…?"** — defaults to `false`. Installs the OpenSSH.Server
+  capability, enables `sshd`, and writes the inter-computer public key (read from
+  1Password at init) to `C:\ProgramData\ssh\administrators_authorized_keys` with the ACL
+  sshd requires.
+
+Tweaks and app removal are separate consents — one changes settings, the other uninstalls
+software. Both share a single [Win11Debloat](https://github.com/Raphire/Win11Debloat)
+invocation, pinned by version + sha256 in `.chezmoidata/packages.toml`.
+
+Dark mode and Developer Mode stay local rather than delegated, so each setting has one
+owner. Rationale for that split, and for avoiding `-RunDefaults`, is in the script
+comments.
+
+Package lists live in **`.chezmoidata/packages.toml`** (winget / msstore / scoop, with
+`tags = ["personal"]` for non-work-only entries). Linux/macOS packages stay in
+`dot_config/mise/config.toml.tmpl` — that is a real manifest mise consumes, not data.
+
+- The before-script installs winget packages, then Scoop, then mise, then the toolchain.
 - **If the apply stops with `mise not found on PATH`:** Scoop just added mise's shim but this
   shell hasn't picked it up. Open a new terminal and run `chezmoi apply` again.
+- **Expect up to two UAC prompts** on a fresh box (one for system settings, one for
+  Win11Debloat), and none once the machine has converged. This is not a fully unattended
+  bootstrap.
+- **If `sshServer` is on and OpenSSH isn't installed yet,** apply returns *before* sshd is
+  ready — `Add-WindowsCapability` continues in a detached elevated window. Re-run
+  `chezmoi apply` to confirm convergence.
+- **`sshServer` needs `op` before `init`** — the key is read from 1Password at init, but
+  `op` installs during apply. Init fails with an actionable error if it's missing. Requires
+  the desktop app's CLI integration (Settings > Developer).
+
+#### Updating an existing Windows machine
+
+`.chezmoi.toml.tmpl` is only evaluated during `init`, so new config keys do not appear on
+a plain `apply`/`update`:
+
+```powershell
+chezmoi update      # pull the new source state
+chezmoi init        # re-prompt; promptBoolOnce keeps existing answers
+chezmoi apply
+```
+
+Consumers read the new keys through `dig` with safe defaults, so an un-migrated machine
+degrades to "features off" rather than failing — but it will not pick them up until
+`init` is re-run.
 
 ## How the bootstrap runs
 
@@ -87,20 +141,20 @@ flowchart TD
     A["Manual: install mise → chezmoi<br/>curl mise.run · mise use -g chezmoi<br/>(Windows: winget twpayne.chezmoi)"]
     A --> B["chezmoi init --apply CooperCarnahan<br/>built-in git clones the repo"]
     B --> C{{".chezmoi.toml.tmpl prompts"}}
-    C -->|Windows| Pw["work?"]
+    C -->|Windows| Pw["work? · windowsTweaks? · removeApps? · sshServer?"]
     C -->|Linux| Pl["headless?"]
     C -->|macOS| Pm["no prompts"]
 
     subgraph BEFORE["BEFORE phase"]
       direction TB
-      Pw --> Bw["windows-packages.ps1<br/>winget: Microsoft.Git, VSCode, PowerToys (+apps)<br/>scoop: mise, fonts, utilities · mise install"]
+      Pw --> Bw["windows-packages.ps1<br/>winget + msstore + scoop from .chezmoidata/packages.toml<br/>mise install · fails non-zero on any package error"]
     end
 
     Bw --> Main
     Pl --> Main
     Pm --> Main
-    Main["FILE phase — apply targets<br/>native modify templates merge app-owned JSON<br/>writes mise + Topgrade configuration"]
-    Main --> Sys["windows-system.ps1 (Windows)<br/>HOME · XDG · PATH · dark/dev mode"]
+    Main["FILE phase — apply targets + externals<br/>native modify templates merge app-owned JSON<br/>writes mise + Topgrade configuration<br/>extracts pinned Win11Debloat (if tweaks or removeApps)"]
+    Main --> Sys["run_windows-system.ps1 (Windows, ALWAYS runs)<br/>HOME · XDG · PATH · dark mode<br/>one elevated helper: dev mode + OpenSSH"]
 
     subgraph AFTER["AFTER phase — packages + toolchain + hooks"]
       direction TB
@@ -109,6 +163,7 @@ flowchart TD
       Aur["after_setup_aur_packages.sh (arch)<br/>paru bootstrap · AUR pkgs · mako disable"]
       Cc["after_setup_claude_code.sh<br/>(non-Windows) plugins + MCP"]
       Gd["after_setup_gdm.sh + install-system-config.sh<br/>(Linux desktop only)"]
+      Wd["after_windows-debloat.ps1 (Windows, if tweaks or removeApps)<br/>elevated Win11Debloat · build-gated flags · postcondition-checked"]
       Ff["zz-fastfetch.nu<br/>final summary on every apply"]
     end
     Main --> Tl
@@ -116,8 +171,16 @@ flowchart TD
     Nu --> Aur
     Aur --> Cc
     Cc --> Gd
-    Gd --> Ff
+    Gd --> Wd
+    Wd --> Ff
 ```
+
+Two Windows scripts deliberately differ in kind. `run_windows-system.ps1` is `run_`
+(**always** runs): it launches a detached elevated helper, and under `run_onchange_`
+chezmoi would record success from the parent's exit and skip the script forever after,
+so its read-guards would never reconcile anything. `run_onchange_after_windows-debloat.ps1`
+is `run_onchange_` and throws on every failure path — a warn-and-continue would be stored
+as success and never retried.
 
 ## Testing
 

@@ -1,0 +1,145 @@
+{{- if eq .chezmoi.os "windows" -}}
+$ErrorActionPreference = 'Continue'
+$ProgressPreference = 'SilentlyContinue'
+
+{{- /* Deliberately run_ (always-run), NOT run_onchange_. chezmoi records a
+       run_onchange_ script as done based on THIS process's exit status, so once the
+       detached elevated helper below is launched the hash is stored and every later
+       apply skips the script entirely -- the read guards would never execute and
+       nothing would ever be reconciled. As a guarded reconciliation script the probes
+       are a handful of registry/service reads and converge to a no-op.
+
+       NB: this tag deliberately closes WITHOUT the right trim marker. Using one would
+       chomp the trailing newline as well as the leading one, gluing `function Write-Step`
+       onto the $ProgressPreference line above -- a parse error only a real PowerShell
+       parser catches. Note also that a space before the closing braces is invalid here,
+       and that a comment body must never contain the comment-terminator sequence. */}}
+
+function Write-Step {
+    param([string]$Message)
+    Write-Host "`n==> $Message" -ForegroundColor Cyan
+}
+
+{{- if .work }}
+Write-Host "`n[MODE: WORK]" -ForegroundColor Magenta
+{{- else }}
+Write-Host "`n[MODE: PERSONAL]" -ForegroundColor Magenta
+{{- end }}
+
+# 1. User Environment Variables
+Write-Step "Setting user environment variables"
+
+# Guard: Cadence's installer hijacks the User HOME var (points it at
+# C:\SPB_Data for its pcbenv), which silently breaks every HOME-reading tool
+# (git global config, git-bash ~, Claude Code, chezmoi-in-bash). Re-assert
+# HOME = USERPROFILE on every apply; Cadence is happy as long as
+# %HOME%\pcbenv exists (it lives at $env:USERPROFILE\pcbenv now).
+[System.Environment]::SetEnvironmentVariable("HOME", $env:USERPROFILE, "User")
+[System.Environment]::SetEnvironmentVariable("XDG_CONFIG_HOME", "$env:USERPROFILE\.config", "User")
+[System.Environment]::SetEnvironmentVariable("ZELLIJ_CONFIG_DIR", "$env:USERPROFILE\.config\zellij", "User")
+Write-Host "HOME, XDG_CONFIG_HOME and ZELLIJ_CONFIG_DIR set" -ForegroundColor Gray
+
+# mise shims on the User PATH: nushell (the shell itself) is mise-managed, so
+# non-interactive launchers — Windows Terminal, chezmoi's [interpreters.nu],
+# zellij — must resolve `nu` without a shell having run `mise activate`.
+# This is mise's documented Windows setup; Linux gets the same effect from
+# `mise activate bash` in the bashrc launcher.
+$MiseShims = "$env:LOCALAPPDATA\mise\shims"
+$UserPath = [System.Environment]::GetEnvironmentVariable("Path", "User")
+if ($UserPath -notlike "*$MiseShims*") {
+    [System.Environment]::SetEnvironmentVariable("Path", "$MiseShims;$UserPath", "User")
+    Write-Host "mise shims added to User PATH" -ForegroundColor Gray
+}
+
+# 2. Windows System Settings
+Write-Step "Applying Windows system settings"
+
+# Dark mode (apps + system). Owned HERE unconditionally, and deliberately NOT delegated to
+# Win11Debloat's -EnableDarkMode: it is not in that tool's default set, and keeping it
+# local means dark mode applies on every Windows machine regardless of whether the tweak
+# or app-removal policies were opted into. Single owner, no duplication.
+Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize" -Name "AppsUseLightTheme" -Value 0 -Type DWord
+Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize" -Name "SystemUsesLightTheme" -Value 0 -Type DWord
+Write-Host "Dark mode enabled" -ForegroundColor Gray
+{{- /* The old `TaskbarAl = 1` write is gone: centre alignment is already the Windows 11
+       default, and the only taskbar-alignment flag Win11Debloat offers is
+       -TaskbarAlignLeft, which is never passed. Nothing can drift it. */}}
+
+# 3. Elevated OS state
+#
+# Everything requiring admin is collected into ONE helper: one UAC prompt when work is
+# outstanding, zero once the machine has converged.
+$PsExe = Join-Path $env:SystemRoot "System32\WindowsPowerShell\v1.0\powershell.exe"
+
+# Single-quoted here-string: the Go template renders this, PowerShell performs no
+# interpolation, so `$` inside the function bodies is safe. The same text is loaded into
+# this session (for the probes) and written into the elevated helper (for the actions).
+$SshFunctions = @'
+{{ if dig "sshServer" false . }}{{ includeTemplate "windows-openssh.ps1" . }}{{ end }}
+'@
+if ($SshFunctions.Trim()) { Invoke-Expression $SshFunctions }
+
+$Pending = @()
+
+# Developer Mode gates Settings > System > For developers, which is where End Task on
+# taskbar right-click and the File Explorer toggles live.
+$DevModeKey = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\AppModelUnlock"
+$DevMode = (Get-ItemProperty -Path $DevModeKey -Name AllowDevelopmentWithoutDevLicense `
+              -ErrorAction SilentlyContinue).AllowDevelopmentWithoutDevLicense
+if ($DevMode -ne 1) { $Pending += 'Set-DeveloperMode' }
+{{ if dig "sshServer" false . }}
+$Pending += Get-OpenSSHPendingActions
+{{ end }}
+if ($Pending.Count) {
+    Write-Step "Applying elevated settings: $($Pending -join ', ')"
+
+    # Only the FOD capability install is slow (it contacts Windows Update).
+    $Slow = $Pending -contains 'Install-OpenSSHServer'
+
+    # Unique per run: a fixed path would let two concurrent applies clobber each other's
+    # helper between Set-Content and Start-Process.
+    $Helper = Join-Path $env:TEMP ("chezmoi-elevated-{0}.ps1" -f [guid]::NewGuid().ToString('N'))
+    $Body = @(
+        "`$ErrorActionPreference = 'Stop'"
+        'function Set-DeveloperMode {'
+        # New-Item -Force first: New-ItemProperty fails outright if the key is absent, and
+        # AppModelUnlock is not guaranteed to exist on a clean image.
+        '    $k = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\AppModelUnlock"'
+        '    if (-not (Test-Path $k)) { New-Item -Path $k -Force | Out-Null }'
+        '    New-ItemProperty -Path $k -Name AllowDevelopmentWithoutDevLicense -Value 1 -PropertyType DWord -Force | Out-Null'
+        '}'
+        $SshFunctions
+        ($Pending -join "`r`n")
+    ) -join "`r`n"
+    Set-Content -LiteralPath $Helper -Value $Body -Encoding UTF8
+
+    # powershell.exe, never pwsh. `Start-Process pwsh` was the original bug here: pwsh is
+    # not installed by default on Windows and was not in the winget list, so this threw on
+    # every fresh machine and $ErrorActionPreference='Continue' swallowed it — which is
+    # why Developer Mode was never actually enabled.
+    $HelperArgs = @('-NoLogo', '-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', "`"$Helper`"")
+
+    try {
+        if ($Slow) {
+            # Add-WindowsCapability takes minutes. Launch WITHOUT -Wait so apply is not
+            # blocked; because this script runs every time and is fully guarded, whatever
+            # does not finish is genuinely reconciled on the next apply.
+            Start-Process $PsExe -Verb RunAs -ArgumentList $HelperArgs | Out-Null
+            Write-Host "OpenSSH setup continuing in the background (elevated window)." -ForegroundColor Yellow
+            Write-Host "Apply finishes before sshd is ready; re-run apply to confirm." -ForegroundColor Yellow
+        } else {
+            $Proc = Start-Process $PsExe -Verb RunAs -Wait -PassThru -ArgumentList $HelperArgs
+            if ($null -eq $Proc) { throw "Elevated helper could not be started." }
+            if ($Proc.ExitCode -ne 0) { throw "Elevated helper failed (exit $($Proc.ExitCode))." }
+            Write-Host "Elevated settings applied" -ForegroundColor Gray
+        }
+    } catch [System.ComponentModel.Win32Exception] {
+        # Raised when the user dismisses the UAC prompt.
+        throw "Elevation was declined; Developer Mode / OpenSSH were not configured."
+    }
+} else {
+    Write-Host "Elevated settings already applied" -ForegroundColor Gray
+}
+
+Write-Host "`nWindows system settings applied!" -ForegroundColor Green
+{{- end }}
