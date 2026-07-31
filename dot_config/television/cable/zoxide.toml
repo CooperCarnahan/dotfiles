@@ -1,0 +1,40 @@
+[metadata]
+name = "zoxide"
+description = "Browse zoxide directory history"
+requirements = ["zoxide", "fd"]
+
+[source]
+# ctrl-s (cycle_sources) switches between these; the names render as tabs.
+command = [
+  { name = "All",        run = "zoxide query -l" },
+  { name = "Under here", run = "zoxide query -l | awk -v p=\"$PWD/\" 'index($0, p) == 1'" },
+  { name = "Subdirs",    run = "fd -t d" },
+]
+# Every command in this file is POSIX sh, not nushell. That relies on
+# `shell = "bash"` in config.toml — without it tv falls back to $SHELL, and
+# under nu `$PWD` and `ls -la` mean something else (or nothing, silently).
+no_sort = true
+frecency = false
+
+[preview]
+command = "ls -la --color=always '{}'"
+
+[keybindings]
+# `enter` is deliberately left at the global default (confirm_selection) so the
+# selected path is printed to stdout. A child process cannot change its parent's
+# working directory, so the cd must happen in nushell — see the `zoxide_tv`
+# keybinding in ~/.config/nushell/config.nu, which already does exactly that.
+ctrl-g = "actions:shell_here"
+ctrl-d = "actions:remove"
+
+# {} is unquoted to match upstream: tv quotes action arguments itself, and the
+# commit that dropped the redundant quotes is an ancestor of the 0.15.9 tag.
+[actions.shell_here]
+description = "Open a nested subshell in the selected directory"
+command = "cd {} && $SHELL"
+mode = "execute"
+
+[actions.remove]
+description = "Remove the selected directory from zoxide"
+command = "zoxide remove {}"
+mode = "fork"

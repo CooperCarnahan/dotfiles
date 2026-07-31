@@ -1,0 +1,64 @@
+[metadata]
+name = "tuxedo"
+description = "List active todo.txt tasks (tuxedo), @doing pinned on top"
+requirements = ["tuxedo", "jq"]
+
+# Source of truth is tuxedo's own todo.txt (resolved via its TODO_FILE/TODO_DIR).
+# `ls` already excludes archived tasks; we also filter done==false defensively,
+# sort @doing first (then priority, then line number), and mark doing rows with ▶.
+[source]
+command = '''
+tuxedo ls --json | jq -r '
+  map(select(.done == false))
+  | sort_by([ (if (.contexts|index("doing")) then 0 else 1 end), (.priority // "~"), .n ])
+  | .[]
+  | (if (.contexts|index("doing")) then "\u001b[32m▶\u001b[39m " else "  " end)
+    + "\u001b[90m#\(.n)\u001b[39m " + .raw '
+'''
+ansi = true
+# The task number `n` is the handle every action needs. It is the first `#` on
+# the line, so this is robust even when a task's text contains another `#`.
+output = "{strip_ansi|split:#:1|split: :0}"
+
+[ui]
+layout = "portrait"
+preview_panel = { header = "#{strip_ansi|split:#:1|split: :0}" }
+
+[preview]
+command = '''
+tuxedo ls --json | jq -r --argjson n {strip_ansi|split:#:1|split: :0} '
+  .[] | select(.n == $n) |
+  "  \u001b[1m" + .raw + "\u001b[0m", "",
+  "  \u001b[36m#\(.n)\u001b[39m" + (if .priority then "   \u001b[31mpri \(.priority)\u001b[39m" else "" end),
+  (if (.contexts|index("doing")) then "  \u001b[32m▶ doing\u001b[39m" else empty end),
+  (if (.projects|length) > 0 then "  \u001b[35mprojects:\u001b[39m " + (.projects|join(" ")) else empty end),
+  (if (.contexts|length) > 0 then "  \u001b[36mcontexts:\u001b[39m " + (.contexts|join(" ")) else empty end),
+  (if .due     then "  \u001b[33mdue:\u001b[39m \(.due)" else empty end),
+  (if .created then "  \u001b[90mcreated: \(.created)\u001b[39m" else empty end) '
+'''
+
+# enter -> hand off to the full tuxedo TUI (the real editing surface).
+# ctrl-x -> mark done (mnemonic for the TUI's `x`; overrides the action picker here).
+# ctrl-d -> toggle @doing on the hovered task.
+[keybindings]
+enter = "actions:open"
+ctrl-x = "actions:done"
+ctrl-d = "actions:doing"
+
+[actions.open]
+description = "Open the tuxedo TUI"
+command = "tuxedo"
+mode = "execute"
+
+[actions.done]
+description = "Mark the selected task done"
+command = "tuxedo done {strip_ansi|split:#:1|split: :0}"
+mode = "fork"
+
+# Toggle: query tuxedo for the task's current contexts; if it already has @doing,
+# remove it, otherwise append it. Single source of truth, so no drift with the TUI.
+[actions.doing]
+description = "Toggle @doing on the selected task"
+command = '''if tuxedo ls --json | jq -e --argjson n {strip_ansi|split:#:1|split: :0} '.[]|select(.n==$n)|.contexts|index("doing")' >/dev/null 2>&1; then tuxedo del {strip_ansi|split:#:1|split: :0} @doing; else tuxedo append {strip_ansi|split:#:1|split: :0} @doing; fi'''
+shell = "bash"
+mode = "fork"
