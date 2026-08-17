@@ -29,6 +29,19 @@ repos:
       - id: check-added-large-files
         args: [--maxkb=512]
 
+  - repo: https://github.com/ComPWA/taplo-pre-commit
+    rev: v0.9.3
+    hooks:
+      - id: taplo-format
+      - id: taplo-lint
+        # Overrides the hook's default `--default-schema-catalogs`. taplo 0.9.3
+        # only accepts a Schema Store catalog whose `$schema` is exactly
+        # `https://json.schemastore.org/schema-catalog.json`; the store now
+        # serves `https://www.schemastore.org/schema-catalog.json`, so the
+        # catalog fails to deserialize and lint always exits 1. Syntax/rule
+        # linting still runs — only online schema validation is off.
+        args: [--no-schema]
+
   - repo: https://github.com/JohnnyMorganz/StyLua
     rev: v2.4.1
     hooks:

@@ -1,4 +1,4 @@
-line_max_words =  100
+line_max_words = 100
 
 [format]
 program = "gersemi"
