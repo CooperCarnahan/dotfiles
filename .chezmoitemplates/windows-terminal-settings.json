@@ -1,10 +1,10 @@
 {
     "$help": "https://aka.ms/terminal-documentation",
     "$schema": "https://aka.ms/terminal-profiles-schema",
-    "actions": 
+    "actions":
     [
         {
-            "command": 
+            "command":
             {
                 "action": "splitPane",
                 "split": "auto",
@@ -13,7 +13,7 @@
             "id": "User.splitPane.A6751878"
         },
         {
-            "command": 
+            "command":
             {
                 "action": "splitPane",
                 "split": "left"
@@ -21,7 +21,7 @@
             "id": "User.splitPane.21DBB4A1"
         },
         {
-            "command": 
+            "command":
             {
                 "action": "moveFocus",
                 "direction": "down"
@@ -29,7 +29,7 @@
             "id": "User.moveFocus.F747588A"
         },
         {
-            "command": 
+            "command":
             {
                 "action": "moveFocus",
                 "direction": "left"
@@ -37,7 +37,7 @@
             "id": "User.moveFocus.2A0DA8E0"
         },
         {
-            "command": 
+            "command":
             {
                 "action": "moveFocus",
                 "direction": "right"
@@ -45,7 +45,7 @@
             "id": "User.moveFocus.87C324ED"
         },
         {
-            "command": 
+            "command":
             {
                 "action": "splitPane",
                 "split": "right"
@@ -53,7 +53,7 @@
             "id": "User.splitPane.864CD510"
         },
         {
-            "command": 
+            "command":
             {
                 "action": "moveFocus",
                 "direction": "up"
@@ -61,7 +61,7 @@
             "id": "User.moveFocus.6CD791B"
         },
         {
-            "command": 
+            "command":
             {
                 "action": "splitPane",
                 "split": "down"
@@ -69,7 +69,7 @@
             "id": "User.splitPane.D5151347"
         },
         {
-            "command": 
+            "command":
             {
                 "action": "splitPane",
                 "split": "up"
@@ -80,7 +80,7 @@
     "copyFormatting": "none",
     "copyOnSelect": false,
     "defaultProfile": "{764c7586-7cc5-46dd-8dae-dbd201e1c63e}",
-    "keybindings": 
+    "keybindings":
     [
         {
             "id": "Terminal.CopyToClipboard",
@@ -151,25 +151,25 @@
             "keys": "alt+shift+l"
         }
     ],
-    "newTabMenu": 
+    "newTabMenu":
     [
         {
             "type": "remainingProfiles"
         }
     ],
-    "profiles": 
+    "profiles":
     {
-        "defaults": 
+        "defaults":
         {
             "colorScheme": "Tokyo Night Storm",
-            "font": 
+            "font":
             {
                 "face": "Maple Mono NF",
                 "weight": "medium"
             }
         }
     },
-    "schemes": 
+    "schemes":
     [
         {
             "background": "#1A1B2C",

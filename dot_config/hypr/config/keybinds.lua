@@ -347,10 +347,7 @@ hl.bind(mod .. " + T", function()
 	if running then
 		hl.dispatch(hl.dsp.workspace.toggle_special("teams"))
 	else
-		hl.exec_cmd(
-			"flatpak run com.github.IsmaelMartinez.teams_for_linux",
-			{ workspace = "special:teams silent" }
-		)
+		hl.exec_cmd("flatpak run com.github.IsmaelMartinez.teams_for_linux", { workspace = "special:teams silent" })
 		hl.dispatch(hl.dsp.workspace.toggle_special("teams"))
 	end
 end)
@@ -358,11 +355,7 @@ end)
 -- ──────────────────────────────────────────────────────────────────────────
 -- Push-to-talk (handy). Press triggers, release triggers again (same signal).
 -- ──────────────────────────────────────────────────────────────────────────
-hl.bind(
-	"ALT + SPACE",
-	hl.dsp.exec_cmd("handy --toggle-transcription"),
-	{ description = "Start recording via handy" }
-)
+hl.bind("ALT + SPACE", hl.dsp.exec_cmd("handy --toggle-transcription"), { description = "Start recording via handy" })
 hl.bind(
 	"ALT + SPACE",
 	hl.dsp.exec_cmd("handy --toggle-transcription"),
