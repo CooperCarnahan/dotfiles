@@ -4,7 +4,7 @@ onboarding = false
 
 [theme]
 name = "tokyo-night"
-auto_switch = true
+auto_switch = false
 # Built-in themes: catppuccin, terminal, tokyo-night, dracula, nord,
 #                  gruvbox, one-dark, solarized, kanagawa, rose-pine,
 #                  vesper
