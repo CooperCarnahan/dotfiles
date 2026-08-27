@@ -1,3 +1,23 @@
+{{- /*
+  bun is mise-managed, so its path MUST NOT be resolved with `lookPath`: that
+  resolves against the chezmoi process's PATH at render time, and the file phase
+  runs BEFORE run_after_install_mise_toolchain.sh installs bun. On a fresh
+  machine lookPath returned "", so the statusLine command below was written as
+  `exec ""` and stayed broken until a second apply -- which also made the
+  settings.json byte-equality test fail in the full test tier.
+
+  Point at the mise SHIM instead: a fixed path that exists independently of what
+  is installed yet, with mise resolving the real binary at runtime. Same reason
+  ghostty's `command` and the Windows Terminal Nushell profile use shims.
+
+  Forward slashes throughout: the value is embedded in a `bash -c` string, and
+  .chezmoi.homeDir is backslashed on Windows.
+*/ -}}
+{{- $home := .chezmoi.homeDir | replace "\\" "/" -}}
+{{- $bun := printf "%s/.local/share/mise/shims/bun" $home -}}
+{{- if eq .chezmoi.os "windows" -}}
+{{-   $bun = printf "%s/AppData/Local/mise/shims/bun.exe" $home -}}
+{{- end -}}
 {
   "editorMode": "vim",
   "enabledPlugins": {
@@ -120,7 +140,7 @@
        statusLine intact rather than clobbering it. */ -}}
 {{- if lookPath "bun" }}
   "statusLine": {
-    "command": "bash -c 'cols=$(stty size </dev/tty 2>/dev/null | awk '\"'\"'{print $2}'\"'\"'); export COLUMNS=$(( ${cols:-120} > 4 ? ${cols:-120} - 4 : 1 )); plugin_dir=$(ls -d \"${CLAUDE_CONFIG_DIR:-$HOME/.claude}\"/plugins/cache/*/claude-hud/*/ 2>/dev/null | awk -F/ '\"'\"'{ print $(NF-1) \"\\t\" $(0) }'\"'\"' | grep -E '\"'\"'^[0-9]+\\.[0-9]+\\.[0-9]+[[:space:]]'\"'\"' | sort -t. -k1,1n -k2,2n -k3,3n -k4,4n | tail -1 | cut -f2-); exec \"{{ lookPath "bun" | replace "\\" "/" }}\" --env-file /dev/null \"${plugin_dir}src/index.ts\"'",
+    "command": "bash -c 'cols=$(stty size </dev/tty 2>/dev/null | awk '\"'\"'{print $2}'\"'\"'); export COLUMNS=$(( ${cols:-120} > 4 ? ${cols:-120} - 4 : 1 )); plugin_dir=$(ls -d \"${CLAUDE_CONFIG_DIR:-$HOME/.claude}\"/plugins/cache/*/claude-hud/*/ 2>/dev/null | awk -F/ '\"'\"'{ print $(NF-1) \"\\t\" $(0) }'\"'\"' | grep -E '\"'\"'^[0-9]+\\.[0-9]+\\.[0-9]+[[:space:]]'\"'\"' | sort -t. -k1,1n -k2,2n -k3,3n -k4,4n | tail -1 | cut -f2-); exec \"{{ $bun }}\" --env-file /dev/null \"${plugin_dir}src/index.ts\"'",
     "padding": 0,
     "refreshInterval": 10,
     "type": "command"
