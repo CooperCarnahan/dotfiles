@@ -36,8 +36,9 @@ Write-Step "Setting user environment variables"
 # %HOME%\pcbenv exists (it lives at $env:USERPROFILE\pcbenv now).
 [System.Environment]::SetEnvironmentVariable("HOME", $env:USERPROFILE, "User")
 [System.Environment]::SetEnvironmentVariable("XDG_CONFIG_HOME", "$env:USERPROFILE\.config", "User")
+[System.Environment]::SetEnvironmentVariable("XDG_STATE_HOME", "$env:USERPROFILE\.local\state", "User")
 [System.Environment]::SetEnvironmentVariable("ZELLIJ_CONFIG_DIR", "$env:USERPROFILE\.config\zellij", "User")
-Write-Host "HOME, XDG_CONFIG_HOME and ZELLIJ_CONFIG_DIR set" -ForegroundColor Gray
+Write-Host "HOME, XDG_CONFIG_HOME, XDG_STATE_HOME and ZELLIJ_CONFIG_DIR set" -ForegroundColor Gray
 
 # mise shims on the User PATH: nushell (the shell itself) is mise-managed, so
 # non-interactive launchers — Windows Terminal, chezmoi's [interpreters.nu],
