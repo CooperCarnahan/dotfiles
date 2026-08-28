@@ -30,9 +30,39 @@ tests/**
 # Loaded via [include] from .gitconfig. Maintained out-of-band; never tracked.
 .config/git/work
 
-# hyprmoncfg rewrites this on every profile apply, from the matched JSON profile
-# and the currently connected hardware. It is machine state, not dotfile content,
-# and differs per machine — committing it would conflict across machines.
+# Omarchy owns the Hyprland ENTRYPOINT. It is rewritten by `omarchy refresh
+# hyprland` and by migrations during `omarchy update` (omarchy-update:48 runs
+# omarchy-migrate automatically, and migrations sed/cp/mv ~/.config/hypr/*.lua
+# in place). Tracking it is what broke this machine: chezmoi's copy REPLACED the
+# bootstrap, so `require("default.hypr.omarchy")` never ran — no bar, no
+# theming, no defaults.
+#
+# Its four user-override seams — bindings.lua, input.lua, looknfeel.lua,
+# autostart.lua — are deliberately NOT ignored. Omarchy ships them as commented
+# stubs and treats them as user-owned (`omarchy refresh config <path>` calls
+# them "a shipped user config … (backs up your version)"), and hyprland.lua
+# already require()s all four. So chezmoi manages them DIRECTLY: no hook, no
+# `user/` tree, no require line for a migration to drop.
+#
+# .config/hypr/.luarc.json is likewise NOT ignored — see dot_luarc.json.
+.config/hypr/hyprland.lua
+
+# Pure Omarchy state and scaffolding: themes, defaults, branding and the
+# `themed/` template overrides are all installed and rewritten by Omarchy
+# itself. ~/.config/omarchy is otherwise entirely outside chezmoi.
+.config/omarchy/themes
+.config/omarchy/themes/**
+.config/omarchy/defaults
+.config/omarchy/defaults/**
+.config/omarchy/branding
+.config/omarchy/branding/**
+.config/omarchy/themed
+.config/omarchy/themed/**
+
+# Omarchy's clamshell writer owns this file: omarchy-hyprland-monitor-clamshell
+# regenerates it from the currently connected hardware and the lid state. It is
+# machine state, not dotfile content, and differs per machine — committing it
+# would conflict across machines and fight Omarchy's monitor watcher.
 .config/hypr/monitors.lua
 
 # Only .config/hyprmoncfg/profiles/*.json is tracked — that is the source of
