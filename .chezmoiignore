@@ -107,17 +107,21 @@ AppData/Local/Win11Debloat/Backups/**
 AppData/Local/Win11Debloat/Config/LastUsedSettings.json
 {{- end }}
 
-{{- if or (ne .chezmoi.os "linux") (eq (includeTemplate "is-headless" .) "true") }}
-# Skip Linux-GUI (Wayland/Hyprland) configs everywhere they can never run:
-# any non-Linux OS, and headless Linux boxes reached over SSH.
+{{- /* Layer 2 -- GUI app config. Ghostty is cross-platform, so this gates on
+       "does this machine have a desktop", not on the OS. Windows is excluded
+       separately: there is no ghostty build for it. */ -}}
+{{- if or (eq (includeTemplate "is-headless" .) "true") (eq .chezmoi.os "windows") }}
+.config/ghostty
+.config/ghostty/**
+{{- end }}
+
+{{- /* Layer 3 -- the Hyprland desktop. Omarchy owns it and nothing else runs
+       it, so these deploy on Omarchy alone. */ -}}
+{{- if ne (includeTemplate "is-omarchy" .) "true" }}
 .config/hypr
 .config/hypr/**
 .config/hyprmoncfg
 .config/hyprmoncfg/**
-.config/wlogout
-.config/wlogout/**
-.config/ghostty
-.config/ghostty/**
 {{- end }}
 
 .claude/settings.local.json

@@ -52,13 +52,9 @@ if ! command -v chezmoi >/dev/null 2>&1; then
 fi
 
 # Generate the config through the REAL .chezmoi.toml.tmpl path: osid comes from
-# the container's actual /etc/os-release; only the interactive prompt is
-# answered up front. --no-tty makes any unexpected prompt fail loudly.
-# NB: chezmoi keys --promptBool pairs by the PROMPT TEXT (not the variable
-# name) — this string must match the promptBoolOnce call in .chezmoi.toml.tmpl.
-# The `work` prompt is Windows-only, so no pair is needed for it here.
-chezmoi init --source "$repo" --no-tty \
-    --promptBool "Is this a headless machine (no desktop / Wayland session)?=true"
+# the container's actual /etc/os-release, and there is no prompt left to answer.
+# --no-tty makes any unexpected prompt fail loudly.
+chezmoi init --source "$repo" --no-tty
 
 if [ "$tier" = smoke ]; then
     chezmoi apply --source "$repo" --force --no-tty \

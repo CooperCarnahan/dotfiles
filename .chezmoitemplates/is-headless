@@ -1,15 +1,14 @@
 {{- /*
-  Single source of truth for "is this a headless (no desktop) machine?".
-  Returns the string "true" or "false".
+  "Is this a headless (no desktop) machine?" -- returns "true" or "false".
 
-  Priority:
-    1. The `headless` config var, if set (prompted once at `chezmoi init`).
-    2. Otherwise a smart default: headless on any Linux that isn't Arch-family
-       (those are the desktop machines), so a not-yet-reinitialized box still
-       behaves sensibly. Non-Linux (Windows/macOS) defaults to not-headless.
+  Desktop Linux means Omarchy here. That is the only Linux desktop this repo
+  currently targets, so headless is simply "Linux that is not Omarchy" and
+  needs no prompt. macOS and Windows always have a desktop.
 
-  Delegates the Arch-family test to is-arch-family so derivatives (CachyOS,
-  Omarchy, ...) are not classified headless just for having their own os-release
-  ID.
+  If another Linux desktop ever shows up, widen this test then. Not before.
 */ -}}
-{{- if hasKey . "headless" -}}{{ .headless }}{{- else if eq .chezmoi.os "linux" -}}{{ ne (includeTemplate "is-arch-family" .) "true" }}{{- else -}}false{{- end -}}
+{{- if ne .chezmoi.os "linux" -}}
+false
+{{- else -}}
+{{- ne (includeTemplate "is-omarchy" .) "true" -}}
+{{- end -}}

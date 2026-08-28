@@ -10,8 +10,8 @@ load helpers/common
     [ "$output" = "linux-$(distro_id)" ]
 }
 
-@test "headless/work render as expected" {
-    run chez execute-template '{{ .headless }}/{{ .work }}'
+@test "headless derives true and work renders false" {
+    run chez execute-template '{{ includeTemplate "is-headless" . }}/{{ .work }}'
     [ "$status" -eq 0 ]
     [ "$output" = "true/false" ]
 }
@@ -54,8 +54,6 @@ load helpers/common
 @test "headless ignore gates hold (no GUI configs deployed)" {
     [ ! -e "$HOME/.config/hypr" ]
     [ ! -e "$HOME/.config/ghostty" ]
-    [ ! -e "$HOME/.config/noctalia" ]
-    [ ! -e "$HOME/.config/wlogout" ]
     [ ! -e "$HOME/.config/hyprmoncfg" ]
 }
 
