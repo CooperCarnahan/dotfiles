@@ -144,4 +144,3 @@ AppData/Local/Win11Debloat/Config/LastUsedSettings.json
 .claude/*.orig
 .claude/mcp-needs-auth-cache.json
 **/.claude/.cc-writes/
-
