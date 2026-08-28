@@ -54,3 +54,18 @@ repos:
         # Templated shell scripts have chezmoi template directives that
         # shellcheck can't parse; skip them.
         exclude: '\.tmpl$'
+
+  - repo: local
+    hooks:
+      - id: chezmoi-template-indent
+        name: no indented bare-delimiter control flow in chezmoi templates
+        description: >
+          An indented {{ if }}/{{ else }}/{{ end }} whose left delimiter lacks
+          the trim marker emits its leading whitespace as literal output.
+          Indent only actions written {{- ... }}.
+        language: system
+        files: '(\.tmpl$|^\.chezmoiremove$|^\.chezmoiignore$|^\.chezmoitemplates/)'
+        exclude: '(windows|glzr)'
+        entry: >
+          bash -c 'if grep -nE "^[[:space:]]+\{\{[[:space:]]*(if|else|end|range|with|template|define|block)\b" "$@" /dev/null;
+          then echo "indented bare-delimiter control flow -- use {{- instead"; exit 1; fi' --

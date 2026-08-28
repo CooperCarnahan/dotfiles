@@ -1,0 +1,18 @@
+{{- /*
+  "Is this Omarchy?" — returns the string "true" or "false".
+
+  Omarchy is Arch-family (so is-arch-family is true there, and it gets the full
+  pacman/AUR/toolchain treatment), but it ships and manages its own desktop
+  stack. Anything below that Omarchy already owns must be held back, or chezmoi
+  and the distro fight over it:
+
+    login      sddm                      (NOT gdm)
+    lock       omarchy-shell lock        (NOT hyprlock)
+    screenshot slurp + tensaku-edit      (NOT hyprshot)
+    logout     uwsm stop + omarchy-osd   (NOT wlogout)
+    AUR helper yay, preinstalled         (NOT paru)
+
+  Used by [bootstrap.packages] in dot_config/mise/config.toml.tmpl, the AUR
+  script, topgrade, .chezmoiignore's Layer 3 gate, and is-headless.
+*/ -}}
+{{- if and (eq .chezmoi.os "linux") (hasKey .chezmoi.osRelease "id") -}}{{ eq .chezmoi.osRelease.id "omarchy" }}{{- else -}}false{{- end -}}

@@ -1,17 +1,50 @@
 # dotfiles
 
-Cross-platform [chezmoi](https://chezmoi.io) dotfiles for Windows, macOS, and Linux
-(Arch/CachyOS + Debian/Ubuntu).
+Cross-platform [chezmoi](https://chezmoi.io) dotfiles for the machines this repo actually
+provisions:
+
+| Machine | Role |
+|---|---|
+| [Omarchy](https://omarchy.org) on Arch | Desktop daily driver — the only Linux desktop this repo targets |
+| Headless Linux (Proxmox LXC, Raspberry Pis) | Servers, reached over SSH. Terminal and tools only |
+| macOS | Terminal and tools only. No window manager, no desktop layer |
+| Windows | Full desktop: PowerToys, Windows Terminal, GlazeWM/Zebar |
 
 ## Design
+
+The repo stratifies into four layers. Two derived gates select between them, and **no gate
+asks a question on Linux or macOS**:
+
+```
+Layer 0  tools            mise [tools], uniform          every machine
+Layer 1  system packages  pacman / apt / brew / winget   is-arch-family, $deb, $darwin, windows
+Layer 2  GUI app config   ghostty                        not headless, not windows
+Layer 3  desktop env      Omarchy owns Linux             is-omarchy
+                          macOS: empty (terminal+tools)
+                          Windows: PowerToys/Terminal/glzr
+```
+
+**Desktop Linux means Omarchy.** That is a deliberate scoping decision, not a claim about the
+world: `.chezmoitemplates/is-headless` derives headless as *"Linux that is not Omarchy"*, so
+every other Linux — the LXC, the Pis, the test containers — is headless by construction and
+there is nothing to prompt for. If another Linux desktop ever shows up, widen that helper then.
+
+`.chezmoitemplates/is-omarchy` carries the **ownership table** — the source of truth for where
+this repo stops and Omarchy begins (login, lock screen, screenshots, logout, AUR helper).
+Anything in that table is Omarchy's; tracking it here makes chezmoi and `omarchy refresh`
+overwrite each other.
+
+Ghostty sits in Layer 2, not Layer 3: it is a cross-platform terminal, so it gates on *"does
+this machine have a desktop"* rather than on the OS, with Windows excluded separately because
+there is no ghostty build for it.
 
 - **[mise](https://mise.jdx.dev) is the package authority on unix.** One manifest —
   `dot_config/mise/config.toml.tmpl` — declares both the dev CLI toolchain (`[tools]`: `nu`,
   ripgrep, node, uv, `claude`, and ~50 more) and the system packages
   (`[bootstrap.packages]`: pacman/apt/brew/brew-cask — OS/build packages and GUI apps).
-- **Scripts cover only what mise can't:** AUR packages via paru
-  (`run_onchange_after_setup_aur_packages`) and the whole Windows layer (winget + scoop —
-  mise has no backends for those).
+- **Scripts cover only what mise can't:** AUR packages, which have no mise backend
+  (`run_onchange_after_setup_aur_packages`, Omarchy-only), and the whole Windows layer
+  (winget + scoop — mise has no backends for those).
 - **[Topgrade](https://github.com/topgrade-rs/topgrade) owns updates.** It runs chezmoi first,
   then upgrades the system package manager, mise tools, and the other managers it detects.
   Chezmoi only provisions declared state and never calls Topgrade, so the flow cannot recurse.
@@ -26,6 +59,34 @@ On unix the bootstrap runs almost entirely in the `after` phase
 system packages, then `mise install` materializes the toolchain — neither can happen earlier,
 because both read `~/.config/mise/config.toml`, which the file phase itself puts in place.
 (Windows keeps its mise install in the `before` script, driven by scoop.)
+
+### AUR packages, the Omarchy way
+
+`run_onchange_after_setup_aur_packages` renders **empty on every machine that is not Omarchy**
+and never bootstraps an AUR helper of its own — Omarchy preinstalls `yay` and wraps it:
+
+```sh
+omarchy pkg aur add maplemono-nf-unhinted   # idempotent: gates on omarchy-pkg-missing,
+                                            # then re-verifies with `pacman -Q`
+omarchy install browser zen                 # not a bare AUR add: also installs Omarchy's
+                                            # firefox policies.json and MOZ_ENABLE_WAYLAND
+```
+
+The script asserts both of Zen's side effects afterwards, because `omarchy-install-browser`
+has no `set -e` and exits 0 even when its `sudo` calls fail — and a `run_onchange` script only
+re-fires when its *content* changes, so a silent failure would never be retried.
+
+### `.chezmoiremove`
+
+Four mise launcher stubs are removed from `~/.local/bin`: `claude`, `codex`, `gh`, `opencode`.
+Each runs `mise use -g`, which rewrites `~/.config/mise/config.toml` — a chezmoi-managed file —
+on every invocation. All four have a real mise install that PATH resolves ahead of the stub, so
+removing them costs nothing.
+
+`[tasks.bootstrap]` deliberately runs `chezmoi apply` **without `--force`**. That flag is
+global, not removal-scoped: it would suppress the "has changed since chezmoi last wrote it"
+prompt for every managed target and silently revert local edits. Bootstrap is run by a human at
+a terminal, so a prompt is answerable — and it is the only thing that surfaces drift.
 
 ## First run on a new machine
 
@@ -49,16 +110,22 @@ The `PATH` export makes the newly installed chezmoi shim visible immediately. A 
 will not have that directory yet on a fresh box because it did not exist at login. This is the
 same invocation the Podman full-tier test validates.
 
+**There are no chezmoi prompts on macOS or Linux.** `osid` comes from the machine's own
+`/etc/os-release`, and headless is derived.
+
+- **Omarchy:** the full desktop path. The pacman set plus ghostty apply via `mise bootstrap
+  packages` in the `after` phase; AUR packages and Zen follow in `setup_aur_packages`. The
+  three Hyprland user-override seams (`bindings.lua`, `input.lua`, `looknfeel.lua`) are managed
+  directly — Omarchy ships them as user-owned stubs and its `hyprland.lua` already requires
+  them.
+- **Any other Linux (plain Arch, Debian/Ubuntu, containers):** derived headless. The build
+  toolchain applies via `mise bootstrap packages`; no ghostty, no Hyprland configs, no AUR
+  script.
 - **macOS:** no Homebrew install needed — mise's `brew`/`brew-cask` backends install formulas
-  and casks directly (one sudo prompt to create `/opt/homebrew` on a brew-less mac). No
-  chezmoi prompts. If you'll compile anything (cargo builds, etc.), run
-  `xcode-select --install` first — nothing in the bootstrap pulls the CLT anymore.
-- **Arch / CachyOS:** prompts **"Is this a headless machine?"** (defaults to `false` on
-  Arch/CachyOS). The pacman set — plus, on non-headless boxes, the Wayland desktop stack +
-  GDM — applies via `mise bootstrap packages` in the `after` phase; AUR packages follow via
-  paru in `setup_aur_packages`.
-- **Debian / Ubuntu:** treated as a headless server. The apt build toolchain applies via
-  `mise bootstrap packages` in the `after` phase. (No desktop packages.)
+  and casks directly (one sudo prompt to create `/opt/homebrew` on a brew-less mac). Ghostty is
+  installed via `brew-cask:ghostty` and **does** receive `.config/ghostty`. If you'll compile
+  anything (cargo builds, etc.), run `xcode-select --install` first — nothing in the bootstrap
+  pulls the CLT anymore.
 
 ### Windows
 
@@ -74,7 +141,8 @@ chezmoi init --apply CooperCarnahan
 Git is not a prerequisite: chezmoi clones with its built-in git, and `Microsoft.Git`
 installs during the first apply.
 
-Four prompts, all asked once at `init` and persisted to `[data]`:
+Windows is the only platform that prompts. Four prompts, all asked once at `init` and
+persisted to `[data]`:
 
 - **"Is this a work machine?"** — `true` skips the personal apps (1Password, NordVPN,
   Tailscale, Claude, Zen, GlazeWM).
@@ -140,10 +208,9 @@ after hook, so it is the actual completion summary.
 flowchart TD
     A["Manual: install mise → chezmoi<br/>curl mise.run · mise use -g chezmoi<br/>(Windows: winget twpayne.chezmoi)"]
     A --> B["chezmoi init --apply CooperCarnahan<br/>built-in git clones the repo"]
-    B --> C{{".chezmoi.toml.tmpl prompts"}}
+    B --> C{{".chezmoi.toml.tmpl"}}
     C -->|Windows| Pw["work? · windowsTweaks? · removeApps? · sshServer?"]
-    C -->|Linux| Pl["headless?"]
-    C -->|macOS| Pm["no prompts"]
+    C -->|"Linux / macOS"| Pu["no prompts<br/>osid from /etc/os-release<br/>headless derived: Linux AND not Omarchy"]
 
     subgraph BEFORE["BEFORE phase"]
       direction TB
@@ -151,16 +218,15 @@ flowchart TD
     end
 
     Bw --> Main
-    Pl --> Main
-    Pm --> Main
-    Main["FILE phase — apply targets + externals<br/>native modify templates merge app-owned JSON<br/>writes mise + Topgrade configuration<br/>extracts pinned Win11Debloat (if tweaks or removeApps)"]
+    Pu --> Main
+    Main["FILE phase — apply targets + externals<br/>native modify templates merge app-owned JSON<br/>writes mise + Topgrade configuration<br/>.chezmoiremove drops the four ~/.local/bin launcher stubs<br/>extracts pinned Win11Debloat (if tweaks or removeApps)"]
     Main --> Sys["run_windows-system.ps1 (Windows, ALWAYS runs)<br/>HOME · XDG · PATH · dark mode<br/>one elevated helper: dev mode + OpenSSH"]
 
     subgraph AFTER["AFTER phase — packages + toolchain + hooks"]
       direction TB
       Tl["after_install_mise_toolchain.sh (unix)<br/>install mise → bootstrap packages apply → mise install"]
       Nu["after_reconcile-nushell-autoload.nu<br/>(needs nu — mise-provided, now present)"]
-      Aur["after_setup_aur_packages.sh (arch)<br/>paru bootstrap · AUR pkgs · mako disable"]
+      Aur["after_setup_aur_packages.sh (Omarchy ONLY)<br/>omarchy pkg aur add · omarchy install browser zen<br/>renders empty everywhere else"]
       Cc["after_setup_claude_code.sh<br/>(non-Windows) plugins + MCP"]
       Wd["after_windows-debloat.ps1 (Windows, if tweaks or removeApps)<br/>elevated Win11Debloat · build-gated flags · postcondition-checked"]
       Ff["zz-fastfetch.nu<br/>final summary on every apply"]
@@ -183,7 +249,8 @@ as success and never retried.
 ## Testing
 
 Podman-based bootstrap tests for Arch and Debian live in `tests/podman/`
-(see [its README](tests/podman/README.md)):
+(see [its README](tests/podman/README.md)). Both containers are non-Omarchy Linux, so they
+exercise the derived-headless path:
 
 ```sh
 tests/podman/run.sh                     # smoke tier: template render + apply asserts (~2 min)
@@ -191,6 +258,18 @@ tests/podman/run.sh --tier full debian  # full tier: the real fresh-system boots
 ```
 
 CI runs the smoke tier on every push/PR and the full tier weekly.
+
+Template logic can also be checked against a synthetic OS context without a container, which
+is the only way to cover Omarchy, macOS and Windows:
+
+```sh
+chezmoi execute-template --source . \
+  '{{ includeTemplate "is-headless" (dict "chezmoi" (dict "os" "darwin" "osRelease" (dict))) }}'
+```
+
+`prek run --all-files` runs the formatters and linters, including a local hook that rejects an
+indented `{{ if }}`/`{{ else }}`/`{{ end }}` whose left delimiter lacks the trim marker — the
+one delimiter mistake that fails silently by emitting its leading whitespace as output.
 
 ## Keeping a machine current
 
@@ -208,19 +287,20 @@ unattended agents or scripts:
 mise run update-unattended
 ```
 
-This passes `--yes --no-ask-retry`. On Arch/CachyOS, Topgrade is configured to use `paru`, so
+This passes `--yes --no-ask-retry`. On Omarchy, Topgrade is configured to use `yay`, so
 repository and AUR packages participate in one full transaction rather than a partial upgrade.
-`mise bootstrap` remains a local converge command: packages, tools, then `chezmoi apply`
+`mise run bootstrap` remains a local converge command: packages, tools, then `chezmoi apply`
 without fetching or upgrading anything.
 
 ## Layout
 
 | Path | Purpose |
 |---|---|
-| `.chezmoi.toml.tmpl` | Prompts, data, interpreters, structural diff + JSON normalization |
+| `.chezmoi.toml.tmpl` | Data, Windows-only prompts, interpreters, structural diff + JSON normalization |
 | `.chezmoiscripts/` | Per-OS `run_onchange_*` bootstrap scripts (system packages + mise) |
-| `.chezmoitemplates/` | Desired JSON plus the native semantic merge helper |
-| `.chezmoiignore` | OS/role-gated ignore rules |
-| `.chezmoiversion` | Minimum chezmoi version (uses `promptBoolOnce`, `includeTemplate`, `lookPath`) |
+| `.chezmoitemplates/` | Desired JSON, the native semantic merge helper, and the `is-*` gates |
+| `.chezmoiignore` | Layer-gated ignore rules |
+| `.chezmoiremove` | The four `~/.local/bin` launcher stubs that rewrite managed mise config |
+| `.chezmoiversion` | Minimum chezmoi version (uses `promptBoolOnce`, `includeTemplate`, `stat`, `lookPath`) |
 | `dot_config/mise/config.toml.tmpl` | The dev toolchain manifest |
 | `dot_config/topgrade.toml.tmpl` | One-way update orchestration and per-OS manager policy |

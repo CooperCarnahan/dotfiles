@@ -1,13 +1,6 @@
 [settings]
 experimental = true
 
-[settings.github]
-# Reuse gh CLI's token to avoid anonymous GitHub API rate limits during
-# `mise up`/install. mise runs this on demand only when it needs a token (not
-# at shell startup), and strips its own shims from PATH first — so `gh`
-# resolves to the system binary (/usr/bin/gh), not the mise-managed shim.
-credential_command = "gh auth token"
-
 [tools]
 "github:dlvhdr/gh-dash" = {version = "latest", exe = "gh-dash"}
 "github:webstonehq/tuxedo" = "latest"
@@ -71,6 +64,12 @@ zoxide = "latest"
 
 [tasks.bootstrap]
 description = "Converge this machine: packages + tools + dotfiles"
+# Deliberately not --force. That flag is global, not removal-scoped: it
+# suppresses the "has changed since chezmoi last wrote it" prompt for all
+# managed targets and silently reverts local edits with no output. Bootstrap is
+# run by a human at a terminal, so a prompt is answerable -- and it is the only
+# thing that surfaces drift from the nine ~/.local/bin stubs that still run
+# `mise use -g` against this very file.
 run = "chezmoi apply"
 
 [tasks.update]
@@ -83,7 +82,7 @@ description = "Update everything non-interactively with Topgrade"
 run = "topgrade --yes --no-ask-retry"
 
 {{- /* Unix family detection, same idiom as run_onchange_after_install_mise_toolchain. */ -}}
-{{- $arch := or (eq .osid "linux-arch") (eq .osid "linux-cachyos") -}}
+{{- $arch := eq (includeTemplate "is-arch-family" .) "true" -}}
 {{- $deb := false -}}
 {{- if hasKey .chezmoi.osRelease "id" -}}
 {{-   $deb = eq .chezmoi.osRelease.id "debian" -}}
@@ -110,7 +109,6 @@ run = "topgrade --yes --no-ask-retry"
 "pacman:docker" = "latest"
 "pacman:docker-compose" = "latest"
 "pacman:dtc" = "latest"
-"pacman:git" = "latest"
 "pacman:gperf" = "latest"
 "pacman:make" = "latest"
 "pacman:openssh" = "latest"
@@ -124,14 +122,8 @@ run = "topgrade --yes --no-ask-retry"
 {{ if eq (includeTemplate "is-headless" .) "false" -}}
 # Desktop / Wayland stack — skipped on headless machines.
 "pacman:ghostty" = "latest"
-"pacman:gdm" = "latest"
-"pacman:hyprlock" = "latest"
-"pacman:hyprshot" = "latest"
-"pacman:wlogout" = "latest"
-"pacman:wtype" = "latest"
-"pacman:xdg-desktop-portal-hyprland" = "latest"
-"pacman:xsensors" = "latest"
-"pacman:zen-browser-bin" = "latest"
+# Omarchy owns the display manager, lock screen, logout menu and screenshots.
+# Installing gdm here also re-enabled it over sddm on every apply.
 {{ end -}}
 {{ end -}}
 {{ if $deb -}}

@@ -10,9 +10,10 @@ disable = ["self_update"]
 # Respect the chezmoi-managed "latest" declarations without rewriting them.
 bump = false
 
-{{- if or (eq .osid "linux-arch") (eq .osid "linux-cachyos") }}
+{{- if eq (includeTemplate "is-arch-family" .) "true" }}
 [linux]
-# A full paru transaction updates repository and AUR packages together, avoiding
-# Arch partial upgrades.
-arch_package_manager = "paru"
+# A full AUR-helper transaction updates repository and AUR packages together,
+# avoiding Arch partial upgrades. Omarchy preinstalls yay and never grows a paru,
+# so name the one that is actually there — topgrade fails if it is missing.
+arch_package_manager = "{{ if eq (includeTemplate "is-omarchy" .) "true" }}yay{{ else }}paru{{ end }}"
 {{- end }}

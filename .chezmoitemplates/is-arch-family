@@ -1,0 +1,16 @@
+{{- /*
+  Single source of truth for "is this an Arch-family machine?".
+  Returns the string "true" or "false".
+
+  Matches Arch itself and its derivatives (CachyOS, Omarchy, ...). Derivatives
+  set their own os-release ID but carry ID_LIKE=arch, so key off ID_LIKE the way
+  the $deb detection already does. Enumerating derivatives by name is a
+  treadmill, and a missed one fails SILENTLY: every arch gate goes false, so
+  [bootstrap.packages] renders empty and the toolchain/AUR scripts never run,
+  with nothing in the output to say so.
+*/ -}}
+{{- $id := "" -}}
+{{- $idLike := "" -}}
+{{- if hasKey .chezmoi.osRelease "id" -}}{{- $id = .chezmoi.osRelease.id -}}{{- end -}}
+{{- if hasKey .chezmoi.osRelease "idLike" -}}{{- $idLike = .chezmoi.osRelease.idLike -}}{{- end -}}
+{{- and (eq .chezmoi.os "linux") (or (eq $id "arch") (contains "arch" $idLike)) -}}

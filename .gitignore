@@ -12,3 +12,6 @@
 # orphaned before this was cleaned. Clear dist/assets/ before rebuilding, and keep only
 # what dist/*.html actually references.
 dot_glzr/zebar/zebar-glazewm/dist/assets/*.map
+
+# Design specs and implementation plans — repo-local working documents.
+docs/

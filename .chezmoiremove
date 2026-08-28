@@ -1,0 +1,30 @@
+{{- /*
+  Four mise launcher stubs that must not exist in ~/.local/bin.
+
+  Each runs `mise use -g`, which WRITES ~/.config/mise/config.toml -- a
+  chezmoi-managed file. Every invocation therefore causes chezmoi drift: the
+  tool works, and silently rewrites managed state behind chezmoi's back.
+
+  Only these four are listed. They have a real mise install that PATH resolves
+  ahead of the stub, so removing them costs nothing. The other nine stubs
+  (copilot, crush, gemini, ghui, grok, hunk, omp, pi, playwright) are the ONLY
+  launcher for their tool -- nothing in [tools] installs them -- so removing
+  those would remove the tools. They keep the drift bug until they are either
+  added to [tools] or dropped.
+
+  WARNING -- not idempotent once a target is RECREATED. Verified on chezmoi
+  v2.72.0: the first apply deletes silently, but if a stub comes back, the next
+  apply prompts ("... has changed since chezmoi last wrote it") -- failing
+  rc=1 with stdin closed, HANGING with stdin open. Omarchy migrations do write
+  ~/.local/bin, so this is reachable.
+
+  Non-interactive apply paths must therefore pass --force; tests/podman/harness.sh
+  already does. [tasks.bootstrap] deliberately does NOT: it is run by a human at
+  a terminal, and --force is global -- it suppresses the prompt for all 142
+  managed targets, silently reverting any local edit. Answering one prompt is
+  cheaper than losing the drift signal.
+*/ -}}
+.local/bin/claude
+.local/bin/codex
+.local/bin/gh
+.local/bin/opencode

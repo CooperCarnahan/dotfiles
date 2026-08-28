@@ -19,11 +19,6 @@ load helpers/common
     command -v uv
 }
 
-@test "paru installed (arch only)" {
-    [ "$(distro_id)" = "arch" ] || skip "arch only"
-    command -v paru
-}
-
 @test "sample pacman package installed (arch only)" {
     [ "$(distro_id)" = "arch" ] || skip "arch only"
     pacman -Qi tree

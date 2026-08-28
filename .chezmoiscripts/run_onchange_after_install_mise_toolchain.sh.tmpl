@@ -1,5 +1,5 @@
 {{- /* Unix family detection. .osid is set for every OS in .chezmoi.toml.tmpl. */ -}}
-{{- $arch := or (eq .osid "linux-arch") (eq .osid "linux-cachyos") -}}
+{{- $arch := eq (includeTemplate "is-arch-family" .) "true" -}}
 {{- $deb := false -}}
 {{- if hasKey .chezmoi.osRelease "id" -}}
 {{-   $deb = eq .chezmoi.osRelease.id "debian" -}}
