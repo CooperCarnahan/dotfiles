@@ -1,47 +1,30 @@
 {{- /*
-  Launcher stubs in ~/.local/bin that must not exist.
+  Four mise launcher stubs that must not exist in ~/.local/bin.
 
-  Each one is four lines of the same shape (verified identical across all 13):
+  Each runs `mise use -g`, which WRITES ~/.config/mise/config.toml -- a
+  chezmoi-managed file. Every invocation therefore causes chezmoi drift: the
+  tool works, and silently rewrites managed state behind chezmoi's back.
 
-      #!/bin/bash
-      export MISE_MINIMUM_RELEASE_AGE=0
-      mise use -g --quiet "<tool>" || exit 1
-      exec mise x "<tool>" -- "<tool>" "$@"
+  Only these four are listed. They have a real mise install that PATH resolves
+  ahead of the stub, so removing them costs nothing. The other nine stubs
+  (copilot, crush, gemini, ghui, grok, hunk, omp, pi, playwright) are the ONLY
+  launcher for their tool -- nothing in [tools] installs them -- so removing
+  those would remove the tools. They keep the drift bug until they are either
+  added to [tools] or dropped.
 
-  `mise use -g` WRITES ~/.config/mise/config.toml, which is a chezmoi-managed
-  file. So every single invocation of any of these stubs causes chezmoi drift --
-  the tool "works", and silently rewrites managed state behind chezmoi's back.
+  WARNING -- not idempotent once a target is RECREATED. Verified on chezmoi
+  v2.72.0: the first apply deletes silently, but if a stub comes back, the next
+  apply prompts ("... has changed since chezmoi last wrote it") -- failing
+  rc=1 with stdin closed, HANGING with stdin open. Omarchy migrations do write
+  ~/.local/bin, so this is reachable.
 
-  ~/.local/bin also sits ahead of the system directories on PATH during the
-  bootstrap (run_onchange_after_install_mise_toolchain.sh.tmpl), which is what
-  made the 2026-08-27 incident reachable: mise's github credential_command ran
-  a bare `gh`, PATH found this stub, the stub re-entered mise, mise needed a
-  token again -- ~30k tasks and 15GB of RAM in four minutes. That setting is now
-  gone (see dot_config/mise/config.toml.tmpl), but the stubs are an independent
-  bug and all 13 share the drift problem, so all 13 go.
-
-  Safe to delete: PATH resolves the real binaries first. e.g. `type -a claude`
-  finds ~/.local/share/mise/installs/claude/latest/claude ahead of the stub.
-  Nothing in this repo references ~/.local/bin except PATH exports, and
-  ~/.local/bin/mise (used by README.md:40, tests/bats/helpers/common.bash:4 and
-  tests/podman/Containerfile.arch:45-46) is deliberately NOT listed here.
-
-  WARNING -- .chezmoiremove is NOT idempotent once a target is RECREATED.
-  Verified on chezmoi v2.72.0: the first apply deletes silently, but if a stub
-  comes back, the next apply prompts interactively ("... has changed since
-  chezmoi last wrote it") and HANGS even under --no-tty. Any non-interactive
-  apply path -- topgrade, cron, the podman harness -- must pass --force.
+  Non-interactive apply paths must therefore pass --force; tests/podman/harness.sh
+  already does. [tasks.bootstrap] deliberately does NOT: it is run by a human at
+  a terminal, and --force is global -- it suppresses the prompt for all 142
+  managed targets, silently reverting any local edit. Answering one prompt is
+  cheaper than losing the drift signal.
 */ -}}
 .local/bin/claude
 .local/bin/codex
-.local/bin/copilot
-.local/bin/crush
-.local/bin/gemini
 .local/bin/gh
-.local/bin/ghui
-.local/bin/grok
-.local/bin/hunk
-.local/bin/omp
 .local/bin/opencode
-.local/bin/pi
-.local/bin/playwright

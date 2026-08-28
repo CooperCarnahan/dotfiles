@@ -64,6 +64,12 @@ zoxide = "latest"
 
 [tasks.bootstrap]
 description = "Converge this machine: packages + tools + dotfiles"
+# Deliberately not --force. That flag is global, not removal-scoped: it
+# suppresses the "has changed since chezmoi last wrote it" prompt for all
+# managed targets and silently reverts local edits with no output. Bootstrap is
+# run by a human at a terminal, so a prompt is answerable -- and it is the only
+# thing that surfaces drift from the nine ~/.local/bin stubs that still run
+# `mise use -g` against this very file.
 run = "chezmoi apply"
 
 [tasks.update]
