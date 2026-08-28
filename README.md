@@ -229,14 +229,12 @@ flowchart TD
       Aur["after_setup_aur_packages.sh (Omarchy ONLY)<br/>omarchy pkg aur add · omarchy install browser zen<br/>renders empty everywhere else"]
       Cc["after_setup_claude_code.sh<br/>(non-Windows) plugins + MCP"]
       Wd["after_windows-debloat.ps1 (Windows, if tweaks or removeApps)<br/>elevated Win11Debloat · build-gated flags · postcondition-checked"]
-      Ff["zz-fastfetch.nu<br/>final summary on every apply"]
     end
     Main --> Tl
     Tl --> Nu
     Nu --> Aur
     Aur --> Cc
     Cc --> Wd
-    Wd --> Ff
 ```
 
 Two Windows scripts deliberately differ in kind. `run_windows-system.ps1` is `run_`

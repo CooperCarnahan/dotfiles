@@ -3,8 +3,7 @@
 {{- if and (eq .chezmoi.os "windows") (or $tweaks $removeApps) -}}
 {{- $w := .windows.win11debloat -}}
 {{- /* AFTER phase so the .chezmoiexternal archive is guaranteed extracted (externals
-       apply during the file phase). Target name windows-debloat.ps1 sorts before
-       zz-fastfetch.nu, so the completion banner still runs last. */ -}}
+       apply during the file phase). */ -}}
 $ErrorActionPreference = 'Stop'
 $ProgressPreference = 'SilentlyContinue'
 
