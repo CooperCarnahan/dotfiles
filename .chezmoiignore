@@ -84,8 +84,6 @@ AppData/Local/Win11Debloat/Config/LastUsedSettings.json
 .config/hypr/**
 .config/hyprmoncfg
 .config/hyprmoncfg/**
-.config/noctalia
-.config/noctalia/**
 .config/wlogout
 .config/wlogout/**
 .config/ghostty
@@ -115,18 +113,3 @@ AppData/Local/Win11Debloat/Config/LastUsedSettings.json
 .claude/mcp-needs-auth-cache.json
 **/.claude/.cc-writes/
 
-
-# noctalia: track real config, skip runtime/cache state.
-# Source-of-truth is settings.json + plugins.json. Everything else is regenerated.
-.config/noctalia/colors.json
-.config/noctalia/theming.dynamic.toml
-.config/noctalia/shell-state.json
-.config/noctalia/emoji_usage.json
-.config/noctalia/notifications.json
-.config/noctalia/supporters.json
-.config/noctalia/github.json
-.config/noctalia/images
-.config/noctalia/images/**
-.config/noctalia/plugins/*/
-.config/noctalia/*.bak
-.config/noctalia/*.bak[0-9]*

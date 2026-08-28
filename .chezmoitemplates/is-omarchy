@@ -13,6 +13,8 @@
     AUR helper yay, preinstalled         (NOT paru)
 
   Used by [bootstrap.packages] in dot_config/mise/config.toml.tmpl, the AUR
-  script, topgrade, and run_onchange_after_setup_gdm.
+  script, topgrade, and the headless short-circuit in .chezmoi.toml.tmpl.
+  (It also gated run_onchange_after_setup_gdm, until that script was deleted
+  outright -- Omarchy logs in via sddm, so there was nothing left to gate.)
 */ -}}
 {{- if and (eq .chezmoi.os "linux") (hasKey .chezmoi.osRelease "id") -}}{{ eq .chezmoi.osRelease.id "omarchy" }}{{- else -}}false{{- end -}}
