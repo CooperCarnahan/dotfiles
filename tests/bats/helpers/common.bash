@@ -15,3 +15,34 @@ distro_id() {
     # shellcheck disable=SC1091
     (. /etc/os-release && echo "$ID")
 }
+
+# Path to the POSIX -> nushell handoff snippet. In-container this is the applied
+# copy; DOTFILES_HANDOFF lets a host-side run point at the repo source instead
+# (the file is not a template, so the two are byte-identical).
+handoff_snippet() {
+    echo "${DOTFILES_HANDOFF:-$HOME/.nu-handoff}"
+}
+
+# A stub `nu` on PATH that announces itself instead of starting real nushell, so
+# a test can observe whether the handoff decided to exec without the test having
+# to survive an interactive nushell. Echoes the dir to prepend to PATH.
+make_nu_stub() {
+    mkdir -p "$BATS_TEST_TMPDIR/stub"
+    printf '#!/bin/sh\necho HANDOFF_FIRED\n' >"$BATS_TEST_TMPDIR/stub/nu"
+    chmod +x "$BATS_TEST_TMPDIR/stub/nu"
+    echo "$BATS_TEST_TMPDIR/stub"
+}
+
+# An rc file whose only job is to source the handoff snippet, so these tests
+# exercise the snippet itself rather than the whole of ~/.bashrc.
+#
+# It echoes RC_SOURCED first. Every test asserts on that: without it, a test
+# that expects NO handoff would also pass when the shell never read the rc at
+# all, which is a vacuous pass rather than a working guard.
+make_rc() {
+    {
+        echo 'echo RC_SOURCED'
+        printf '. "%s"\n' "$(handoff_snippet)"
+    } >"$BATS_TEST_TMPDIR/rc"
+    echo "$BATS_TEST_TMPDIR/rc"
+}

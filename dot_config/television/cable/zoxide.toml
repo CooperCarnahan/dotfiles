@@ -31,7 +31,9 @@ ctrl-d = "actions:remove"
 # commit that dropped the redundant quotes is an ancestor of the 0.15.9 tag.
 [actions.shell_here]
 description = "Open a nested subshell in the selected directory"
-command = "cd {} && $SHELL"
+# `$SHELL` is enough: it starts an interactive POSIX shell, whose rc runs
+# ~/.nu-handoff and execs nushell from there. `exec` so no wrapper bash lingers.
+command = "cd {} && exec $SHELL"
 mode = "execute"
 
 [actions.remove]

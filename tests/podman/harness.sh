@@ -65,6 +65,9 @@ fi
 
 export DOTFILES_TEST_TIER="$tier"
 bats "$repo/tests/bats/smoke.bats"
+# Runs in both tiers: the handoff is what makes every terminal reach nushell, so
+# a regression here costs you the shell everywhere.
+bats "$repo/tests/bats/nu-handoff.bats"
 if [ "$tier" = full ]; then
     bats "$repo/tests/bats/full.bats"
 fi

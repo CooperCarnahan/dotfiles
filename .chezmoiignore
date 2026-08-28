@@ -74,9 +74,9 @@ tests/**
 {{- /* NB: no `-}}` on this tag — it would chomp the newline and glue the
        first pattern onto the previous line, silently un-ignoring it. */ -}}
 {{- if eq .chezmoi.os "windows" }}
-.alias
 .bashrc
 .zshrc
+.nu-handoff
 .tmux.conf
 !.git*
 {{ else }}

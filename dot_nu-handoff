@@ -1,0 +1,64 @@
+# shellcheck shell=sh
+# ~/.nu-handoff — hand an interactive POSIX shell over to nushell.
+#
+# Sourced from ~/.bashrc and ~/.zshrc. The login shell stays the platform
+# default (bash on Linux, zsh on macOS) so /etc/profile, /etc/profile.d and
+# macOS path_helper still build PATH before we get here. Everything that spawns
+# "a shell" — ghostty, tmux, zellij, herdr, television, ssh — therefore reaches
+# nushell with no per-app config. Omarchy's own omarchy-zsh and omarchy-fish
+# packages use this same shape rather than chsh.
+#
+# Every guard below is load-bearing; tests/bats/nu-handoff.bats covers each one.
+
+# 1. Interactive only. Scripts and `ssh host 'cmd'` must keep POSIX semantics.
+case $- in
+*i*) ;;
+*) return 0 ;;
+esac
+
+# 2. Not a command string. `$SHELL -ic 'cmd'` is interactive AND carries a
+#    command; exec'ing nu would silently discard the command.
+if [ -n "$BASH_EXECUTION_STRING" ] || [ -n "$ZSH_EXECUTION_STRING" ]; then
+    return 0
+fi
+
+# 3. Parent is not nushell — i.e. you typed `bash` inside nu and meant it.
+#
+#    Process identity, NOT an exported sentinel: tmux and zellij servers inherit
+#    the environment of the nu that started them, so an exported flag would
+#    strand every pane in bash. nu is only an *ancestor* of a pane's shell,
+#    never its parent, so process identity can't leak that way.
+if [ -r "/proc/$PPID/comm" ]; then
+    read -r nu_handoff_parent <"/proc/$PPID/comm"
+else
+    nu_handoff_parent=$(ps -o comm= -p "$PPID" 2>/dev/null)
+fi
+case $nu_handoff_parent in
+nu)
+    unset nu_handoff_parent
+    return 0
+    ;;
+esac
+unset nu_handoff_parent
+
+# 4. nushell is actually installed. An unprovisioned box must land in a working
+#    shell, not a terminal that closes instantly.
+#
+#    The probe covers the two platforms where nu is not on PATH yet: macOS,
+#    where Homebrew's prefix is absent from path_helper, and Debian, where nu
+#    comes from mise and `mise activate` has not run. On Arch/Omarchy
+#    /usr/bin/nu is already found and neither directory is touched. PATH is
+#    widened only when we are about to exec, so the rescue shell never sees it.
+if ! command -v nu >/dev/null 2>&1; then
+    for nu_handoff_dir in /opt/homebrew/bin "$HOME/.local/share/mise/shims"; do
+        if [ -x "$nu_handoff_dir/nu" ]; then
+            PATH="$nu_handoff_dir:$PATH"
+            export PATH
+            break
+        fi
+    done
+    unset nu_handoff_dir
+    command -v nu >/dev/null 2>&1 || return 0
+fi
+
+exec nu

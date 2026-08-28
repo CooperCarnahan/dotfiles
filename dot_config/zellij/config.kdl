@@ -282,7 +282,9 @@ default_mode "locked"
 // Choose the path to the default shell that zellij will use for opening new panes
 // Default: $SHELL
 //
-default_shell "nu"
+// Left unset on purpose: panes get $SHELL, whose rc runs ~/.nu-handoff and
+// execs nushell. Naming nu here would skip the login shell that builds PATH.
+// default_shell "nu"
 
 // Choose the path to override cwd that zellij will use for opening new panes
 //

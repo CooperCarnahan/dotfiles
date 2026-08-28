@@ -1,10 +1,56 @@
+{{- /* Unix family detection, same idiom as run_onchange_after_install_mise_toolchain.
+       Defined at the top because both [tools] and [bootstrap.packages] need it —
+       [tools] to pick where nushell comes from. */ -}}
+{{- $arch := eq (includeTemplate "is-arch-family" .) "true" -}}
+{{- $deb := false -}}
+{{- if hasKey .chezmoi.osRelease "id" -}}
+{{-   $deb = eq .chezmoi.osRelease.id "debian" -}}
+{{- end -}}
+{{- if and (not $deb) (hasKey .chezmoi.osRelease "idLike") -}}
+{{-   $deb = contains "debian" .chezmoi.osRelease.idLike -}}
+{{- end -}}
+{{- $darwin := eq .chezmoi.os "darwin" -}}
 [settings]
 experimental = true
+
+# Shell-agnostic tool config, defined once for every shell that activates mise:
+# nushell (via its pre_prompt hook) and the bash rescue shell alike.
+#
+# Scope limit: these arrive with mise's activation hook, so they reach nushell
+# and anything launched from it (television cables, herdr panes, tuxedo), but
+# NOT contexts with no activation — `ssh host 'cmd'`, cron, GUI launchers.
+#
+# Nushell-specific settings and PATH stay in env.nu; see the note there.
+[env]
+EDITOR = "nvim"
+PAGER = "less -R"
+BAT_PAGER = "less -R"
+BAT_THEME = "TwoDark"
+# Paths use single-quoted TOML literals: .chezmoi.homeDir contains backslashes
+# on Windows, which a double-quoted string would read as escape sequences.
+YAZI_CONFIG_HOME = '{{ .chezmoi.homeDir }}/.config/yazi'
+CLIPBOARD_NOGUI = "1"
+
+FZF_DEFAULT_COMMAND = "rg --files"
+FZF_DEFAULT_OPTS = "-m --height 50% --border"
+
+# tuxedo (todo.txt). Read by tuxedo itself and by cable/tuxedo.toml, which
+# shells out to `tuxedo ls --json`.
+TODO_DIR = '{{ .chezmoi.homeDir }}/Documents/todo'
+TODO_FILE = '{{ .chezmoi.homeDir }}/Documents/todo/todo.txt'
+DONE_FILE = '{{ .chezmoi.homeDir }}/Documents/todo/done.txt'
 
 [tools]
 "github:dlvhdr/gh-dash" = {version = "latest", exe = "gh-dash"}
 "github:webstonehq/tuxedo" = "latest"
+{{- if not (or $arch $darwin) }}
+# nushell only where no system package exists (Debian, Windows). Elsewhere it
+# is a pacman:/brew: entry in [bootstrap.packages] instead: the shim is a
+# symlink to mise itself, so reaching nu through it costs a second
+# resolve-and-exec on every shell start (38ms vs 15ms measured), and
+# ~/.nu-handoff runs before any `mise activate` could shorten that path.
 "aqua:nushell/nushell" = "latest"
+{{- end }}
 "aqua:gastownhall/beads" = "latest"
 "aqua:ouch-org/ouch" = "latest"
 atuin = "latest"
@@ -81,16 +127,6 @@ run = "topgrade"
 description = "Update everything non-interactively with Topgrade"
 run = "topgrade --yes --no-ask-retry"
 
-{{- /* Unix family detection, same idiom as run_onchange_after_install_mise_toolchain. */ -}}
-{{- $arch := eq (includeTemplate "is-arch-family" .) "true" -}}
-{{- $deb := false -}}
-{{- if hasKey .chezmoi.osRelease "id" -}}
-{{-   $deb = eq .chezmoi.osRelease.id "debian" -}}
-{{- end -}}
-{{- if and (not $deb) (hasKey .chezmoi.osRelease "idLike") -}}
-{{-   $deb = contains "debian" .chezmoi.osRelease.idLike -}}
-{{- end -}}
-{{- $darwin := eq .chezmoi.os "darwin" -}}
 {{- if or $arch $deb $darwin }}
 
 # System packages (OS/build packages + GUI apps), applied by
@@ -111,6 +147,8 @@ run = "topgrade --yes --no-ask-retry"
 "pacman:dtc" = "latest"
 "pacman:gperf" = "latest"
 "pacman:make" = "latest"
+# The interactive shell. A system package, not a mise tool — see [tools].
+"pacman:nushell" = "latest"
 "pacman:openssh" = "latest"
 "pacman:socat" = "latest"
 "pacman:sudo" = "latest"
@@ -119,6 +157,12 @@ run = "topgrade --yes --no-ask-retry"
 "pacman:unzip" = "latest"
 "pacman:which" = "latest"
 "pacman:wget" = "latest"
+# zsh is what makes the `zsh` entry in $env.CARAPACE_BRIDGES (env.nu) real —
+# carapace shells out to it for completion specs it can only bridge from zsh.
+# macOS ships it; Linux does not, so without this the bridge silently no-ops on
+# every Arch/Debian box. NB: not needed as a fallback shell here — bash is the
+# login shell on Linux and ~/.bashrc is the rescue path.
+"pacman:zsh" = "latest"
 {{ if eq (includeTemplate "is-headless" .) "false" -}}
 # Desktop / Wayland stack — skipped on headless machines.
 "pacman:ghostty" = "latest"
@@ -134,6 +178,8 @@ run = "topgrade --yes --no-ask-retry"
 "apt:curl" = "latest"
 "apt:git" = "latest"
 "apt:unzip" = "latest"
+# See the pacman:zsh note above — the carapace bridge needs it fleet-wide.
+"apt:zsh" = "latest"
 {{ end -}}
 {{ if $darwin -}}
 # mise's brew backend needs no preinstalled Homebrew (it creates /opt/homebrew
@@ -143,6 +189,9 @@ run = "topgrade --yes --no-ask-retry"
 "brew:dtc" = "latest"
 "brew:gperf" = "latest"
 "brew:make" = "latest"
+# See the pacman:nushell note. Homebrew's prefix is not in path_helper, so
+# ~/.nu-handoff probes /opt/homebrew/bin itself before giving up.
+"brew:nushell" = "latest"
 "brew:socat" = "latest"
 "brew:tree" = "latest"
 "brew:wget" = "latest"

@@ -51,6 +51,23 @@ load helpers/common
     [ "$status" -eq 0 ]
 }
 
+# nu-handoff.bats exercises the snippet against a synthetic rc. These two run it
+# through the rc files that actually ship, so a handoff that is correct but
+# never sourced still fails.
+@test "deployed bashrc reaches nushell" {
+    stub=$(make_nu_stub)
+    run env PATH="$stub:$PATH" bash --rcfile "$HOME/.bashrc" -i </dev/null
+    [[ "$output" == *HANDOFF_FIRED* ]]
+}
+
+@test "deployed zshrc reaches nushell" {
+    command -v zsh >/dev/null || skip "zsh not installed"
+    [ -f "$HOME/.zshrc" ]
+    stub=$(make_nu_stub)
+    run env PATH="$stub:$PATH" ZDOTDIR="$HOME" zsh -i </dev/null
+    [[ "$output" == *HANDOFF_FIRED* ]]
+}
+
 @test "headless ignore gates hold (no GUI configs deployed)" {
     [ ! -e "$HOME/.config/hypr" ]
     [ ! -e "$HOME/.config/ghostty" ]

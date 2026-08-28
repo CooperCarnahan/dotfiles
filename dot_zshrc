@@ -1,162 +1,38 @@
-###################################
-#           CORE CONFIG           #
-###################################
+# ~/.zshrc — zsh is the login shell on macOS; nushell is the daily driver.
+#
+# ~/.nu-handoff execs nushell for interactive shells, so on macOS this is the
+# whole path from login to nu. On Linux bash is the login shell, so this file is
+# only reached when you deliberately run zsh — but it deploys everywhere so zsh
+# behaves the same on every machine.
+#
+# Deliberately not Omarchy-aware: its rc chain is bash syntax (it calls `bind
+# -f`, a bash builtin), so zsh must not source it. A zsh login shell on Omarchy
+# still gets OMARCHY_PATH from /etc/profile.d.
+#
+# Everything below the handoff is the rescue shell: a broken nu, macOS SSH or
+# Terminal.app. It stays small rather than reproducing nushell's setup in a
+# second language.
 
-# Initialize completion system
-autoload -Uz compinit
-# Only update completion dump once per day
-if [[ -n ${ZDOTDIR:-$HOME}/.zcompdump(#qN.m+0) ]]; then
-  compinit
-else
-  compinit -C
+if [[ -f "$HOME/.nu-handoff" ]]; then
+    source "$HOME/.nu-handoff"
 fi
 
-# History Configuration
-export HISTFILE=~/.zsh_history
-export HISTSIZE=1000000
-export SAVEHIST=1000000
-setopt HIST_FIND_NO_DUPS
-setopt SHARE_HISTORY  # Share history between terminals instantly
+# ─── Rescue shell ───────────────────────────────────────────────────────────
+# The handoff finds nu by itself, so PATH here is rescue-only. Appended, so
+# system binaries keep precedence over the mise shims.
+typeset -U path PATH
+path+=("$HOME/.local/share/mise/shims" "$HOME/.local/bin")
 
-# Directory Navigation
-setopt AUTO_PUSHD    # Automatically pushd on directory change
+HISTFILE=~/.zsh_history
+HISTSIZE=10000
+SAVEHIST=10000
 
-# Terminal Behavior
-unsetopt BEEP        # Disable terminal beeping
-export EDITOR='nvim'
-export PAGER='less -R'
-export BAT_PAGER='less -R'
-
-# Case and Hyphen Sensitivity
-# CASE_SENSITIVE="true"      # Uncomment for case-sensitive completion
-HYPHEN_INSENSITIVE="true"   # Treat hyphens and underscores as equivalent
-
-# Update Configuration
-DISABLE_AUTO_UPDATE="true"
-DISABLE_UPDATE_PROMPT="true"
-DISABLE_MAGIC_FUNCTIONS=true  # Fix URL pasting issues
-ENABLE_CORRECTION="true"      # Enable command auto-correction
-
-###################################
-#           KEY BINDINGS          #
-###################################
-
-# Navigation
-bindkey "^N" down-line-or-search
-bindkey "^P" up-line-or-search
-bindkey '^R' history-incremental-search-backward
-bindkey "^E" autosuggest-accept
-
-# Vim Mode Configuration
-bindkey -M vicmd '?' history-substring-search-up
-bindkey -M vicmd '/' history-substring-search-down
+bindkey -v
 bindkey -M viins 'jk' vi-cmd-mode
 
-# Remove conflicting tmux bindings
-bindkey -s "^[h" ""
-bindkey -s "^[j" ""
-bindkey -s "^[k" ""
-bindkey -s "^[l" ""
-
-# Search bindings
-bindkey '^[OA' history-search-backward
-bindkey '^[OB' history-search-forward
-
-# Vim insert mode cursor style
-MODE_CURSOR_VIINS="#eceff1 blinking underline"
-
-###################################
-#           PLUGIN MANAGER        #
-###################################
-
-# Zinit Installation
-if [[ ! -f $HOME/.zinit/bin/zinit.zsh ]]; then
-    print -P "%F{33}▓▒░ %F{220}Installing Zinit...%f"
-    command mkdir -p "$HOME/.zinit" && command chmod g-rwX "$HOME/.zinit"
-    command git clone https://github.com/zdharma-continuum/zinit "$HOME/.zinit/bin" && \
-        print -P "%F{33}▓▒░ %F{34}Installation successful.%f%b" || \
-        print -P "%F{160}▓▒░ The clone has failed.%f%b"
-fi
-
-source "$HOME/.zinit/bin/zinit.zsh"
-autoload -Uz _zinit
-(( ${+_comps} )) && _comps[zinit]=_zinit
-
-# Plugin Loading
-zinit light Aloxaf/fzf-tab
-
-# Auto-suggestions and History
-zinit lucid for \
-    light-mode  zsh-users/zsh-history-substring-search \
-    light-mode  zsh-users/zsh-autosuggestions
-
-# Git Utilities
-zinit load wfxr/forgit
-
-# Syntax Highlighting (load last)
-zinit wait lucid for \
-    atinit"zicompinit; zicdreplay" \
-    zdharma-continuum/fast-syntax-highlighting
-
-###################################
-#           PATH & ENV            #
-###################################
-
-# Path Configuration
-path_dirs=(
-    "/usr/local/go/bin"
-    "$HOME/go/bin"
-    "$HOME/.scripts"
-    "$HOME/.local/bin"
-)
-
-for dir in "${path_dirs[@]}"; do
-    [[ -d "$dir" ]] && export PATH="$PATH:$dir"
-done
-
-# Load Additional Configuration Files
-for config_file in ~/.{alias,zshrc.local}; do
-    [[ -f "$config_file" ]] && source "$config_file"
-done
-
-if command -v mise > /dev/null; then
-    eval "$(mise activate zsh)"
-fi
-
-# FZF Configuration
-if type rg &> /dev/null; then
-  export FZF_DEFAULT_COMMAND='rg --files'
-  export FZF_DEFAULT_OPTS='-m --height 50% --border'
-fi
-
-# Bat Configuration
-if ! command -v bat &> /dev/null; then
-    echo "'bat' not installed. Using default 'cat'"
-else
-    export BAT_THEME=TwoDark
-fi
-
-# Additional Tools (all mise-managed; guard so a cold shell can't error)
+# atuin alone, because its history is shared with nushell — the whole point of
+# this shell is recovering from whatever you just ran in nu. A prompt, jump and
+# completion stack would only decorate a shell you are trying to leave.
 if command -v atuin > /dev/null; then
     eval "$(atuin init zsh)"
 fi
-if command -v zoxide > /dev/null; then
-    eval "$(zoxide init zsh)"
-fi
-
-# Load completions before configuring them
-autoload -U +X bashcompinit && bashcompinit
-
-# Carapace Completion Setup (only if command exists)
-if command -v carapace > /dev/null; then
-    export CARAPACE_BRIDGES='zsh,fish,bash'
-    zstyle ':completion:*' format $'\e[3;37mCompleting %d\e[m'
-    source <(carapace _carapace)
-fi
-
-# Starship Prompt (only if command exists)
-if command -v starship > /dev/null; then
-    eval "$(starship init zsh)"
-fi
-
-if command -v wt >/dev/null 2>&1; then eval "$(command wt config shell init zsh)"; fi

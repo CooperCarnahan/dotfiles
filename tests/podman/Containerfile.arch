@@ -42,7 +42,14 @@ RUN --mount=type=secret,id=mise_github_token,uid=1000 \
     token="$(cat /run/secrets/mise_github_token 2>/dev/null || true)" \
     && { [ -z "$token" ] || export MISE_GITHUB_TOKEN="$token"; } \
     && curl -fsSL https://mise.run | sh \
-    && "/home/$USERNAME/.local/bin/mise" use --global aqua:nushell/nushell@latest jq@latest \
+    && "/home/$USERNAME/.local/bin/mise" use --global jq@latest \
     && "/home/$USERNAME/.local/bin/mise" install
+
+# nushell from pacman, matching what config.toml.tmpl does on a real Arch box.
+# It must NOT come from mise here: `mise use --global` writes ~/.config/mise/
+# config.toml, which chezmoi then overwrites with the repo's copy — and on Arch
+# that copy has no nushell in [tools], so the leftover shim would resolve to
+# nothing ("No version is set for shim: nu") and every nu test would fail.
+RUN sudo pacman -Sy --noconfirm --needed nushell && sudo pacman -Scc --noconfirm
 
 ENV PATH="/home/$USERNAME/.local/share/mise/shims:/home/$USERNAME/.local/bin:$PATH"

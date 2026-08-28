@@ -27,6 +27,12 @@ auto_switch = false
 [terminal]
 # Executable used for new interactive panes.
 # Empty means $SHELL, then /bin/sh.
+#
+# Left unset on purpose: panes get $SHELL, whose rc runs ~/.nu-handoff and execs
+# nushell. That also covers the `herdr --remote` bridge under [remote] below,
+# which starts the server over ssh with a PATH from PAM / /etc/environment and
+# no rc file — naming nu here would need an absolute path to survive that,
+# whereas $SHELL is always valid and the rc it loads fixes PATH itself.
 # default_shell = ""
 
 # Startup mode for new interactive pane shells: "auto", "login", or "non_login".
@@ -139,6 +145,9 @@ height = "80%"
 [[keys.command]]
 key = ["prefix+f", "alt+f"]
 type = "popup"
+# Bare `nu`, not `$SHELL`: popup commands look to be exec'd directly rather
+# than through a shell (`tuxedo` and `lazygit` above are bare binaries), so
+# `$SHELL` would not expand. Same PATH assumption as those two.
 command = "nu"
 description = "open scratch terminal"
 width = "80%"
