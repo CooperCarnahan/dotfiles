@@ -78,15 +78,6 @@ AppData/Local/Win11Debloat/Config/LastUsedSettings.json
 {{- end }}
 
 {{- if or (ne .chezmoi.os "linux") (eq (includeTemplate "is-headless" .) "true") }}
-# Skip on non-Linux, and on headless boxes (the lid.conf drop-in is laptop-only).
-# NB: .chezmoiignore matches TARGET names — a run_ script's target is its name
-# with the run_* prefix and .tmpl suffix stripped, so ignore "install-system-config.sh".
-install-system-config.sh
-.local/share/system-config
-.local/share/system-config/**
-{{- end }}
-
-{{- if or (ne .chezmoi.os "linux") (eq (includeTemplate "is-headless" .) "true") }}
 # Skip Linux-GUI (Wayland/Hyprland) configs everywhere they can never run:
 # any non-Linux OS, and headless Linux boxes reached over SSH.
 .config/hypr

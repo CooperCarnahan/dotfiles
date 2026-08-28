@@ -162,7 +162,6 @@ flowchart TD
       Nu["after_reconcile-nushell-autoload.nu<br/>(needs nu — mise-provided, now present)"]
       Aur["after_setup_aur_packages.sh (arch)<br/>paru bootstrap · AUR pkgs · mako disable"]
       Cc["after_setup_claude_code.sh<br/>(non-Windows) plugins + MCP"]
-      Gd["after_setup_gdm.sh + install-system-config.sh<br/>(Linux desktop only)"]
       Wd["after_windows-debloat.ps1 (Windows, if tweaks or removeApps)<br/>elevated Win11Debloat · build-gated flags · postcondition-checked"]
       Ff["zz-fastfetch.nu<br/>final summary on every apply"]
     end
@@ -170,8 +169,7 @@ flowchart TD
     Tl --> Nu
     Nu --> Aur
     Aur --> Cc
-    Cc --> Gd
-    Gd --> Wd
+    Cc --> Wd
     Wd --> Ff
 ```
 
