@@ -7,16 +7,26 @@
 {{-   $work = promptBoolOnce . "work" "Is this a work machine?" -}}
 {{- end -}}
 {{- /* Desktop vs headless — a Linux-only concept (Windows/macOS boxes always have
-       a desktop, so don't even prompt there). Default: headless on any Linux that
-       isn't Arch/CachyOS (those are the desktop boxes). Drives .chezmoiignore +
-       desktop packages. */ -}}
+       a desktop, so don't even prompt there). Drives .chezmoiignore + desktop
+       packages.
+
+       is-headless itself must NOT be used here — it reads the `headless` config
+       var that THIS template sets, so it is circular. Only the pure
+       distro-detection helpers (is-arch-family, is-omarchy) are safe. */ -}}
 {{- $headless := false -}}
 {{- if eq .chezmoi.os "linux" -}}
-{{-   $headlessDefault := false -}}
-{{-   if hasKey .chezmoi.osRelease "id" -}}
-{{-     $headlessDefault = not (or (eq .chezmoi.osRelease.id "arch") (eq .chezmoi.osRelease.id "cachyos")) -}}
+{{-   if eq (includeTemplate "is-omarchy" .) "true" -}}
+{{- /* Omarchy is definitionally a desktop: the `omarchy` package hard-depends on
+       hyprland, quickshell, sddm, xdg-desktop-portal-hyprland, wireplumber and
+       pipewire. There is nothing to ask, so don't. */ -}}
+{{-     $headless = false -}}
+{{-   else -}}
+{{- /* Do NOT reword this question: tests/podman/harness.sh:61 matches the string
+       verbatim via --promptBool. Skipping the prompt entirely is safe there —
+       the containers are linux-arch / linux-debian, never omarchy — because an
+       unconsumed --promptBool is harmless (rc=0). */ -}}
+{{-     $headless = promptBoolOnce . "headless" "Is this a headless machine (no desktop / Wayland session)?" (ne (includeTemplate "is-arch-family" .) "true") -}}
 {{-   end -}}
-{{-   $headless = promptBoolOnce . "headless" "Is this a headless machine (no desktop / Wayland session)?" $headlessDefault -}}
 {{- end -}}
 {{- /* Windows-only opt-ins. Both are read by consumers via `dig` with a false/empty
        default, so a machine that has not re-run `chezmoi init` since these were added
