@@ -66,45 +66,90 @@
   dft = -c diff.external=difft diff
 
 {{- if not .work }}
+{{- /* 1Password SSH signing + the HTTPS credential helper.
+
+       Both are resolved to a concrete binary FIRST and emitted only if that
+       binary exists. Emitting them unconditionally is not a harmless
+       aspiration -- it hard-breaks git:
+
+         commit.gpgsign = true + gpg.ssh.program = /opt/1Password/op-ssh-sign
+         with no /opt/1Password  ->  fatal: cannot exec '.../op-ssh-sign'
+
+       which is the state this machine was in: EVERY commit failed, for the
+       user and for agents alike. The same bug sat at [credential] helper =
+       manager with git-credential-manager not installed, so pushes failed too.
+       The Windows/WSL arms already resolved via lookPath but still emitted the
+       key when the lookup came back empty, yielding `program = ""`.
+
+       Guarding turns "1Password is missing" into "signing is off" instead of
+       "git is broken", and it self-heals: install 1Password (on Omarchy:
+       `omarchy install service 1password`), re-apply, and signing returns with
+       no template edit.
+
+       stat is used for absolute install paths, lookPath for PATH lookups. */ -}}
+{{- $opSign := "" -}}
+{{- $credHelper := "" -}}
+{{- $credStore := "" -}}
+{{- $credUseHttpPath := false -}}
+{{- if eq .chezmoi.os "windows" -}}
+{{-   $opSign = lookPath "op-ssh-sign.exe" -}}
+{{- else if eq .chezmoi.os "darwin" -}}
+{{-   if stat "/Applications/1Password.app/Contents/MacOS/op-ssh-sign" -}}
+{{-     $opSign = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign" -}}
+{{-   end -}}
+{{- /* osxkeychain is built into git on macOS, so it needs no existence check. */ -}}
+{{-   $credHelper = "osxkeychain" -}}
+{{- else if eq .chezmoi.os "linux" -}}
+{{-   if (.chezmoi.kernel.osrelease | lower | contains "microsoft") -}}
+{{-     $opSign = lookPath "op-ssh-sign.exe" -}}
+{{-     $credHelper = lookPath "git-credential-manager.exe" -}}
+{{-     $credUseHttpPath = true -}}
+{{-   else -}}
+{{-     if stat "/opt/1Password/op-ssh-sign" -}}
+{{-       $opSign = "/opt/1Password/op-ssh-sign" -}}
+{{-     end -}}
+{{-     if lookPath "git-credential-manager" -}}
+{{-       $credHelper = "manager" -}}
+{{-       $credStore = "secretservice" -}}
+{{-       $credUseHttpPath = true -}}
+{{-     end -}}
+{{-   end -}}
+{{- end }}
+{{- if $opSign }}
+
 # 1password signing stuff
 [gpg]
   format = ssh
 
 [gpg "ssh"]
-{{- if eq .chezmoi.os "windows" }}
-  program = {{ lookPath "op-ssh-sign.exe" | quote }}
-{{- else if eq .chezmoi.os "darwin" }}
-  program = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign"
-
-[credential]
-  # op-ssh-sign above only covers signing; HTTPS auth needs a helper too
-  helper = osxkeychain
-{{- else if eq .chezmoi.os "linux" }}
-  {{- if (.chezmoi.kernel.osrelease | lower | contains "microsoft") }}
-  program = {{ lookPath "op-ssh-sign.exe" | quote }}
-
-[credential]
-  helper = {{ lookPath "git-credential-manager.exe" | quote }}
-  useHttpPath = true
-  {{- else }}
-  program = /opt/1Password/op-ssh-sign
-
-[credential]
-  helper = manager
-  credentialStore = secretservice
-  useHttpPath = true
-  {{- end }}
+  program = {{ $opSign | quote }}
 {{- end }}
+{{- if $credHelper }}
+
+[credential]
+  # op-ssh-sign only covers signing; HTTPS auth needs a helper too
+  helper = {{ $credHelper | quote }}
+{{- if $credStore }}
+  credentialStore = {{ $credStore }}
+{{- end }}
+{{- if $credUseHttpPath }}
+  useHttpPath = true
+{{- end }}
+{{- end }}
+{{- if $opSign }}
 
 [commit]
   gpgsign = true
+{{- end }}
 
 [user]
   email = coopcarn@gmail.com
   name = CooperCarnahan
+{{- if $opSign }}
 
   # 1password public key for github signing key
   signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIeClNytAT5eG6YM0L/giuA9pw9kRCgEmxEcz1uoa5yy
+{{- end }}
 {{- end }}
 
 [init]
