@@ -43,9 +43,13 @@ tests/**
 # them "a shipped user config … (backs up your version)"), and hyprland.lua
 # already require()s all four. So chezmoi manages them DIRECTLY: no hook, no
 # `user/` tree, no require line for a migration to drop.
-#
-# .config/hypr/.luarc.json is likewise NOT ignored — see dot_luarc.json.
 .config/hypr/hyprland.lua
+
+# Omarchy ships and refreshes .luarc.json, and its version already points
+# lua_ls at /usr/share/hypr/stubs with hl and o declared as globals -- the whole
+# reason this repo ever tracked one. Ignoring it stops chezmoi and
+# `omarchy refresh` rewriting each other over a single extra key.
+.config/hypr/.luarc.json
 
 # Pure Omarchy state and scaffolding: themes, defaults, branding and the
 # `themed/` template overrides are all installed and rewritten by Omarchy
