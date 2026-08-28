@@ -10,10 +10,10 @@ load helpers/common
     [ "$output" = "linux-$(distro_id)" ]
 }
 
-@test "headless/work/pushoverUrl render as expected" {
-    run chez execute-template '{{ .headless }}/{{ .work }}/{{ .pushoverUrl }}'
+@test "headless/work render as expected" {
+    run chez execute-template '{{ .headless }}/{{ .work }}'
     [ "$status" -eq 0 ]
-    [ "$output" = "true/false/" ]
+    [ "$output" = "true/false" ]
 }
 
 @test "nushell config files installed" {

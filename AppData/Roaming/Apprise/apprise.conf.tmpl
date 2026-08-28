@@ -1,8 +1,0 @@
-windows://
-{{- if .pushoverUrl }}
-{{ .pushoverUrl }}
-{{- else }}
-# pushoverUrl unset — either a work machine, or 1Password CLI ('op') wasn't
-# available at 'chezmoi init'. Re-run 'chezmoi init' after installing and
-# signing into 1Password to populate it.
-{{- end }}

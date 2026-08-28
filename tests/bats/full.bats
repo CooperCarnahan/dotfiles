@@ -34,10 +34,6 @@ load helpers/common
     dpkg -s build-essential
 }
 
-@test "apprise installed via mise pipx backend" {
-    command -v apprise
-}
-
 @test "claude setup skipped under DOTFILES_TEST" {
     # The DOTFILES_TEST guard should have short-circuited the plugin
     # marketplace registration entirely.

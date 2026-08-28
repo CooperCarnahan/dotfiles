@@ -10,8 +10,7 @@ this chezmoi source — two tiers over the same infrastructure:
 
 Both tiers generate the config through the real `.chezmoi.toml.tmpl` path via
 `chezmoi init --promptBool headless=true,work=false` — no synthetic
-`--override-data`. `pushoverUrl` resolves empty naturally (`op` is not in the
-container).
+`--override-data`.
 
 ## Usage
 

@@ -40,26 +40,19 @@
        an action instead ("unexpected / in command"). */ -}}
 {{-   $sshServer = promptBoolOnce . "sshServer" "Enable the OpenSSH server on this machine (inbound SSH)?" false -}}
 {{-   if $sshServer -}}
-{{- /* `fail`, not the silent lookPath skip used by pushoverUrl below: a silently empty
-       Pushover URL costs a notification, a silently empty authorized_keys locks you out
-       of the machine you just enabled SSH on. */ -}}
+{{- /* `fail`, rather than silently skipping when `op` is missing: a silently empty
+       authorized_keys locks you out of the machine you just enabled SSH on. */ -}}
 {{-     if not (lookPath "op") -}}
 {{-       fail "sshServer requires the 1Password CLI. Run 'winget install AgileBits.1Password.CLI', sign in, then re-run 'chezmoi init'." -}}
 {{-     end -}}
 {{-     $sshAuthorizedKey = onepasswordRead "op://Personal/SSH Key - Inter-Computer/public key" -}}
 {{-   end -}}
 {{- end -}}
-{{- $pushoverUrl := "" -}}
-{{- if and (not $work) (lookPath "op") -}}
-{{-   $pushover := onepasswordDetailsFields "Pushover API Credentials" -}}
-{{-   $pushoverUrl = printf "pover://%s@%s" $pushover.username.value $pushover.credential.value -}}
-{{- end -}}
 
 [data]
     osid = {{ $osid | quote }}
     work = {{ $work }}
     headless = {{ $headless }}
-    pushoverUrl = {{ $pushoverUrl | quote }}
     windowsTweaks = {{ $windowsTweaks }}
     removeApps = {{ $removeApps }}
     sshServer = {{ $sshServer }}
