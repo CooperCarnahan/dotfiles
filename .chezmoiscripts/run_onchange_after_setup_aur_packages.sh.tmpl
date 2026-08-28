@@ -1,4 +1,4 @@
-{{- if or (eq .osid "linux-arch") (eq .osid "linux-cachyos") -}}
+{{- if eq (includeTemplate "is-arch-family" .) "true" -}}
 #!/bin/bash
 # AUR packages + paru bootstrap. mise's [bootstrap.packages] has no AUR backend
 # (AUR needs a helper + source builds), so this survives the mise migration as
@@ -25,16 +25,28 @@ aur_packages+=(
 )
 {{ end -}}
 
-if ! command -v paru >/dev/null 2>&1; then
+# paru is this repo's standard AUR helper, but Omarchy preinstalls yay and a
+# second helper buys nothing but a source build on every fresh box. Reuse
+# whichever helper is already here; bootstrap paru only when there is none.
+aur_helper=""
+for candidate in paru yay; do
+    if command -v "$candidate" >/dev/null 2>&1; then
+        aur_helper="$candidate"
+        break
+    fi
+done
+
+if [ -z "$aur_helper" ]; then
     echo "--- Bootstrapping paru from the AUR ---"
     tmpdir=$(mktemp -d)
     git clone https://aur.archlinux.org/paru.git "$tmpdir/paru"
     (cd "$tmpdir/paru" && makepkg -si --noconfirm)
     rm -rf "$tmpdir"
+    aur_helper="paru"
 fi
 
-echo "--- Installing/updating AUR packages via paru ---"
-paru -S --noconfirm --needed "${aur_packages[@]}"
+echo "--- Installing/updating AUR packages via $aur_helper ---"
+"$aur_helper" -S --noconfirm --needed "${aur_packages[@]}"
 
 echo "--- Disabling services for replaced daemons ---"
 # CachyOS's cachyos-hyprland-settings pulls in mako, whose user .service unit
