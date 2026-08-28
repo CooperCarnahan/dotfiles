@@ -109,19 +109,6 @@ run = "topgrade --yes --no-ask-retry"
 "pacman:docker" = "latest"
 "pacman:docker-compose" = "latest"
 "pacman:dtc" = "latest"
-# pacman:git removed: it is a DIRECT dependency of the `omarchy` package
-# (verified: `pacman -Qi omarchy` -> Depends On: ... git ...), so on the desktop
-# this repo actually targets it is always present and listing it here only adds
-# a second declared owner.
-#
-# CAVEAT, deliberately accepted: git is NOT in the base-devel group (checked --
-# base-devel is autoconf/automake/binutils/.../which, no git), and this block is
-# ungated, so it also covers plain-Arch and headless-Arch boxes where nothing
-# else guarantees git. The only code path that would then break is the paru
-# bootstrap in run_onchange_after_setup_aur_packages, which runs `git clone` --
-# and only on a non-Omarchy Arch box that has neither paru nor yay. It fails
-# loudly under `set -e` rather than silently. Re-add this line if that combination
-# ever becomes a real target.
 "pacman:gperf" = "latest"
 "pacman:make" = "latest"
 "pacman:openssh" = "latest"
@@ -146,7 +133,6 @@ run = "topgrade --yes --no-ask-retry"
 #                  covers the use case.
 #   xsensors    -> not installed, zero references. btop + `omarchy hw` cover it.
 #   xdg-desktop-portal-hyprland -> another DIRECT `omarchy` dependency.
-"pacman:zen-browser-bin" = "latest"
 {{ end -}}
 {{ end -}}
 {{ if $deb -}}

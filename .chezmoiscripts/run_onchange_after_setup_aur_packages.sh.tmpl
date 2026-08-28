@@ -1,89 +1,30 @@
-{{- if eq (includeTemplate "is-arch-family" .) "true" -}}
+{{- if eq (includeTemplate "is-omarchy" .) "true" -}}
 #!/bin/bash
-# AUR packages. mise's [bootstrap.packages] has no AUR backend (AUR needs a
-# helper + source builds), so this survives the mise migration as a script.
+# AUR packages. mise's [bootstrap.packages] has no AUR backend, so this stays a
+# script. Omarchy-only: it is the sole desktop Linux this repo targets, and
+# these are all desktop packages.
+#
 # Runs in the AFTER phase, alphabetically after
-# run_onchange_after_install_mise_toolchain — which has already applied the
-# pacman set (base-devel, git, sudo) that makepkg/paru need.
+# run_onchange_after_install_mise_toolchain, which has already applied the
+# pacman set that makepkg needs.
 set -e
 
-aur_packages=()
+# omarchy-pkg-aur-add is idempotent: it gates on omarchy-pkg-missing, runs
+# `yay -S --noconfirm --needed`, then re-verifies each package with `pacman -Q`.
+echo "--- Installing/updating AUR packages ---"
+omarchy pkg aur add maplemono-nf-unhinted
 
-{{ if eq (includeTemplate "is-headless" .) "false" -}}
-# Desktop apps — skipped on headless machines.
-#
-# This list used to carry nine more entries. Each was audited against "is it
-# installed?" and "is it referenced anywhere?", and every one failed both:
-#
-#   1password                  -> `omarchy install service 1password` owns this
-#   git-credential-manager-bin -> not installed; its only consumer was the
-#                                 unconditional credential.helper in
-#                                 dot_gitconfig.tmpl, now guarded (C1)
-#   gearlever, ov, winboat-bin, gnome-browser-connector
-#                              -> not installed, zero references. The last one
-#                                 drives GNOME Shell extensions, meaningless here
-#   handy-bin                  -> not installed; only referenced by the deleted
-#                                 keybinds.lua. voxtype-bin IS installed and
-#                                 Omarchy ships default bindings for it
-#   the monitor-profile daemon -> deferred (see plan C9). The ~45 lines of
-#                                 systemd wiring and monitors.lua seeding that
-#                                 used to follow are gone with it: they targeted
-#                                 an older version that owned monitors.lua, and
-#                                 the seeding was actively harmful because
-#                                 Omarchy's own clamshell writer owns that file
-#                                 now. Deliberately unnamed here so that
-#                                 `grep <daemon> .chezmoiscripts/*.tmpl` stays a
-#                                 clean gate.
-aur_packages+=(
-    "maplemono-nf-unhinted"
-)
-{{ end -}}
-
-# Guard the empty case explicitly: on a headless box the array is empty, and
-# `yay -S --noconfirm --needed` with no targets exits non-zero, which `set -e`
-# would turn into a failed apply.
-if [ ${#aur_packages[@]} -eq 0 ]; then
-    echo "--- No AUR packages for this machine ---"
-    exit 0
-fi
-
-{{ if eq (includeTemplate "is-omarchy" .) "true" -}}
-echo "--- Installing/updating AUR packages via omarchy pkg aur add ---"
-# Omarchy preinstalls yay and ships its own idempotent wrapper. Verified:
-# omarchy-pkg-aur-add runs `yay -S --noconfirm --needed "$@"` behind a
-# `omarchy-pkg-missing` check, then re-verifies each package with `pacman -Q`
-# — strictly more checking than the raw call below, for the identical
-# transaction. Bootstrapping paru here would mean building a second AUR helper
-# from source on a machine that already has a working one.
-#
-# Ongoing upgrades are topgrade's job, not this script's: topgrade.toml.tmpl
-# sets arch_package_manager = yay on Omarchy, so a full repo+AUR transaction
-# happens there and Arch partial upgrades are avoided.
-omarchy pkg aur add "${aur_packages[@]}"
-{{ else -}}
-# paru is this repo's standard AUR helper on plain Arch/CachyOS, and it is what
-# topgrade.toml.tmpl names on those boxes. Reuse whichever helper is already
-# present; bootstrap paru only when there is none.
-aur_helper=""
-for candidate in paru yay; do
-    if command -v "$candidate" >/dev/null 2>&1; then
-        aur_helper="$candidate"
-        break
-    fi
-done
-
-if [ -z "$aur_helper" ]; then
-    echo "--- Bootstrapping paru from the AUR ---"
-    tmpdir=$(mktemp -d)
-    git clone https://aur.archlinux.org/paru.git "$tmpdir/paru"
-    (cd "$tmpdir/paru" && makepkg -si --noconfirm)
-    rm -rf "$tmpdir"
-    aur_helper="paru"
-fi
-
-echo "--- Installing/updating AUR packages via $aur_helper ---"
-"$aur_helper" -S --noconfirm --needed "${aur_packages[@]}"
-{{ end -}}
+# Not a bare `omarchy pkg aur add zen-browser-bin`: omarchy-install-browser also
+# installs Omarchy's firefox policies.json into /opt/zen-browser/distribution and
+# writes MOZ_ENABLE_WAYLAND=1 to ~/.config/environment.d. Both are idempotent.
+echo "--- Installing/updating Zen ---"
+# omarchy-install-browser has no `set -e` and its three sudo calls are
+# unguarded, so it exits 0 even when the policy copy fails. Verify explicitly:
+# a run_onchange script only re-fires when its CONTENT changes, so a silent
+# failure here would never be retried.
+omarchy install browser zen
+test -f /opt/zen-browser/distribution/policies.json
+test -f "$HOME/.config/environment.d/omarchy-firefox-wayland.conf"
 
 echo "--- AUR packages installed successfully! ---"
 {{- end -}}
