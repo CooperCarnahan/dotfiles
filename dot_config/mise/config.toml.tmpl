@@ -122,17 +122,8 @@ run = "topgrade --yes --no-ask-retry"
 {{ if eq (includeTemplate "is-headless" .) "false" -}}
 # Desktop / Wayland stack — skipped on headless machines.
 "pacman:ghostty" = "latest"
-# gdm/hyprlock/wlogout/hyprshot removed: Omarchy owns the display manager
-# (sddm), the lock screen (Quickshell, configured via
-# ~/.config/omarchy/shell.json), the logout menu, and screenshots
-# (`omarchy capture screenshot|region|text`). Installing gdm here also
-# re-enabled it over sddm on every apply.
-# Also cut, each for its own reason:
-#   wtype       -> `pacman -Qi wtype` says Required By: None, and nothing in
-#                  this repo references it. `omarchy clipboard paste text`
-#                  covers the use case.
-#   xsensors    -> not installed, zero references. btop + `omarchy hw` cover it.
-#   xdg-desktop-portal-hyprland -> another DIRECT `omarchy` dependency.
+# Omarchy owns the display manager, lock screen, logout menu and screenshots.
+# Installing gdm here also re-enabled it over sddm on every apply.
 {{ end -}}
 {{ end -}}
 {{ if $deb -}}

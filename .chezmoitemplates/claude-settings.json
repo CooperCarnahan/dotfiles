@@ -114,15 +114,10 @@
     }
   },
   "skipAutoPermissionPrompt": true,
-{{- /* Same guard as dot_gitconfig.tmpl's signing block: resolve the binary
-       first, emit the key only if it exists. bun is not installed here, so
-       `lookPath "bun"` returns "" and this rendered `exec ""` -- a statusLine
-       command that can never run. Omitting the key entirely is strictly better
-       than shipping a broken one, and because this template is consumed
-       through modify-json-merge, omitting it leaves any existing statusLine
-       untouched rather than clobbering it with garbage. Install bun (it is in
-       [tools] in dot_config/mise/config.toml.tmpl) and re-apply to get it
-       back; no template edit needed. */ -}}
+{{- /* Emit statusLine only when bun resolves. Rendering `exec ""` ships a
+       command that can never run, and because this template is consumed
+       through modify-json-merge, omitting the key leaves any existing
+       statusLine intact rather than clobbering it. */ -}}
 {{- if lookPath "bun" }}
   "statusLine": {
     "command": "bash -c 'cols=$(stty size </dev/tty 2>/dev/null | awk '\"'\"'{print $2}'\"'\"'); export COLUMNS=$(( ${cols:-120} > 4 ? ${cols:-120} - 4 : 1 )); plugin_dir=$(ls -d \"${CLAUDE_CONFIG_DIR:-$HOME/.claude}\"/plugins/cache/*/claude-hud/*/ 2>/dev/null | awk -F/ '\"'\"'{ print $(NF-1) \"\\t\" $(0) }'\"'\"' | grep -E '\"'\"'^[0-9]+\\.[0-9]+\\.[0-9]+[[:space:]]'\"'\"' | sort -t. -k1,1n -k2,2n -k3,3n -k4,4n | tail -1 | cut -f2-); exec \"{{ lookPath "bun" | replace "\\" "/" }}\" --env-file /dev/null \"${plugin_dir}src/index.ts\"'",

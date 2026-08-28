@@ -7,8 +7,7 @@
   the $deb detection already does. Enumerating derivatives by name is a
   treadmill, and a missed one fails SILENTLY: every arch gate goes false, so
   [bootstrap.packages] renders empty and the toolchain/AUR scripts never run,
-  with nothing in the output to say so. That is exactly how this machine
-  (ID=omarchy, ID_LIKE=arch) sat unprovisioned.
+  with nothing in the output to say so.
 */ -}}
 {{- $id := "" -}}
 {{- $idLike := "" -}}

@@ -31,18 +31,15 @@ tests/**
 .config/git/work
 
 # Omarchy owns the Hyprland ENTRYPOINT. It is rewritten by `omarchy refresh
-# hyprland` and by migrations during `omarchy update` (omarchy-update:48 runs
-# omarchy-migrate automatically, and migrations sed/cp/mv ~/.config/hypr/*.lua
-# in place). Tracking it is what broke this machine: chezmoi's copy REPLACED the
-# bootstrap, so `require("default.hypr.omarchy")` never ran — no bar, no
-# theming, no defaults.
+# hyprland` and by migrations during `omarchy update`, which sed/cp/mv
+# ~/.config/hypr/*.lua in place. Tracking it replaces that bootstrap, so
+# `require("default.hypr.omarchy")` never runs — no bar, no theming, no
+# defaults.
 #
-# Its four user-override seams — bindings.lua, input.lua, looknfeel.lua,
-# autostart.lua — are deliberately NOT ignored. Omarchy ships them as commented
-# stubs and treats them as user-owned (`omarchy refresh config <path>` calls
-# them "a shipped user config … (backs up your version)"), and hyprland.lua
-# already require()s all four. So chezmoi manages them DIRECTLY: no hook, no
-# `user/` tree, no require line for a migration to drop.
+# Its three user-override seams — bindings.lua, input.lua, looknfeel.lua — are
+# deliberately NOT ignored. Omarchy ships them as user-owned stubs and
+# hyprland.lua already require()s them, so chezmoi manages them DIRECTLY: no
+# hook, no `user/` tree, no require line for a migration to drop.
 .config/hypr/hyprland.lua
 
 # Omarchy ships and refreshes .luarc.json, and its version already points

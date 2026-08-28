@@ -1,16 +1,11 @@
 -- Personal keybinding overrides.
 --
 -- Omarchy's hyprland.lua require()s this file AFTER its own defaults, so
--- anything here wins. Because Omarchy ships bindings.lua as a user-owned stub
--- (`omarchy refresh config` calls it "a shipped user config ... (backs up your
--- version)"), chezmoi manages it directly -- no hook, no `hypr/user/` tree, and
--- no require line for an `omarchy update` migration to silently drop.
---
--- Scope is deliberately narrow: hjkl focus, plus a shorter chord for 1Password.
--- Omarchy's launcher and menu keys stand exactly as shipped.
+-- anything here wins. Scope is deliberately narrow: hjkl focus, plus a shorter
+-- chord for 1Password.
 
 -- Omarchy already binds SUPER + J/K/L, so each must be unbound before it can be
--- rebound. Verified with `grep -rE '"SUPER \+ [HJKLP]"' default/hypr/bindings/`.
+-- rebound.
 hl.unbind("SUPER + K") -- was: Keybindings menu (bindings/utilities.lua:10)
 hl.unbind("SUPER + J") -- was: Toggle window split (bindings/tiling.lua:4)
 hl.unbind("SUPER + L") -- was: Toggle workspace layout (bindings/tiling.lua:13)
@@ -38,27 +33,8 @@ end
 -- "Pseudo window" (bindings/tiling.lua:5) -- so it must be unbound first.
 hl.unbind("SUPER + P") -- was: Pseudo window (bindings/tiling.lua:5)
 
--- `{ omarchy = "1password" }` resolves to `omarchy-launch-1password` via
--- default/hypr/helpers.lua:61-62 (`return "omarchy-launch-" .. value.omarchy`),
--- the same idiom Omarchy uses at bindings/applications.lua:20. That launcher
--- starts 1Password or kicks off its installer when missing, so this degrades
--- gracefully even though 1Password is not installed yet.
---
--- Omarchy's own SUPER + SHIFT + SLASH -> Passwords binding is left alone; this
--- is simply a second, shorter chord to the same helper.
+-- `{ omarchy = "1password" }` resolves to `omarchy-launch-1password`, which
+-- starts 1Password or kicks off its installer when missing. Omarchy's own
+-- SUPER + SHIFT + SLASH -> Passwords binding is left alone; this is simply a
+-- second, shorter chord to the same helper.
 o.bind("SUPER + P", "Passwords", { omarchy = "1password" })
-
--- Deliberately NOT re-added here (the pre-Omarchy keybinds.lua bound them, and
--- C4 deleted it):
---   SUPER + SPACE          1Password quick access -> Omarchy menu stands; the
---                          app's own Quick Access shortcut is configured inside
---                          1Password and is independent of Hyprland
---   CTRL + SPACE           noctalia launcher      -> SUPER + ALT + SPACE
---   ALT + SPACE / F2       handy dictation        -> Omarchy ships voxtype
---                          bindings (F9 push-to-talk, SUPER + CTRL + X toggle)
---                          gated on the binary, and voxtype-bin IS installed
---
--- Cost of the unbinds above: the keybindings cheatsheet (SUPER + K),
--- toggle-split (SUPER + J), toggle-workspace-layout (SUPER + L) and pseudo
--- window (SUPER + P). The cheatsheet is still reachable via SUPER + SPACE ->
--- Omarchy menu, or `omarchy menu keybindings --print`.

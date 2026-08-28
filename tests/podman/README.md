@@ -6,11 +6,10 @@ this chezmoi source — two tiers over the same infrastructure:
 | Tier | Image stage | Run scripts | What it proves | Wall time |
 |---|---|---|---|---|
 | **smoke** (default) | `smoke` (chezmoi/mise/nushell/jq baked in) | excluded | Templates render with the container's REAL distro identity (`linux-arch` / `linux-debian`), headless ignore gates hold, nushell/mise/git configs land and parse, the native semantic merge (`~/.claude/settings.json`) applies without byte churn, and the second apply is idempotent. `jq` is present for assertions and JSON diff normalization | ~2 min after first image build |
-| **full** | `base` (fresh system; only bats preinstalled) | **included** | The actual bootstrap: mise seeds chezmoi → `chezmoi init` → `mise bootstrap packages apply` (pacman or apt) + `mise install` → AUR via paru (arch) → after-scripts. The real "new machine" path, end to end | 30 min+ (network heavy) |
+| **full** | `base` (fresh system; only bats preinstalled) | **included** | The actual bootstrap: mise seeds chezmoi → `chezmoi init` → `mise bootstrap packages apply` (pacman or apt) + `mise install` → after-scripts. The real "new machine" path, end to end | 30 min+ (network heavy) |
 
 Both tiers generate the config through the real `.chezmoi.toml.tmpl` path via
-`chezmoi init --promptBool headless=true,work=false` — no synthetic
-`--override-data`.
+`chezmoi init` — no prompts to answer, and no synthetic `--override-data`.
 
 ## Usage
 
@@ -45,7 +44,7 @@ MISE_GITHUB_TOKEN=$(gh auth token) tests/podman/run.sh --tier full debian
   `smoke` (`FROM base`, tooling baked into cached layers).
 - `../bats/smoke.bats` — core assertions, run in both tiers.
 - `../bats/full.bats` — bootstrap assertions (mise toolchain materialized,
-  paru/build-essential present, externals fetched), full tier only.
+  build-essential present, externals fetched), full tier only.
 
 ## CI
 
