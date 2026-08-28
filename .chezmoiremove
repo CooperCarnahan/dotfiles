@@ -28,6 +28,7 @@
 .local/bin/codex
 .local/bin/gh
 .local/bin/opencode
+.local/share/icons/nushell.ico
 {{- if eq .chezmoi.os "windows" }}
 AppData/Local/lazygit/config.yml
 AppData/Local/lazygit/state.yml
