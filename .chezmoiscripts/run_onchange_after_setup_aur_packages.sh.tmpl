@@ -1,33 +1,69 @@
 {{- if eq (includeTemplate "is-arch-family" .) "true" -}}
 #!/bin/bash
-# AUR packages + paru bootstrap. mise's [bootstrap.packages] has no AUR backend
-# (AUR needs a helper + source builds), so this survives the mise migration as
-# a script. Runs in the AFTER phase, alphabetically after
+# AUR packages. mise's [bootstrap.packages] has no AUR backend (AUR needs a
+# helper + source builds), so this survives the mise migration as a script.
+# Runs in the AFTER phase, alphabetically after
 # run_onchange_after_install_mise_toolchain — which has already applied the
 # pacman set (base-devel, git, sudo) that makepkg/paru need.
 set -e
 
-aur_packages=(
-    "git-credential-manager-bin"
-    "ov"
-)
+aur_packages=()
 
 {{ if eq (includeTemplate "is-headless" .) "false" -}}
 # Desktop apps — skipped on headless machines.
+#
+# This list used to carry nine more entries. Each was audited against "is it
+# installed?" and "is it referenced anywhere?", and every one failed both:
+#
+#   1password                  -> `omarchy install service 1password` owns this
+#   git-credential-manager-bin -> not installed; its only consumer was the
+#                                 unconditional credential.helper in
+#                                 dot_gitconfig.tmpl, now guarded (C1)
+#   gearlever, ov, winboat-bin, gnome-browser-connector
+#                              -> not installed, zero references. The last one
+#                                 drives GNOME Shell extensions, meaningless here
+#   handy-bin                  -> not installed; only referenced by the deleted
+#                                 keybinds.lua. voxtype-bin IS installed and
+#                                 Omarchy ships default bindings for it
+#   the monitor-profile daemon -> deferred (see plan C9). The ~45 lines of
+#                                 systemd wiring and monitors.lua seeding that
+#                                 used to follow are gone with it: they targeted
+#                                 an older version that owned monitors.lua, and
+#                                 the seeding was actively harmful because
+#                                 Omarchy's own clamshell writer owns that file
+#                                 now. Deliberately unnamed here so that
+#                                 `grep <daemon> .chezmoiscripts/*.tmpl` stays a
+#                                 clean gate.
 aur_packages+=(
-    "1password"
-    "gearlever"
-    "gnome-browser-connector"
-    "handy-bin"
-    "hyprmoncfg"
     "maplemono-nf-unhinted"
-    "winboat-bin"
 )
 {{ end -}}
 
-# paru is this repo's standard AUR helper, but Omarchy preinstalls yay and a
-# second helper buys nothing but a source build on every fresh box. Reuse
-# whichever helper is already here; bootstrap paru only when there is none.
+# Guard the empty case explicitly: on a headless box the array is empty, and
+# `yay -S --noconfirm --needed` with no targets exits non-zero, which `set -e`
+# would turn into a failed apply.
+if [ ${#aur_packages[@]} -eq 0 ]; then
+    echo "--- No AUR packages for this machine ---"
+    exit 0
+fi
+
+{{ if eq (includeTemplate "is-omarchy" .) "true" -}}
+echo "--- Installing/updating AUR packages via omarchy pkg aur add ---"
+# Omarchy preinstalls yay and ships its own idempotent wrapper. Verified:
+# omarchy-pkg-aur-add runs `yay -S --noconfirm --needed "$@"` behind a
+# `omarchy-pkg-missing` check, then re-verifies each package with `pacman -Q`
+# — strictly more checking than the raw call below, for the identical
+# transaction. Bootstrapping paru here would mean building a second AUR helper
+# from source on a machine that already has a working one.
+#
+# Ongoing upgrades are topgrade's job, not this script's: topgrade.toml.tmpl
+# sets arch_package_manager = yay on Omarchy, so a full repo+AUR transaction
+# happens there and Arch partial upgrades are avoided.
+omarchy pkg aur add "${aur_packages[@]}"
+{{ else -}}
+# paru is this repo's standard AUR helper on plain Arch/CachyOS, and it is what
+# topgrade.toml.tmpl names on those boxes. Reuse whichever helper is already
+# present; bootstrap paru only when there is none.
 aur_helper=""
 for candidate in paru yay; do
     if command -v "$candidate" >/dev/null 2>&1; then
@@ -47,50 +83,6 @@ fi
 
 echo "--- Installing/updating AUR packages via $aur_helper ---"
 "$aur_helper" -S --noconfirm --needed "${aur_packages[@]}"
-
-echo "--- Disabling services for replaced daemons ---"
-# CachyOS's cachyos-hyprland-settings pulls in mako, whose user .service unit
-# is DBus-activated. Without disabling, mako would silently acquire the
-# org.freedesktop.Notifications name on first toast and prevent noctalia
-# (the notification daemon) from binding. Safe to run repeatedly (idempotent).
-systemctl --user disable --now mako.service 2>/dev/null || true
-
-{{ if eq (includeTemplate "is-headless" .) "false" -}}
-echo "--- Setting up monitor profile daemon ---"
-# Headless-guarded: creating ~/.config/hypr on a headless box would violate the
-# .chezmoiignore gate that keeps Wayland configs off servers, and break the
-# smoke test that asserts it never appears.
-
-# hyprland.lua does a bare require("monitors"), but hyprmoncfg only writes that
-# file when it first applies a profile — so a fresh machine would fail its config
-# load before hyprmoncfgd ever runs. Seed an empty (valid Lua) file to break the
-# chicken-and-egg; the daemon overwrites it on first apply.
-# It must stay a bare require: hyprmoncfg verifies inclusion by parsing
-# hyprland.lua and does not recognise pcall(require, ...).
-mkdir -p "$HOME/.config/hypr"
-[ -f "$HOME/.config/hypr/monitors.lua" ] || : > "$HOME/.config/hypr/monitors.lua"
-
-# hyprmoncfg ships hyprmoncfgd but does not enable it, so nothing would start it
-# on a fresh machine and monitor profiles would sit inert.
-#
-# Upstream's unit is `After=graphical-session.target` but `WantedBy=default.target`.
-# After= only orders units inside one transaction — it does not pull the target in
-# or hold the unit back — so the documented `systemctl --user enable` starts the
-# daemon at login, before Hyprland exists. Its --hypr-config/--monitors-conf
-# defaults resolve differently with no compositor running (monitors.conf instead
-# of monitors.lua), and Restart=on-failure can burn the start-limit budget and
-# park it in `failed` before the session comes up.
-#
-# Bind it to the graphical session instead — the same wiring hypridle uses here.
-# daemon-reload first: paru installed this unit moments ago in this same script.
-systemctl --user daemon-reload 2>/dev/null || true
-systemctl --user disable hyprmoncfgd.service 2>/dev/null || true
-if ! systemctl --user add-wants graphical-session.target hyprmoncfgd.service; then
-    echo "WARN: could not wire hyprmoncfgd to graphical-session.target —"
-    echo "      monitor profiles will not auto-apply. Check: systemctl --user status hyprmoncfgd"
-fi
-# Only meaningful when a graphical session is already up; harmless otherwise.
-systemctl --user start hyprmoncfgd.service 2>/dev/null || true
 {{ end -}}
 
 echo "--- AUR packages installed successfully! ---"
