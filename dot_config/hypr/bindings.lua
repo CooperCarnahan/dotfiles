@@ -1,29 +1,29 @@
--- Personal keybinding overrides.
---
--- Omarchy's hyprland.lua require()s this file AFTER its own defaults, so
--- anything here wins. Scope is deliberately narrow: hjkl focus, plus a shorter
--- chord for 1Password.
+-- Keep only your personal keybinding overrides here. Add new bindings or
+-- unbind defaults before replacing them.
 
--- Omarchy already binds SUPER + J/K/L, so each must be unbound before it can be
--- rebound.
-hl.unbind("SUPER + H") -- just in case
-hl.unbind("SUPER + K") -- was: Keybindings menu (bindings/utilities.lua:10)
-hl.unbind("SUPER + J") -- was: Toggle window split (bindings/tiling.lua:4)
-hl.unbind("SUPER + L") -- was: Toggle workspace layout (bindings/tiling.lua:13)
+-- See current bindings and descriptions:
+--   omarchy menu keybindings --print
 
--- Direction values are SINGLE LETTERS. Omarchy's own arrow-key bindings use
--- hl.dsp.focus({ direction = "l"/"r"/"u"/"d" }) at bindings/tiling.lua:16-19;
--- "left"/"right" are not accepted.
-for _, f in ipairs({
-	{ key = "H", dir = "l", label = "left" },
-	{ key = "J", dir = "d", label = "down" },
-	{ key = "K", dir = "u", label = "up" },
-	{ key = "L", dir = "r", label = "right" },
-}) do
-	o.bind("SUPER + " .. f.key, "Focus " .. f.label, hl.dsp.focus({ direction = f.dir }))
-end
+-- To disable every Omarchy default binding, set this in
+-- ~/.config/hypr/hyprland.lua before require("default.hypr.omarchy"), then add
+-- only the bindings you want below:
+--   omarchy_default_bindings = false
 
--- 1Password on a shorter chord. SUPER + P is NOT free -- Omarchy binds it to
--- "Pseudo window" (bindings/tiling.lua:5) -- so it must be unbound first.
-hl.unbind("SUPER + P") -- was: Pseudo window (bindings/tiling.lua:5)
-o.bind("SUPER + P", "Passwords", { omarchy = "1password" })
+-- To disable all preinstalled app/webapp bindings, set:
+--   omarchy_preinstalled_bindings = false
+
+-- Add a new binding.
+-- o.bind("SUPER + SHIFT + R", "SSH", "alacritty -e ssh your-server")
+
+-- Change an existing binding by unbinding it first, then binding the key again.
+-- This example changes SUPER+SPACE from the launcher to the Omarchy root menu.
+-- hl.unbind("SUPER + SPACE")
+-- o.bind("SUPER + SPACE", "Omarchy menu", "omarchy-menu toggle root")
+
+-- Disable a default binding without replacing it.
+-- hl.unbind("SUPER + SHIFT + B")
+
+-- Logitech MX Keys examples:
+-- o.bind("SUPER + SHIFT + S", nil, "omarchy-capture-screenshot")
+-- o.bind("SUPER + H", nil, "voxtype record toggle")
+-- o.bind("SUPER + PERIOD", nil, "omarchy-shell shell toggle omarchy.emojis")
