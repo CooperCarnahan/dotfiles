@@ -13,6 +13,12 @@
 [settings]
 experimental = true
 
+# Self-update the mise binary itself (not tools) before network-permitting
+# commands, at most once per auto_update_check_duration (default 7d). Skipped
+# in CI, offline, and non-interactive sessions. Global-only by design: a
+# project config cannot opt us into replacing the mise binary.
+auto_update = true
+
 # Shell-agnostic tool config, defined once for every shell that activates mise:
 # nushell (via its pre_prompt hook) and the bash rescue shell alike.
 #
@@ -71,6 +77,7 @@ fastfetch = "latest"
 fd = "latest"
 fzf = "latest"
 gh = "latest"
+"github:agavra/tuicr" = "latest"
 "github:can1357/oh-my-pi" = "latest"
 "github:rtk-ai/rtk" = "latest"
 go = "latest"
