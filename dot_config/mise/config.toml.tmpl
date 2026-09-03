@@ -19,6 +19,12 @@ experimental = true
 # project config cannot opt us into replacing the mise binary.
 auto_update = true
 
+# Platforms written into mise.lock, which bootstrap installs from: a fresh box
+# has no gh and no credential helper yet, so resolving `latest` for every tool
+# anonymously blows the 60/hr API limit. Current platform is always included;
+# a platform missing from the lock degrades to a live API call, not an error.
+lockfile_platforms = ["linux-x64", "linux-arm64", "macos-arm64", "windows-x64"]
+
 # Shell-agnostic tool config, defined once for every shell that activates mise:
 # nushell (via its pre_prompt hook) and the bash rescue shell alike.
 #
@@ -128,11 +134,14 @@ run = "chezmoi apply"
 [tasks.update]
 description = "Update dotfiles, system packages, and tools with Topgrade"
 confirm = "Run the full Topgrade update? This can take a while."
-run = "topgrade"
+# Topgrade applies chezmoi first, which restores the committed lockfile, then
+# upgrades tools -- leaving the lock current for this platform only. Refresh
+# the rest and push it back to the source dir, or the next apply reverts it.
+run = ["topgrade", "mise lock --global", "chezmoi re-add ~/.config/mise/mise.lock"]
 
 [tasks.update-unattended]
 description = "Update everything non-interactively with Topgrade"
-run = "topgrade --yes --no-ask-retry"
+run = ["topgrade --yes --no-ask-retry", "mise lock --global", "chezmoi re-add ~/.config/mise/mise.lock"]
 
 {{- if or $arch $deb $darwin }}
 
