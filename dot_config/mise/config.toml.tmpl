@@ -25,6 +25,28 @@ auto_update = true
 # a platform missing from the lock degrades to a live API call, not an error.
 lockfile_platforms = ["linux-x64", "linux-arm64", "macos-arm64", "windows-x64"]
 
+# gh keeps its token in the system keyring, so hosts.yml carries no
+# oauth_token — and mise's gh_cli_tokens path parses that file directly rather
+# than shelling out, so it finds nothing and falls back to an anonymous 60/hr.
+# credential_command bridges that: `gh auth token` prints the keyring copy, so
+# `gh auth login` stays the only thing to run and no plaintext token lands on
+# disk (what --insecure-storage would have cost).
+#
+# MUST stay a bare command name, never an absolute path to the gh shim. mise
+# has NO re-entrancy guard here — a credential_command that calls back into
+# mise recurses until the process dies (measured: 25+ levels, no backstop).
+# The only thing breaking the cycle is that mise strips its own shims dir from
+# this subprocess's PATH, so a bare `gh` can resolve to a real binary but never
+# to a shim. Naming the shim by absolute path defeats that and deadlocks
+# bootstrap, where the shim's install would itself need the API.
+#
+# Cost of the guard: in contexts with no mise activation (cron, `ssh host
+# 'cmd'`, GUI launchers), shims are the only gh on PATH, so stripping them
+# leaves none and the token resolves to (none). That degrades to the anonymous
+# limit, never an error — and bootstrap stays off the API via mise.lock.
+[settings.github]
+credential_command = "gh auth token"
+
 # Shell-agnostic tool config, defined once for every shell that activates mise:
 # nushell (via its pre_prompt hook) and the bash rescue shell alike.
 #

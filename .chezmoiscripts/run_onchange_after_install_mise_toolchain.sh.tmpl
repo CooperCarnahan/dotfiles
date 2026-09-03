@@ -45,4 +45,22 @@ mise install
 # do not exist until something else reshims.
 mise reshim
 echo "--- mise toolchain installed ---"
+
+echo "--- Checking GitHub API auth ---"
+# mise gets its GitHub token by running `gh auth token` (credential_command in
+# [settings.github]). With no token it silently drops to 60 anonymous API
+# req/hr and says so only under -v. Harmless for the run above -- mise.lock
+# pins direct URLs and checksums, so nothing here touches the API -- but it
+# bites the first tool that has to resolve live.
+#
+# Probe gh rather than `mise token github`: mise strips its own shims dir from
+# the credential helper's PATH (the one thing preventing infinite recursion,
+# since it has no re-entrancy guard), and gh is shim-only in this script, so
+# `mise token github` reports (none) here even for an authenticated user.
+if gh auth token >/dev/null 2>&1; then
+    echo "gh is authenticated - mise has the full 5000 req/hr"
+else
+    echo "gh is NOT authenticated - mise is capped at 60 anonymous req/hr"
+    echo "run: gh auth login"
+fi
 {{- end -}}
