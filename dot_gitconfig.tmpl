@@ -72,12 +72,15 @@
        Guarding turns a missing 1Password into "signing is off", and it
        self-heals on the next apply once it is installed.
        stat is for absolute install paths, lookPath for PATH lookups. */ -}}
+{{- /* Remotes we push to are SSH (1Password agent), so the helper is only a
+       fallback for the occasional HTTPS repo. Every helper below ships inside
+       git or Git for Windows -- nothing to install, nothing to declare. */ -}}
 {{- $opSign := "" -}}
 {{- $credHelper := "" -}}
-{{- $credStore := "" -}}
-{{- $credUseHttpPath := false -}}
 {{- if eq .chezmoi.os "windows" -}}
   {{- $opSign = lookPath "op-ssh-sign.exe" -}}
+  {{- /* GCM is bundled with Git for Windows and is the native store there. */ -}}
+  {{- $credHelper = "manager" -}}
 {{- else if eq .chezmoi.os "darwin" -}}
   {{- if stat "/Applications/1Password.app/Contents/MacOS/op-ssh-sign" -}}
     {{- $opSign = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign" -}}
@@ -88,15 +91,17 @@
   {{- if (.chezmoi.kernel.osrelease | lower | contains "microsoft") -}}
     {{- $opSign = lookPath "op-ssh-sign.exe" -}}
     {{- $credHelper = lookPath "git-credential-manager.exe" -}}
-    {{- $credUseHttpPath = true -}}
   {{- else -}}
     {{- if stat "/opt/1Password/op-ssh-sign" -}}
       {{- $opSign = "/opt/1Password/op-ssh-sign" -}}
     {{- end -}}
-    {{- if lookPath "git-credential-manager" -}}
-      {{- $credHelper = "manager" -}}
-      {{- $credStore = "secretservice" -}}
-      {{- $credUseHttpPath = true -}}
+    {{- /* Arch ships this compiled in the git package; Debian ships only the
+           source under contrib, so guard rather than assume. Headless boxes
+           that miss it need no helper anyway -- SSH plus the lockfile. */ -}}
+    {{- if stat "/usr/lib/git-core/git-credential-libsecret" -}}
+      {{- $credHelper = "libsecret" -}}
+    {{- else if stat "/usr/libexec/git-core/git-credential-libsecret" -}}
+      {{- $credHelper = "libsecret" -}}
     {{- end -}}
   {{- end -}}
 {{- end }}
@@ -114,12 +119,6 @@
 [credential]
   # op-ssh-sign only covers signing; HTTPS auth needs a helper too
   helper = {{ $credHelper | quote }}
-{{- if $credStore }}
-  credentialStore = {{ $credStore }}
-{{- end }}
-{{- if $credUseHttpPath }}
-  useHttpPath = true
-{{- end }}
 {{- end }}
 {{- if $opSign }}
 
