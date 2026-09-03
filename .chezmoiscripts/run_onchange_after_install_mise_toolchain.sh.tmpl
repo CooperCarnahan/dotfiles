@@ -40,5 +40,9 @@ mise bootstrap packages apply --yes --update
 
 echo "--- Installing mise-managed tools ---"
 mise install
+# `mise install` skips lazy tools by design; chezmoi writes the config
+# directly, so nothing has rebuilt the shim farm. Without this their commands
+# do not exist until something else reshims.
+mise reshim
 echo "--- mise toolchain installed ---"
 {{- end -}}

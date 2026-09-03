@@ -52,8 +52,16 @@ TODO_DIR = '{{ .chezmoi.homeDir }}/Documents/todo'
 TODO_FILE = '{{ .chezmoi.homeDir }}/Documents/todo/todo.txt'
 DONE_FILE = '{{ .chezmoi.homeDir }}/Documents/todo/done.txt'
 
+# lazy = true installs on first invocation instead of during `mise install`,
+# which is what keeps bootstrap off the GitHub API. Eager is reserved for
+# runtimes other things exec (bun, node), the shell-startup inits in env.nu,
+# television cables, git's pager/hooks, and anything Claude Code spawns with a
+# trimmed PATH. Backends outside the registry need lazy_bins: the shim has to
+# exist before the tool does, and mise cannot know `beads` ships `bd` until it
+# unpacks it.
 [tools]
-"github:dlvhdr/gh-dash" = {version = "latest", exe = "gh-dash"}
+"github:dlvhdr/gh-dash" = { version = "latest", exe = "gh-dash", lazy = true, lazy_bins = ["gh-dash"] }
+# Television cables shell out to this.
 "github:webstonehq/tuxedo" = "latest"
 {{- if not (or $arch $darwin) }}
 # nushell only where no system package exists (Debian, Windows). Elsewhere it
@@ -63,62 +71,67 @@ DONE_FILE = '{{ .chezmoi.homeDir }}/Documents/todo/done.txt'
 # ~/.nu-handoff runs before any `mise activate` could shorten that path.
 "aqua:nushell/nushell" = "latest"
 {{- end }}
-"aqua:gastownhall/beads" = "latest"
-"aqua:ouch-org/ouch" = "latest"
+"aqua:gastownhall/beads" = { version = "latest", lazy = true, lazy_bins = ["bd"] }
+"aqua:ouch-org/ouch" = { version = "latest", lazy = true, lazy_bins = ["ouch"] }
 atuin = "latest"
 bat = "latest"
 bun = "latest"
 carapace = "latest"
-cargo-binstall = "latest"
+cargo-binstall = { version = "latest", lazy = true }
 ccache = "latest"
 chezmoi = "latest"
 claude = "latest"
-cmake = "latest"
-codex = "latest"
-croc = "latest"
+cmake = { version = "latest", lazy = true }
+codex = { version = "latest", lazy = true }
+croc = { version = "latest", lazy = true }
 delta = "latest"
-difftastic = "latest"
-eza = "latest"
-fastfetch = "latest"
+difftastic = { version = "latest", lazy = true }
+eza = { version = "latest", lazy = true }
+fastfetch = { version = "latest", lazy = true }
 fd = "latest"
 fzf = "latest"
 gh = "latest"
-"github:agavra/tuicr" = "latest"
-"github:can1357/oh-my-pi" = "latest"
-"github:rtk-ai/rtk" = "latest"
-go = "latest"
-hyperfine = "latest"
+"github:agavra/tuicr" = { version = "latest", lazy = true, lazy_bins = ["tuicr"] }
+"github:can1357/oh-my-pi" = { version = "latest", lazy = true, lazy_bins = ["omp"] }
+go = { version = "latest", lazy = true }
+hyperfine = { version = "latest", lazy = true }
 jq = "latest"
-jujutsu = "latest"
-lazygit = "latest"
+jujutsu = { version = "latest", lazy = true }
+lazygit = { version = "latest", lazy = true }
 neovim = "latest"
 ninja = "latest"
 node = "latest"
 "npm:@agentclientprotocol/claude-agent-acp" = "latest"
 "npm:@colbymchenry/codegraph" = "latest"
 "npm:context-mode" = "latest"
-opencode = "latest"
-pitchfork = "latest"
+opencode = { version = "latest", lazy = true }
+pitchfork = { version = "latest", lazy = true }
 prek = "latest"
 ripgrep = "latest"
-rust = "latest"
+# Registry shorthand resolves to the same github:rtk-ai/rtk. Eager: a Claude
+# Code hook rewrites every Bash call through it.
+rtk = "latest"
+rust = { version = "latest", lazy = true }
 starship = "latest"
 television = "latest"
-tmux = "latest"
-topgrade = "latest"
+tmux = { version = "latest", lazy = true }
+topgrade = { version = "latest", lazy = true }
 tree-sitter = "latest"
-uv = "latest"
-watchexec = "latest"
-witr = "latest"
+uv = { version = "latest", lazy = true }
+watchexec = { version = "latest", lazy = true }
+witr = { version = "latest", lazy = true }
 worktrunk = "latest"
-yazi = "latest"
-zellij = "latest"
+yazi = { version = "latest", lazy = true }
+zellij = { version = "latest", lazy = true }
 zoxide = "latest"
 
 {{ if ne .chezmoi.os "windows" -}}
+# Eager: $env.CARAPACE_BRIDGES spawns fish for completions on every Tab.
 "aqua:fish-shell/fish-shell" = "latest"
-"github:agent-of-empires/agent-of-empires" = { version = "latest", exe = "aoe-linux-amd64", rename_exe = "aoe" }
-"github:ogulcancelik/herdr" = "latest"
+"github:agent-of-empires/agent-of-empires" = { version = "latest", exe = "aoe-linux-amd64", rename_exe = "aoe", lazy = true, lazy_bins = ["aoe"] }
+# Not the `herdr` registry shorthand -- that resolves to herdrdev/herdr, a
+# different project.
+"github:ogulcancelik/herdr" = { version = "latest", lazy = true, lazy_bins = ["herdr"] }
 {{- end }}
 
 [tasks.bootstrap]

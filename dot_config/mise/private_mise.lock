@@ -682,31 +682,6 @@ url = "https://github.com/herdrdev/herdr/releases/download/v0.8.2/herdr-windows-
 url_api = "https://api.github.com/repos/herdrdev/herdr/releases/assets/521169109"
 provenance = "github-attestations"
 
-[[tools."github:rtk-ai/rtk"]]
-version = "0.46.0"
-backend = "github:rtk-ai/rtk"
-specifiers = ["latest"]
-
-[tools."github:rtk-ai/rtk"."platforms.linux-arm64"]
-checksum = "sha256:e8c2e1787f46017ea7c5a711b2bc6a7f7cf61c7ad69385b4c1e4daff1135dcd1"
-url = "https://github.com/rtk-ai/rtk/releases/download/v0.46.0/rtk-aarch64-unknown-linux-gnu.tar.gz"
-url_api = "https://api.github.com/repos/rtk-ai/rtk/releases/assets/531218976"
-
-[tools."github:rtk-ai/rtk"."platforms.linux-x64"]
-checksum = "sha256:79aa5b89c69566bbfeceb66c8a27cfbe52237fc7ee3e683115f43745a3262d21"
-url = "https://github.com/rtk-ai/rtk/releases/download/v0.46.0/rtk-x86_64-unknown-linux-musl.tar.gz"
-url_api = "https://api.github.com/repos/rtk-ai/rtk/releases/assets/531218973"
-
-[tools."github:rtk-ai/rtk"."platforms.macos-arm64"]
-checksum = "sha256:484e5dd2b4bfdbbb910727a0ba1e2d63b2e23efa922cfcc7300fd131bca3e10a"
-url = "https://github.com/rtk-ai/rtk/releases/download/v0.46.0/rtk-aarch64-apple-darwin.tar.gz"
-url_api = "https://api.github.com/repos/rtk-ai/rtk/releases/assets/531218972"
-
-[tools."github:rtk-ai/rtk"."platforms.windows-x64"]
-checksum = "sha256:9bc5acd54d35a916e4a561435963e0acf2f1a0115cf43dcfe2b719f361c8a970"
-url = "https://github.com/rtk-ai/rtk/releases/download/v0.46.0/rtk-x86_64-pc-windows-msvc.zip"
-url_api = "https://api.github.com/repos/rtk-ai/rtk/releases/assets/531218979"
-
 [[tools."github:webstonehq/tuxedo"]]
 version = "2026.7.1"
 backend = "github:webstonehq/tuxedo"
@@ -1038,6 +1013,31 @@ url_api = "https://api.github.com/repos/BurntSushi/ripgrep/releases/assets/47811
 checksum = "sha256:71b2fef860abe467217a538ff31de02f5258807c0129f771846f87bd029aafc5"
 url = "https://github.com/BurntSushi/ripgrep/releases/download/15.2.0/ripgrep-15.2.0-x86_64-pc-windows-msvc.zip"
 url_api = "https://api.github.com/repos/BurntSushi/ripgrep/releases/assets/478119643"
+
+[[tools.rtk]]
+version = "0.47.0"
+backend = "aqua:rtk-ai/rtk"
+specifiers = ["latest"]
+
+[tools.rtk."platforms.linux-arm64"]
+checksum = "sha256:960ceb5f1f5f0b0939b32b5b1d41dec6d9a7113137b0703c68dca0d169a260fc"
+url = "https://github.com/rtk-ai/rtk/releases/download/v0.47.0/rtk-aarch64-unknown-linux-gnu.tar.gz"
+url_api = "https://api.github.com/repos/rtk-ai/rtk/releases/assets/540806258"
+
+[tools.rtk."platforms.linux-x64"]
+checksum = "sha256:7c0175d867f96c4f8f788479af82ca8f0990ea944226268834d224a525186fb7"
+url = "https://github.com/rtk-ai/rtk/releases/download/v0.47.0/rtk-x86_64-unknown-linux-musl.tar.gz"
+url_api = "https://api.github.com/repos/rtk-ai/rtk/releases/assets/540806262"
+
+[tools.rtk."platforms.macos-arm64"]
+checksum = "sha256:3617f9a95d536e0b6bb9e2c6d121d81c3d8fd8ef04c5b2a605f5e7b0309a47d2"
+url = "https://github.com/rtk-ai/rtk/releases/download/v0.47.0/rtk-aarch64-apple-darwin.tar.gz"
+url_api = "https://api.github.com/repos/rtk-ai/rtk/releases/assets/540806263"
+
+[tools.rtk."platforms.windows-x64"]
+checksum = "sha256:26401cf663797bfcfd0d7fbf3acfa5d81a6fb384e8cac188506d69c330d37596"
+url = "https://github.com/rtk-ai/rtk/releases/download/v0.47.0/rtk-x86_64-pc-windows-msvc.zip"
+url_api = "https://api.github.com/repos/rtk-ai/rtk/releases/assets/540806264"
 
 [[tools.rust]]
 version = "1.98.0"
