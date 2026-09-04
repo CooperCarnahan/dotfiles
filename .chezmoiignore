@@ -48,6 +48,16 @@ tests/**
 # `omarchy refresh` rewriting each other over a single extra key.
 .config/hypr/.luarc.json
 
+# Per-machine Hyprland overrides (work chat, client VPNs) that must not follow
+# the dotfiles to every device. One file per Omarchy user seam, each loaded via
+# require_optional from the tracked hypr/<seam>.lua, so `omarchy refresh
+# hyprland` overwriting a seam is undone by the next `chezmoi apply` -- the same
+# reason those three seams are tracked in the first place (see above).
+# require_optional is silent when the file is absent. Maintained out-of-band.
+.config/hypr/local-bindings.lua
+.config/hypr/local-looknfeel.lua
+.config/hypr/local-autostart.lua
+
 # Pure Omarchy state and scaffolding: themes, defaults, branding and the
 # `themed/` template overrides are all installed and rewritten by Omarchy
 # itself. ~/.config/omarchy is otherwise entirely outside chezmoi.
