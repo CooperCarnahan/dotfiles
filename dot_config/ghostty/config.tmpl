@@ -43,7 +43,8 @@
 # resize-overlay-duration = 4s 200ms
 
 # Font settings
-font-family = "Maple Mono NF Semibold"
+font-family = "Maple Mono NF"
+font-style = SemiBold
 font-size = 14.0
 
 # Set the built-in Tokyo Night theme
@@ -64,13 +65,5 @@ keybind = alt+right=unbind
 #   login -flp <user> /bin/bash --noprofile --norc -c "exec -l <command>"
 # so no zprofile runs, macOS never runs path_helper, /opt/homebrew/bin vanishes,
 # and every brew: package in mise/config.toml.tmpl goes with it.
-#
-# `nushell` rather than the default `detect`: detect keys off the launched
-# command's basename, which is bash/zsh here. Naming the scheme explicitly keeps
-# prompt marking, working-directory reporting and jump_to_prompt. Injection is
-# environmental — ghostty puts its shell-integration dir on XDG_DATA_DIRS and
-# nushell autoloads nushell/vendor/autoload/ghostty.nu from it — so it survives
-# the exec into nu.
-shell-integration = nushell
 
 mouse-scroll-multiplier = discrete:.6
