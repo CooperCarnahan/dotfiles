@@ -27,3 +27,11 @@
 -- o.bind("SUPER + SHIFT + S", nil, "omarchy-capture-screenshot")
 -- o.bind("SUPER + H", nil, "voxtype record toggle")
 -- o.bind("SUPER + PERIOD", nil, "omarchy-shell shell toggle omarchy.emojis")
+
+-- Screenshot on SUPER+SHIFT+S (frees the key from the Google Maps webapp default).
+hl.unbind("SUPER + SHIFT + S")
+o.bind("SUPER + SHIFT + S", "Screenshot", "omarchy-capture-screenshot")
+
+hl.unbind("SUPER + SHIFT + SLASH")
+o.bind("SUPER + SHIFT + SLASH", "Passwords", "1password --quick-access")
+o.bind("SUPER + CTRL + SHIFT + SLASH", "Passwords (main window)", "1password --toggle")
