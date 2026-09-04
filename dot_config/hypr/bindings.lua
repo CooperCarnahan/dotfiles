@@ -33,8 +33,8 @@ hl.unbind("SUPER + SHIFT + S")
 o.bind("SUPER + SHIFT + S", "Screenshot", "omarchy-capture-screenshot")
 
 hl.unbind("SUPER + SHIFT + SLASH")
-o.bind("SUPER + SHIFT + SLASH", "Passwords", "1password --quick-access")
-o.bind("SUPER + CTRL + SHIFT + SLASH", "Passwords (main window)", "1password --toggle")
+o.bind("SUPER + SHIFT + SLASH", "Passwords", "1password --quick-access --force-device-scale-factor=1")
+o.bind("SUPER + CTRL + SHIFT + SLASH", "Passwords (main window)", "1password --toggle --force-device-scale-factor=1")
 
 -- Per-machine keybindings (work chat, client VPNs): untracked, absent on
 -- machines that never create it. See .chezmoiignore.
