@@ -54,6 +54,14 @@ App-owned JSON configs (`~/.claude/settings.json`, Windows PowerToys/Terminal) u
 bytes when the managed values already match, so application key ordering creates neither
 diff noise nor apply churn. No external interpreter is required during the file phase.
 
+`~/.codex/config.toml` also uses a native modify template. It owns only
+`tui.keymap.chat.edit_queued_message` (`alt-shift-up`), leaving Herdr's Alt+Up
+agent navigation available. All other Codex settings remain local. Matching
+files are preserved byte-for-byte; when the shortcut needs changing, TOML
+serialization preserves values but removes comments and may change formatting.
+This requires a Codex version supporting custom keymaps and this action;
+restart Codex after applying it. The target uses the default `~/.codex` location.
+
 On unix the bootstrap runs almost entirely in the `after` phase
 (`run_onchange_after_install_mise_toolchain`): `mise bootstrap packages apply` installs the
 system packages, then `mise install` materializes the toolchain — neither can happen earlier,

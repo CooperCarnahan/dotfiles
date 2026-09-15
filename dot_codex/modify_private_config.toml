@@ -1,0 +1,14 @@
+{{- /* chezmoi:modify-template */ -}}
+{{- /*
+  Codex owns the rest of this file. Merge only the question shortcut so
+  Herdr can keep Alt+Up for agent navigation. Preserve original bytes when
+  the binding already matches; a necessary TOML rewrite loses comments.
+*/ -}}
+{{- $raw := .chezmoi.stdin -}}
+{{- $live := $raw | fromToml -}}
+{{- $merged := deepCopy $live | setValueAtPath "tui.keymap.chat.edit_queued_message" "alt-shift-up" -}}
+{{- if deepEqual $live $merged -}}
+{{ $raw }}
+{{- else -}}
+{{ $merged | toToml }}
+{{- end -}}
