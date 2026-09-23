@@ -33,7 +33,18 @@
     "GIT_AUTHOR_NAME": "Claude",
     "GIT_COMMITTER_EMAIL": "noreply@anthropic.com",
     "GIT_COMMITTER_NAME": "Claude",
-    "GIT_CONFIG_PARAMETERS": "'commit.gpgsign=false' 'tag.gpgsign=false'"
+{{- /* GIT_CONFIG_COUNT/KEY_n/VALUE_n, not GIT_CONFIG_PARAMETERS: the Bash
+       sandbox's network proxy overwrites GIT_CONFIG_PARAMETERS with its own
+       http.proxyAuthMethod, silently re-enabling the global commit.gpgsign
+       (1Password) for Claude's commits. The sandbox appends to the COUNT list
+       instead of replacing it. */}}
+    "GIT_CONFIG_COUNT": "3",
+    "GIT_CONFIG_KEY_0": "commit.gpgsign",
+    "GIT_CONFIG_KEY_1": "tag.gpgsign",
+    "GIT_CONFIG_KEY_2": "core.fsmonitor",
+    "GIT_CONFIG_VALUE_0": "false",
+    "GIT_CONFIG_VALUE_1": "false",
+    "GIT_CONFIG_VALUE_2": "false"
   },
   "extraKnownMarketplaces": {
     "claude-hud": {
@@ -99,10 +110,6 @@
     "autoAllowBashIfSandboxed": true,
     "enabled": {{ if eq .chezmoi.os "windows" }}false{{ else }}true{{ end }},
     "filesystem": {
-      "allowRead": [
-        "~/.ssh/claude_signing",
-        "~/.ssh/claude_signing.pub"
-      ],
       "allowWrite": [
         "{{ .chezmoi.homeDir }}/.cache/prek"
       ],
