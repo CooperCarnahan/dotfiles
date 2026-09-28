@@ -107,7 +107,7 @@ cycle_pane_previous = "alt+h"
 split_vertical = ["prefix+v", "alt+v"]
 split_horizontal = ["prefix+minus", "alt+minus"]
 close_pane = ["prefix+x", "alt+x"]
-# zoom = "prefix+z"       # legacy alias: fullscreen
+zoom = ["prefix+z", "alt+z"]
 # resize_mode = "prefix+r"
 toggle_sidebar = "prefix+s"
 
