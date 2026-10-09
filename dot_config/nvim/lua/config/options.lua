@@ -19,3 +19,19 @@ vim.g.zig_fmt_autosave = 0
 
 -- enable project-specific setting overrides
 vim.opt.exrc = true
+
+-- Headless Linux (e.g. ubuntu LXC over SSH/herdr): use OSC 52 for copy only.
+-- Reading the clipboard via OSC 52 asks the terminal and waits up to 10s for an
+-- answer that, through herdr, never comes (yanky's sync_with_ring does this on
+-- every focus change).
+if vim.fn.has("linux") == 1 and not (vim.env.DISPLAY or vim.env.WAYLAND_DISPLAY) then
+	local osc52 = require("vim.ui.clipboard.osc52")
+	local function paste()
+		return { vim.fn.split(vim.fn.getreg(""), "\n"), vim.fn.getregtype("") }
+	end
+	vim.g.clipboard = {
+		name = "OSC 52 (copy only)",
+		copy = { ["+"] = osc52.copy("+"), ["*"] = osc52.copy("*") },
+		paste = { ["+"] = paste, ["*"] = paste },
+	}
+end
